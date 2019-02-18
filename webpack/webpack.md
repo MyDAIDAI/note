@@ -439,3 +439,110 @@ plugins: [
 
 ### `CLI Alternatives`
 上面描述的配置也可以通过命令行实现，例如使用 `--optimize-minimize` 将包含 `terserPlugin` 插件, 定义 `--define process.env.NODE_ENV="'production'"`与在 `webpack.DefinePlugin`中定义操作相同. `Webpack -p` 将会自动的调用这两个配置和包括在其中的插件
+
+## `Code Splitting`
+`code splitting`是`webpack`最让人感兴趣的特征之一。这个特征允许你可以切割你的代码到不同的打包文件中，这个代码文件可以进行按需加载或者平行加载。它可以用于实现更轻量的打包文件以及控制资源的加载顺序，如果正确的使用了这个功能，可以对加载的时间产生较大的影响。
+
+有三种方式可以进行`code splitting`:
+1. `Entry Points`: 通过使用`entry`配置来手动的切割代码
+
+2. `Prevent Duplication`: 使用`SplitChunksPlugin`来推断以及切割块
+
+3. `Dynamic Imports`: 通过模块内的内联函数调用来切割代码
+
+### `Entry Points`
+这是分割代码最快也是最直接的办法。但是，这个方法需要进行手动配置，而且还会遇到一些陷阱。下面来进行一些尝试：
+1. `src`中添加`another-module.js`文件，并随意添加一些内容
+
+2. `webpack.config.js`中配置`entry`属性
+    ```javascript
+    entry: {
+        app: './src/index.js',
+        another: './src/another-module.js'
+    }
+    ```
+运行命令之后可以看到对`another-module`文件进行了打包，但是这个方式的有一些缺点：
+1. 如果在入口文件中有重复的模块，那么会被重复的打包进每一个`bundle`文件中，比如，两个文件都引用了一个库代码，那么在这两个打包文件中会对引用文件进行重复的打包。我们在`index.js`与`another-module`文件中都引入`lodash`库，打包后发现在`app.bundle.js`文件以及`another.bundle.js`文件中都包含`lodash`的源代码
+
+2. 这种方式也不灵活，并且不能够根据核心的应用逻辑进行动态的代码分割
+
+## `Prevent Duplication`
+上面的方法虽然比较简单，直接。但是也有一些缺点，其中最大的缺点就是对同一个引用进行重复打包的问题。可以使用`SplitChunksPlugin`插件，这个插件将通用的依赖抽取到一个已经存在的入口块中或者抽取到一个完全新的块中。下面进行测试
+1. `webpack.config.js`中添加配置
+    ```javascript
+    optimization: {
+        splitChunks: {
+            chunks: 'all'
+        }
+    }
+    ```
+进行了上诉配置后，进行打包后发现输出结果中多了一个文件 `vendors~another~app.bundle.js`,并且在`app.bundle.js`文件以及`another.bundle.js`文件中都没有了`lodash`的代码
+```javascript
+                        Asset       Size  Chunks             Chunk Names
+            another.bundle.js   1.54 KiB       1  [emitted]  another
+                app.bundle.js   2.01 KiB       2  [emitted]  app
+                   index.html  325 bytes          [emitted]
+vendors~another~app.bundle.js   69.3 KiB       0  [emitted]  vendors~another~app
+Entrypoint app = vendors~another~app.bundle.js app.bundle.js
+Entrypoint another = vendors~another~app.bundle.js another.bundle.js
+```
+在社区中还有一些其他的插件可以用来进行`splitting code`:
+
+1. `mini-css-extract-plugin`: `css`切割
+
+2. `bundle-loader`: 可以进行代码切割和懒加载
+
+3. `promise-loader`: 对`promise`进行的代码切割和懒加载
+
+### `Dynamic Imports`
+在`webpack`中有两种方式可以实现动态的导入，第一个也是推荐的方式就是去使用`import()`(内部使用`promise`语法，在老式浏览器中使用时需要添加`es6-promise`或者`promise-polyfill`)语法，这个方式符合`ECMAScript`对动态导入的建议。`webpack`指定的遗留方式就是使用`require.ensure`
+1. 删除掉`webpack.config.js`中对`entry`以及`optimization.splitChunks`的配置
+
+2. 在`webpack.config.js`中的`output`中添加`chunkFilename`配置 `chunkFilename: '[name].bundle.js'`,这个属性决定了不属于`entry`配置中的块文件名
+
+3. 修改`index.js`中的代码
+    ```javascript
+    funtion getComponent() {
+        return import(/*webpackChunkName: "lodash"*/ lodash).then(({default: _}) => {
+            var element = document.createElement('div')
+            element.innerHTML = _.jon(['webpack', 'dynamics', 'import'])
+            return element
+        }).catch(err => console.log('an error occured while loading the component'))
+    }
+    getComponent().then(component => {
+        document.body.appendChild(component)
+    })
+    ```
+上面的代码中在引入`lodash`时, 使用了`{default: _}`, 需要这样使用的原因是在`webpack 4`中与导入的`CommonJS`的模块进行兼容
+
+上面的代码中还添加了一行注释`/*webpackChunkName: "lodash"*/`，这个指定了引入库切块后的文件名。
+
+执行打包命令后输出如下：
+```javascript
+                   Asset       Size  Chunks             Chunk Names
+           app.bundle.js   2.21 KiB       0  [emitted]  app
+              index.html  185 bytes          [emitted]
+vendors~lodash.bundle.js   69.3 KiB       1  [emitted]  vendors~lodash
+```
+修改上面`webpackChunkName`中的名称为`lodashTest`后打包输出
+```javascript
+                   Asset       Size  Chunks             Chunk Names
+               app.bundle.js   2.22 KiB       0  [emitted]  app
+                  index.html  185 bytes          [emitted]
+vendors~lodashTest.bundle.js   69.3 KiB       1  [emitted]  vendors~lodashTest
+```
+由于`import()`返回的是一个`promise`，所以也可以使用`async`函数，使用`async`函数需要使用`babel`插件
+```javascript
+async function getComponent() {
+    var element = document.createElement('div')
+    const {default: _} = await import(/*webpackChunkName: "lodash"*/ 'lodash')
+    element.innerHTML = _.jon(['webpack', 'dynamics', 'import'])
+    return element
+}
+getComponent().then(component => {
+    document.body.appendChild(component)
+})
+```
+
+### `Prefetching/Preloading modules`
+待后续深入
