@@ -546,3 +546,76 @@ getComponent().then(component => {
 
 ### `Prefetching/Preloading modules`
 待后续深入
+
+## `Lazy Loading`
+懒加载或者是按需加载是一个非常好的优化方式。使用上面的动态加载方式(`import()`)就能实现该功能
+
+## `Caching`
+浏览器访问服务器资源的时候，会进行缓存，这样可以减少浏览器请求已加快加载速度。但是当更新了代码之后，浏览器却不会进行更新
+
+### `Output Filenames`
+为输出的文件名添加哈希值，当文件改变的时候，哈希值也会发生改变。将 `webpack.config.js`中的`filename`配置为`[name].[contenthash].js`，然后运行命令`npm run build`.一般情况下，添加了该配置后，没有修改文件内容后再次进行打包，打包后文件的哈希值应该与上次相同。但有时由于`webpack`在入口文件中包含了某些引用，特别是`runtime`以及`manifest`，会导致输出哈希值不同
+
+### `Extracting Boilerplate`
+上面我们学习了`code splitting`, 使用`SplitChunksPlugin`插件可以将模块模块打包为一个单独的包。`webpack`提供了一个优化的特性就是使用`optimization.runtimeChunk`来切割`runtime`代码到一个单独的块中。将其设置为`single`可以为所有的块创建一个单独的运行时块包
+
+`webpack`中添加下面配置：
+```javascript
+optimization: {
+    runtimeChunk: 'single'
+}
+```
+然后运行后可以看到抽取出的`runtime`块
+```javascript
+                                Asset       Size  Chunks             Chunk Names
+                         app.bundle.js  335 bytes       0  [emitted]  app
+                            index.html  270 bytes          [emitted]
+runtime.72920ca51056428add9f.bundle.js   2.14 KiB       1  [emitted]  runtime
+Entrypoint app = runtime.72920ca51056428add9f.bundle.js app.bundle.js
+```
+由于我们引用的库文件一般不会进行修改，可以将其打包缓存出来减少客户端的请求，在`SplitChunksPlugin`中进行下面配置
+```javascript
+optimization: {
+    runtimeChunk: 'single',
+    splitChunks: {
+        cacheGroup: {
+            vendor: {
+                test: /[\\/]node_modules[\\/]/,
+                name: 'vendors',
+                chunks: 'all' 
+            }
+        }
+    }
+}
+```
+执行命令后可以看到打包会多一个`vendors.[hash].js`文件，这个文件包含引用的库文件。
+
+配置`runtime: 'single'`是优化持久化缓存的, runtime 指的是 webpack 的运行环境(具体作用就是模块解析, 加载) 和 模块信息清单, 模块信息清单在每次有模块变更(hash 变更)时都会变更, 所以我们想把这部分代码单独打包出来, 配合后端缓存策略, 这样就不会因为某个模块的变更导致包含模块信息的模块(通常会被包含在最后一个 bundle 中)缓存失效. optimization.runtimeChunk 就是告诉 webpack 是否要把这部分单独打包出来.
+
+参考地址： [optimization.runtimeChunk 具体作用是什么？](https://segmentfault.com/q/1010000014954264)
+
+### `Module Identifilers`
+在`index.js`中引用一个文件，然后进行打包后，打包文件为
+```javascript
+                        Asset       Size  Chunks             Chunk Names
+    app.a89dda4cbddbd9d66117.js  239 bytes       0  [emitted]  app
+                     index.html  355 bytes          [emitted]
+runtime.81effc814b84e365c684.js   1.42 KiB       1  [emitted]  runtime
+vendors.2210038a99ca58de4a51.js   69.3 KiB       2  [emitted]  vendors
+Entrypoint app = runtime.81effc814b84e365c684.js vendors.2210038a99ca58de4a51.js app.a89dda4cbddbd9d66117.js
+```
+随意修改一下`index.js`中的内容，如下：
+```javascript
+                         Asset       Size  Chunks             Chunk Names
+    app.57468416820114898091.js  361 bytes       0  [emitted]  app
+                     index.html  355 bytes          [emitted]
+runtime.81effc814b84e365c684.js   1.42 KiB       1  [emitted]  runtime
+vendors.b2daa0c096dbca5731ea.js   69.3 KiB       2  [emitted]  vendors
+Entrypoint app = runtime.81effc814b84e365c684.js vendors.b2daa0c096dbca5731ea.js app.57468416820114898091.js
+```
+打包后的文件名前后对比发现，`app`包以及`vendor`包的哈希值进行了改变，`app`哈希值改变是因为`index.js`的内容修改了，但是`vendors`中的内容没变，但是哈希值仍然发生了变化。这是因为每一个块的`module.id`默认情况下是根据解析顺序进行递增的。也就是说如果解析顺序发生了改变，那么`module.id`也会进行改变，最后就会修改文件的哈希值。也就意味着虽然文件没有进行修改，但是由于解析顺序导致`module.id`改变最后也会导致文件哈希值改变。
+
+为了解决上面的问题，有两个插件，第一个是`NamedModulePlugin`，这个插件在开发环境中更有用，因为它的输出内容更易读。第二个插件是`HashedModuleIdsPlugin`，这个插件更推荐在生产环境中使用
+
+在`webpack.config.js`的`plugins`属性中添加配置`new webpack.HashedModuleIdsPlugin()`，配置之后，发现前后两次的`vendor`块的文件名相同
+
