@@ -619,3 +619,148 @@ Entrypoint app = runtime.81effc814b84e365c684.js vendors.b2daa0c096dbca5731ea.js
 
 在`webpack.config.js`的`plugins`属性中添加配置`new webpack.HashedModuleIdsPlugin()`，配置之后，发现前后两次的`vendor`块的文件名相同
 
+## `Authoring Libraries`
+这一部分是开发库所需要的，待后续更新
+
+## `Shimming`
+`webpack`编译器可以明白通过`ES2015 modules`、`CommonJS`或者是`AMD`引入的模块，但是在使用一些第三方的库时需要将其导出为一个全局变量，以方便在整个项目中进行使用
+
+还有一种情景是针对不同的浏览器，引入不同的浏览器的`polyfill`文件，该文件有的浏览器需要，有的不需要，`Shimmming`可以将其交付给需要的浏览器（即按需加载）
+
+### `Shimming Globals`
+下面的例子中演示将`loadsh`导入作为全局变量进行使用
+1. 使用`ProvidePlugin`插件，在`webpack.config.js`中添加配置
+    ```javascript
+    const webpack = require('webpack')
+    plugins: [
+        new webpack.ProvidePlugin({
+            _: 'lodash'
+        })
+    ]
+    ```
+
+2. 在`index.js`文件中删除`lodash`引入，直接使用`_`变量
+
+可以使用`ProvidePlugin`插件配置具体将某个功能导出为全局变量，该导出方式对`Tree shaking`更加友好，打包之后会删除`lodash`库中除了`join`之外的代码
+```javascript
+new webpack.ProvidePlugin({
+    join: ['lodash', 'join']
+})
+```
+
+### `Granular Shimming`
+有些时候一些遗留的模块会依赖指向`window`对象的`this`对象，这个时候，就需要在文件中将`this`对象指向`window`对象作为全局对象导出，然后在`rules`中配置`imports-loader`
+```javascript
+module：{
+    rules: [
+        {
+            test: require.resolve('index.js'),
+            use: 'imports-loader?this=>window'
+        }
+    ]
+}
+```
+
+### `Global Exports`
+在使用一些文件时，没有导出可以使用的变量，那么就需要在`webpack`中使用`exports-loader`进行配置，配置之后再需要用到的文件中进行导入便可使用，如
+1. 新建`globals.js`文件，并添加如下代码：
+    ```javascript
+    var file = 'blah.txt'
+    var helpers = {
+        test: function () {
+            console.log('test something')
+        },
+        parse: function () {
+            console.log('parse something')
+        }
+    }
+    ```
+
+2. 在`webpack.config.js`中添加如下配置
+    ```javascript
+    module: {
+        rules: [
+            {
+                test: require.resove('globals.js')
+                use: 'exports-loader?file,parse=helpers.parse'
+            }
+        ]
+    }
+    ```
+
+3. 在`index.js`中引入导出的`file`以及`parse`变量, `import { file, parse } from './globals.js'`
+
+### `Loading Polyfills`
+
+有需要的方式可以加载`polyfills`，比如使用`babel-polyfill`
+1. 安装`babel-polyfill`，`npm install --save babel-polyfill`
+
+2. 在`index.js`中引入`babel-polyfill`，`import 'babel-polyfills'`
+
+在使用`babel-polyfill`之后，会增加包的大小，。为了安全和健壮，`polyfills/shim`必须在所有其他代码之前运行，因此要么需要同步加载，要么需要在所有`polyfills/shim`加载之后加载所有应用程序代码。
+
+下面为使用一个`whatwg-fetch`插件来使用`fetch`函数获取数据的例子，如果浏览器支持就不引入，不支持就引入该`polyfill`
+
+1. 安装`whatwg-fetch`, `npm install --save whatwg-fetch`
+
+2. 新建 `polyfills.js`，并引入`babel-polyfill`和`whatwg-fetch`包
+    ```javascript
+    import 'babel-polyfill';
+    import 'whatwg-fetch';
+    ```
+
+3. 修改`webpack.config.js`中的配置
+    ```javascript
+    entry: {
+        index: './src/index.js',
+        polyfills: './src/polyfills.js'
+    }
+    ```
+4. 在`index.html`中添加判断浏览器是否支持`fetch`的代码
+    ```javascript
+    <script>
+    var modernBrower = (
+        'fetch' in window && 
+        'assign' in Object
+    )
+    if (!modernBrower) {
+        var scriptElement = document.createElement('script');
+
+        scriptElement.async = false;
+        scriptElement.src = '/polyfills.bundle.js'
+        document.head.appendChild(scriptElement)
+    }
+    </script>
+    ```
+5. 在`index.js`中使用`fetch`函数加载数据
+    ```javascript
+    fetch('https://jsonplaceholder.typicode.com/users')
+       .then(response => response.json())
+       .then(json => {
+         console.log('We retrieved some data! AND we\'re confident it will work on a variety of browser distributions.')
+         console.log(json)
+       })
+       .catch(error => console.error('Something went wrong when fetching this data: ', error))
+    ```
+
+运行后在任何浏览器中都可以运行`fetch`函数
+
+### `Further Optimizations`
+`babel-preset-env`包使用`browserslist`只转换浏览器矩阵中不支持的内容。这个预置带有`useBuiltIns`选项，默认为`false`，它将全局`babel-polyfill`导入转换为更细粒度的按特性导入模式的特性:
+```javascript
+import 'core-js/modules/es7.string.pad-start';
+import 'core-js/modules/es7.string.pad-end';
+import 'core-js/modules/web.timers';
+import 'core-js/modules/web.immediate';
+import 'core-js/modules/web.dom.iterable';
+```
+
+### `Node Built-Ins`
+使用`Node Build-Ins`可以不需要使用任何的`loader`或者`plugins`，详情见[`Node`](https://webpack.js.org/configuration/node/)
+
+### `Other Utilities`
+还有一些其他的工具可以用来处理遗留的模块，比如`script-loader`，它类型一个`<script>`标签，可以在全局上下文中增加变量。
+
+如果没有`AMD/CommonJS`版本的模块，你想要包含`dist`，你可以在`noParse`中标记这个模块。这将导致`webpack`在不解析或解析`require()`和`import`语句的情况下包含模块。此实践还用于改进构建性能。
+
+最后，有一些模块支持多种模块样式;例如`AMD`, `CommonJS`和`legacy`的结合。在大多数情况下，他们首先检查`define`，然后使用一些古怪的代码导出属性。在这些情况下，通过导入加载器设置`define=>false`可以帮助强制`CommonJS`路径。
