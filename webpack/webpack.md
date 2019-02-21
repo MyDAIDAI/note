@@ -764,3 +764,94 @@ import 'core-js/modules/web.dom.iterable';
 如果没有`AMD/CommonJS`版本的模块，你想要包含`dist`，你可以在`noParse`中标记这个模块。这将导致`webpack`在不解析或解析`require()`和`import`语句的情况下包含模块。此实践还用于改进构建性能。
 
 最后，有一些模块支持多种模块样式;例如`AMD`, `CommonJS`和`legacy`的结合。在大多数情况下，他们首先检查`define`，然后使用一些古怪的代码导出属性。在这些情况下，通过导入加载器设置`define=>false`可以帮助强制`CommonJS`路径。
+
+## `Progressive Web Application`
+`Progressive Web Application`即`PWAs`是一种与原生应用体验相似的`app`，这种应用的一个最重要的能力就是可以离线运行，这种能力是通过`Serive Worker`来实现的
+
+### `We Don't Work Office Now`
+在我们项目的开发过程中，会运行脚本`npm run start`来开启一个静态服务器，然后打开对应的地址来查看页面，但是当我们停止服务之后，刷新页面会发现`webpack application`不可用
+
+### `Adding Workbox`
+1. 安装`workbox-webpack-plugin`插件，`npm install --save-dev workbox-webpack-plugin`
+
+2. `webpack.config.js`中添加配置
+    ```javascript
+    const WorkboxPlugin = require('workbox-webpack-plugin')
+    plugins: [
+        new WorkboxPlugin.GenerateSW({
+            clientClaim: true,
+            skipWaiting: true
+        })
+    ]
+    ```
+打包后的文件如下：
+```javascript
+                                                Asset       Size  Chunks             Chunk Names
+                                        app.bundle.js  518 bytes       0  [emitted]  app
+                                           index.html  249 bytes          [emitted]
+precache-manifest.ffe5714f2fc07bab678d410be719265d.js  270 bytes          [emitted]
+                                    runtime.bundle.js   1.42 KiB       1  [emitted]  runtime
+                                    service-worker.js  955 bytes          [emitted]
+Entrypoint app = runtime.bundle.js app.bundle.js
+```
+
+可以看到上面的打包文件中多了`service-worker.js`和`precache-manifest.5f0a6b9ebede8372ef75ac4397a1f5a3.js`文件，这两个文件是`Service Worker`所需要的文件
+
+### `Registering Our Service Worker`
+打包之后还需要对`Service Worker`进行注册，在`index.js`中进行如下配置：
+```javascript
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+                console.log('SW registered:', registration)
+            }).catch(registrationError => {
+                console.log('SW registration failed: ', registrationError)
+            })
+    })
+}
+```
+再次运行`npm run build`包含新的`service`代码，然后运行`npm run start`，打开浏览器可以看到页面，然后停止服务，刷新页面也可以正常进行访问
+
+## `TypeScript`
+`TypeScript`是`javascript`的一个超集，下面我们进行在`webppack`中对`TypeScript`进行配置
+
+1. 安装 `typescript`和`ts-loader`, `npm install --save-dev typescript ts-loader`
+
+2. 在`tsconfig.json`中添加配置
+    ```javascript
+    {
+        "compilerOptions": {
+            "outDir": "./dist/",
+            "sourceMap": true,
+            "noImplicitAny": true,
+            "module": "es6",
+            "target": "es5",
+            "jsx": "react",
+            "allowJs": true
+        }
+    }
+    ```
+3. 在`webpack.config.js`中添加配置
+    ```javascript
+    entry: {
+        app: './src/index.ts'
+    },
+    devtool: 'inline-source-map',
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js']
+    }
+    module: {
+        rules: {
+            test: /\.tsx?$/,
+            use: 'ts-loader',
+            exclude: /node_modules/
+        }
+    }
+    ```
+
+### `Using Third Party Libraries`
+使用了`typescript`之后，安装的第三方库也需要是`typing`定义的，详情见: [TypeSearch](https://microsoft.github.io/TypeSearch/)，比如安装`typescript`版的`lodash`为`npm install --save-dev @types/lodash`
+
+### `Importing Other Assets`
+在使用`typescript`的项目中导入静态资源，需要`custom.d.ts`文件，这个文件表示项目中的自定义`typescript`
