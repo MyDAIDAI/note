@@ -855,3 +855,187 @@ if ('serviceWorker' in navigator) {
 
 ### `Importing Other Assets`
 在使用`typescript`的项目中导入静态资源，需要`custom.d.ts`文件，这个文件表示项目中的自定义`typescript`
+
+## `Environment Varibales`
+为了区分开发环境与生产环境的`build`，需要使用到环境变量，在`webpack`中的环境变量与操作系统的`bash`或者`CMD.exe`中的环境变量是不同的。
+
+在`webpack`命令行可以通过`--env`来传递环境变量到`webpack.config.js`文件中
+```javascript
+webpack --env.NODE_ENV=local --env.produciotn --progress
+```
+上面`env.production`等同于`--env.prodution=true`
+
+在`webpack`命令中进行了设置之后，为了能够在`webpack.config.js`中的`module.exports`中可以使用设置的环境变量，需要将`module.exports`从对象变为函数，并且传入`env`参数
+```javascript
+const path = require('path')
+module.exports = env => {
+    // Use env.<YOUR VARIABLE> here:
+    console.log('NODE_ENV: ', env.NODE_ENV); // 'local'
+    console.log('Production: ', env.production); // true
+    return {
+        entry: './src/index.js',
+        output: {
+            filename: 'bundle.js',
+            path: path.resolve(__dirname, 'dist')
+        }
+    }
+}
+```
+
+## `Build Performance`
+下面是一些有用的建议可以来提高打包或者编译性能
+
+### `General`
+下面的是一些通用建议，无论你是运行在开发环境还是在生产环境中
+
+#### `Stay Up to Date`
+使用最新版本的`webpack`，`Nodejs`、`npm`或者`Yarn`，更新的版本在`modules tree`方面更加的高效并且还有更快的解析速度
+
+#### `Loaders`
+在`loaders`中只包含最小的模块，可以最大程度减少编译速度，比如,使用`include`或者`exclude`来包含或者排除必要的文件
+```javascript
+module.exports = {
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                include: path.resolve(__dirname, 'src')
+                loader: 'babel-loader'
+            }
+        ]
+    }
+}
+```
+
+#### `Bootstrap`
+每一个额外的加载器或者插件都有一个启动时间，尽可能地少使用工具
+
+#### `Resolving`
+下面几中方式可以提高解析速度：
+1. 最小化在`resolve.modules`、`resolve.extensions`、`resolve.mainFiles`、`resolve.descriptFiles`中的内容数量，因为它们会增加对文件系统的调用次数
+
+2. 如果不使用`symlinks`(如`npm link`或者`yarn link`)，设置`resolve.symlinks: false`
+
+3. 如果自定义了解析插件，设置`resolve.cacheWithContext: false`，因为它们没有指定的上下文
+
+#### `Dlls`
+使用`DllPlugin`插件将改动很少的代码移动到但如的编译中，这能够提高应用的编译速度，尽管这会增加构建过程中的复杂性
+
+#### `Smaller = Faster`
+减少编译文件的大小能够去增加构建性能，下面几种方式可以减少块的大小：
+1. 使用更加轻量的仓库
+
+2. 使用`CommonsChunkPlugin`在多页应用中
+
+3. 使用`CommonsChunkPlugin`在多页应用的异步模式中
+
+4. 删除无用的代码
+
+5. 只编译当前开发中的一部分
+
+#### `Worker Pool`
+`thread-loader`可以用来将昂贵的加载器卸载到`work pool`中
+
+#### `Persistent cache`
+使用`cache-loader`来持久化缓存。可以在`package.json`中设置`postinstall`来清除缓存文件
+
+#### `Custom plugins/loaders`
+对自定义的插件或者加载器进行分析，减少对性能的影响
+
+### `Development`
+下面介绍一些在开发环境中实用的配置
+
+#### `Incremental Builds`
+使用`webpack`的`watch`模式。不要使用其他工具来监视文件和调用下`webpack`。内置的监视模式将跟踪时间戳，并将此信息传递给编译以进行缓存失效。
+
+在某些设置中，监视回到轮询模式。对于许多被监视的文件，这会导致大量的`CPU`负载。在这些情况下，可以使用`watchOptions.poll`增加轮询间隔。
+
+#### `Compile in Memory`
+下面的几个工具可以提高性能通过在内存中进行编译和开启静态服务而非在`dist`中
+1. `webpack-dev-server`
+
+2. `webpack-hot-middleware`
+
+3. `webpack-dev-middleware`
+
+#### `Devtool`
+不同的`Devtool`设置也会有不同的性能：
+1. `eval`有最好的性能，但是不能进行代码转换
+
+2. `cheap-source-map`有更好的性能，但是`source map`的质量更差
+
+3. `eval-source-map`会增加构建
+在大多数情况下，使用`cheap-module-eval-source-map`是最好的选择
+
+#### `Avoid Prodution Specific Tooling`
+一些工具，插件和加载器只是在生产构建中有用，这些工具不应该包含在开发的构建中，比如下面的工具：
+1. `TerserPlugin`
+
+2. `ExtractTextPlugin`
+
+3. `[hash]/[chunkhash]`
+
+4. `AggressiveSplittingPlugin`
+
+5. `AggressiveMergingPlugin`
+
+6. `ModuleConcatenationPlugin`
+
+#### `Minimal Entry Chunk`
+
+#### `Avoid Extra Optimization Steps`
+`webpack`对于优化输出大小和加载性能会有额外的算法进行，这些优化对于较小的代码库是友好的，但是对于较大的代码库来说可能代价非常昂贵
+
+#### `Output Without Path Info`
+`webpack`能够在输出包中生成路径信息，但是，这给垃圾回收带来了压力。可以通过如下配置关闭
+
+```javascript
+output: {
+    pathinfo: false
+}
+```
+
+#### `TypeScript Loader`
+`ts-loader`开始使用内部的`TypeScript Watch`模式`api`，它大大地减少了每次迭代时需要重新构建的模块数量。`experimentalWatchApi `与`TypeScript Watch`模式有相同的逻辑，并且在开发环境中也非常稳定，配置`experimentalWatchApi` 
+```javascript
+module.exports = {
+    test: /\.tsx?$/,
+    use: [
+        {
+            loader: 'ts-loader',
+            options: {
+                transpileOnly: true,
+                experimentalWatchApi: true
+            }
+        }
+    ]
+}
+```
+
+### `Produciton`
+下面是一些在生产构建中的实用建议
+
+#### `Multiple Compilations`
+当使用多重编译时，下面的工具是有帮助的：
+1. `parallel-webpack`: 它能够运行在`worker pool`中进行编译
+
+2. `cache-loader`: `cache`能够在多重编译之间进行共享
+
+#### `Source Maps`
+`source map`是非常昂贵的，在生产环境中尽量不要使用
+
+### `Specific Tooling Issues`
+下面的工具中有一个问题会降低构建的性能
+
+#### `Babel`
+最小化`preset/plugins`的数量
+
+#### `TypeScript`
+1. 使用`fork-ts-checker-webpack-plugin`插件在一个单独的进程中进行类型检查
+
+2. 配置加载器以跳过类型检查
+
+3. 使用`ts-loader`在`happyPackMode: true / transpileOnly: true`模式下
+
+#### `Sass`
+`node-sass`中有一个`bug`，它会阻塞`nodejs`线程池中的线程，当它与`thread-loader`一起使用的时候，需要配置`workerParallelJobs: 2`
