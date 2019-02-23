@@ -64,3 +64,17 @@ function urlArgs () {
   // location对象分解属性可写
   location.search = '?name=value'
   ```
+
+## 浏览历史
+`window`对象的`history`属性引用的是该窗口的`History`对象，该对象是用来把窗口的浏览历史用文档和文档状态列表的形式表示，其中的`length`属性表示浏览历史列表中的元素数量，但出于安全方面的因素，脚本不能访问已保存的`URL`
+
+下面是`History`对象中的一些属性与方法：
+- `go`: 接收一个参数，可以在浏览器历史中向前（正参数）或向后（负参数）跳过任意多个页
+- `back`: 使浏览器在浏览历史中向后跳转一格
+- `forward`: 使浏览器在浏览历史中向前跳转一格
+- `lenght`: 浏览器历史列表中的元素数量
+- `pushState`: `history.pushState(state, title, url)`，无刷新的向浏览器历史最前方加入一条记录
+  - `state`: 状态对象，由`pushState()`方法创建，与历史记录相关的`javascript`对象，当用户定向到一个新状态时，会触发`window.popstate`事件，事件的`state`属性包含了历史记录的`state`对象，如果不需要这个对象，可以填`null`
+  - `title`: 新页面标题，所有浏览器都会忽略这个值，因此可以填`null`
+  - `URL`: 新历史记录地址，新`URL`必须和当前`URL`在同一个域，否则，会抛出异常。该参数可选，如没有，则会被设置为文档当前的`URL`
+- `replaceState`: `history.replaceState(state, title, url)`，参数见上，无刷新地替换当前的历史记录
