@@ -78,3 +78,46 @@ function urlArgs () {
   - `title`: 新页面标题，所有浏览器都会忽略这个值，因此可以填`null`
   - `URL`: 新历史记录地址，新`URL`必须和当前`URL`在同一个域，否则，会抛出异常。该参数可选，如没有，则会被设置为文档当前的`URL`
 - `replaceState`: `history.replaceState(state, title, url)`，参数见上，无刷新地替换当前的历史记录
+
+## 浏览器和屏幕信息
+脚本有时候需要获取和它们所在的`web`浏览器或浏览器所在的桌面的相关信息，`window`对象的`navigator`和`screen`属性，分别引用的是`Navigator`和`screen`对象，这些对象提供的信息允许脚本来根据环境定制自己的行为
+
+### `Navigator`对象
+当需要解决存在于某个特定的浏览器的特定版本中的特殊`bug`时，就需要用到浏览器嗅探。`Navigator`对象有4个属性用于提供关于运行中的浏览器版本信息，并且可以使用这些属性进行浏览器嗅探
+
+- `appName`: `web`浏览器全称，在`IE`中为`Microsoft Internet Explorer`，在其他浏览器中为`Netscape`
+- `appVersion`: 浏览器厂商和版本信息的详细字符串
+- `userAgent`: 浏览器在它的`USER-AGENT HTTP`头部中发送的字符串，由于这个属性包含绝大部分信息，因此浏览器嗅探代码通常用它来进行嗅探
+- `platform`: 在其上运行浏览器的操作系统的字符串
+
+下面是使用`navigator.userAgent`来进行浏览器嗅探
+```javascript
+//  "webkit": Safari或Chrome;版本号是Webkit的版本号
+// "opera": Opera; 版本号就是软件的版本号
+// "mozilla": FireFox或者其他基于gecko内核的浏览器;版本号是Gecko的版本号
+// "msie": IE;版本号为软件版本号
+var brower = (function () {
+  var s = navigator.userAgent.toLowerCase()
+  rwebkit = /(webkit)[ \/]([\w.]+)/
+  ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/
+  rmsie = /(msie) ([\w.]+)/
+  rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/
+  var match = rwebkit.exec( ua ) ||
+    ropera.exec( ua ) ||
+    rmsie.exec( ua ) ||
+    ua.indexOf("compatible") < 0 && rmozilla.exec( ua ) ||
+    [];
+   return { browser: match[1] || "", version: match[2] || "0" };
+})()
+```
+下面是一些其他的属性：
+- `onLine`: 浏览器当前是否连接到网络
+- `geolocation`: `Geolocation`对象定义用于确定用户地理位置信息的接口
+- `javaEnabled()`: 非标准方法，当浏览器可以运行`java`小程序时返回`true`
+- `cookieEnable()`: 非标准方法，如果浏览器可以保存永久`cookie`时，返回`true`
+
+### `Screen`对象
+`window`对象的`screen`属性引用的是`Screen`对象，它提供有关窗口显示的大小和可用的颜色数量的信息
+- `width/height`: 以像素为单位的窗口大小
+- `availWidth/availHight`: 实际可用的显示大小，排除了像桌面任务栏这样的特性所占用的空间
+- `colorDepth`: 显示的是`BPP`(`bits-per-pixel`)值
