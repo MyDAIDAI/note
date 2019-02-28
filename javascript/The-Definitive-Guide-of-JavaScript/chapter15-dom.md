@@ -239,3 +239,30 @@ if (!document.documentElement.children) {
   })
 }
 ```
+
+## 属性
+`HTML`元素由一个标签和一组称为属性的名/值对组成。`HTML`元素的属性值在代表这些元素的`HTMLElement`对象的属性中是可用的，除此之外，`DOM`还定义了另外的`API`来获取或设置`XML`属性值和非标准的`HTML`属性
+
+### `HTML`属性作为`Element`的属性
+`HTMLElement`定义了通用的`HTML`属性（如`id`等），以及事件处理程序属性，并且还为特定的`Element`子类型元素定义了特定的属性
+
+`HTML`属性名不区分大小写，但是在`javascript`中对大小写敏感。从`HTML`属性名转换到`javascript`属性名需要采用小写形式，如果属性名包含的不止一个单词，那么需要使用驼峰
+
+有的`HTML`属性名在`javascript`中为保留字，对于这些属性，一般的规则是为属性名加前缀`html`，但`class`在`javascript`中为`className`
+
+`HTML`属性的值通常是字符串，也会是布尔值、数值或者函数等。任何`HTML`元素的`style`属性的值为`CSSStyleDeclaration`对象
+
+### 获取和设置非标准`HTML`属性
+`Element`类型还定义了`getAttribute()`和`setAttribute()`方法来查询和设置非标准的`HTML`属性，也可以用来查询和设置`XML`文档中元素上的属性。除此之外，还有`hasAttribute()`和`removeAttribute()`
+
+如果操作包含来自其他命名空间中属性的`XML`文档，可以使用其命名空间版本: `getAttributeNS()`、`setAttributeNS()`、`hasAttributeNS()`、`removeAttributeNS()`
+
+### 数据集属性
+在`HTML 5`文档中，任意以`data-`为前缀的小写的属性名字都是合法的，这些“数据集属性”将不会对其元素的表现产生影响。
+
+`HTML 5`还在`Element`对象上定义了`dataset`属性，这个属性指代一个对象，它的各个属性对应于去掉前缀的`data-`属性
+
+> `dataset`属性是元素的`data-`属性的实时，双向接口，设置或删除`dataset`的一个属性就等同于设置或移除对应元素的`data-`属性
+
+### 作为`Attr`节点的属性
+`Node`类型定义了`attributes`属性，针对非`Element`对象的任何节点，返回`null`。对于`Element`对象，`attributes`属性是只读的类数组对象，并且是实时的。它可以使用索引进行访问，也可以使用属性名进行访问
