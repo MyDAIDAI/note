@@ -122,3 +122,120 @@ document.all['navbar'] // id 或 name 为 "navbar" 的元素或多个元素
 document.all.tags("div") // 文档中所有的 <div> 元素
 document.all.tags("p")[0] // 文档中的第一个 <p> 元素
 ```
+
+## 文档结构和遍历
+从文档中选取了一个元素，有时候需要查找文档中与之在结构上相关的部分（父亲、兄弟和子女）
+
+### 作为节点树的文档
+`Document`对象，它的`Element`对象和文档中表示文本的`Text`对象都是`Node`对象，`Node`对象定义了以下一些属性：
+- `parentNode`: 该节点的父节点
+- `childNodes`: 只读的类数组对象，它是该节点的子节点的实时表示
+- `firstChild`、`lastChild`: 该节点的子节点中的第一个和最后一个，如果该节点没有子节点则为`null`
+- `nextSibling`、`previousSibling`: 该节点的兄弟节点中的前一个和下一个，具有相同父节点的两个节点为兄弟节点。节点的顺序反映了它们在文档中出现的顺序。这两个属性将节点之间以双向链表的形式连接起来
+- `nodeType`: 该节点的类型
+  - `9` -> `Document`节点
+  - `1` -> `Element`节点
+  - `3` -> `Text`节点
+  - `8` -> `Comment`节点
+  - `11` -> `DocumentFragment`节点
+- `nodeValue`: `Text`节点或者`Comment`节点的内容
+- `nodeName`: 元素的标签名，以大小的形式表示
+
+### 作为元素树的文档
+如果只注意文档中的元素而非它们之间的文本（`Text`和`Comment`）时，可以使用下面这些更有用的`API`，这些`API`将文档看作是`Element`对象树，忽略`Text`和`Comment`节点，下面是`Element`对象的一些属性：
+- `children`: 类似`childNodes`，也是一个`NodeList`对象，但`children`列表只包含`Element`对象
+- `firstElementChild`、`lastElementChild`: 类似`firstChild`和`lastChild`，但只代表子`Element`节点
+- `nextElementSibling`、`previousElementSibling`: 类似`nextSibling`和`previousSibling`，但只代表兄弟`Element`
+- `childElementCount`: 子元素数量。返回的值和`children.length`值相等
+
+```javascript
+// 返回元素e的第n层祖先元素，如果不存在此类祖先元素或祖先元素不是 Element，则返回null
+function parent(e, n){
+  if (n === undefined) n = 1
+  while(n-- && e) e = e.parentNode
+  if (!e || e.nodeType !== 1) return null
+  return e
+}
+
+// 返回元素 e 的第 n 个兄弟元素
+// 如果 n 为正，则返回后续的第 n 个兄弟元素
+// 如果 n 为负，则返回前面的第 n 个兄弟元素
+// 如果 n 为零，则返回 e 本身
+function sibling(e, n) {
+  while(e && n !== 0) {
+    if (n > 0) {
+      if (e.nextElementSibling) {
+        e = e.nextElementSibling
+      } else {
+        for (e = e.nextSibling; e && e.nodeType !== 1; e = e.nextSibling); // 一直循环到 Element元素
+      }
+      n--;
+    } else {
+      if (e.previousElementSibling) {
+        e = e.previousElementSibling
+      } else {
+        for (e = e.previousSibling; e && e.nodeType !== 1; e = e.previousSibling);
+      }
+    }
+  }
+  return e
+}
+
+// 返回元素 e 的第 n 代子元素，不存在则返回 null
+// 负值则为从后往前计数，0代表第一个子元素
+function child(e, n) {
+  if (e.children) {
+    if (n < 0) n += e.children.length
+    if (n < 0) return null
+    return e.children[n]
+  }
+  if (n > 0) {
+    // 获得第一个元素，然后获取其兄弟元素
+    if (e.firstElementChild) {
+        e = e.firstElementChild
+    } else {
+        for (e = firstChild; e && e.nodeType !== 1; e = nextSibling);
+    }
+    return sibling(e, n)
+  } else {
+    // 获得最后一个元素，然后获取前 n - 1 个元素
+    if (e.lastElementChild) {
+        e = e.lastElementChild
+    } else {
+        for (e = e.lastChild; e && e.nodeType !== 1; e = e.previousSibling);
+    }
+    return sibling(e, n + 1)
+  }
+}
+```
+
+#### 自定义`Element`的方法
+所有当前的浏览器都实现了`DOM`，故类似`Element`和`HTMLDocument`等类型都像`String`和`Array`一样是类。它们不是构造函数，但它们有原型对象，可以用自定义方法进行拓展
+
+```javascript
+// 打开 baidu 首页以及控制台
+document.getElementById('lg') // <div id=​"lg">​…​</div>​
+document.getElementById('lg').next // undefined
+
+Element.prototype.next = function () {
+	if (this.nextElementSibling) return this.nextElementSibling
+	for (var sib = this.nextSibling; sib && sib.nodeType !== 1; sib = sib.nextSibling);
+	return sib
+}
+document.getElementById('lg').next() 
+//<a href=​"/​" id=​"result_logo" onmousedown=​"return c({'fm':​'tab','tab':​'logo'}​)​">​…​</a>​
+```
+上面的技术在`IE7`中不支持，除此之外，可以将`IE`中的`children`属性在其他不支持的浏览器中进行模拟使用
+```javascript
+if (!document.documentElement.children) {
+  Element.prototype.__defineGetter__("children", function () {
+    var kids = []
+    for (var c = this.firstChild; c !== null; c = c.nextSibling) {
+      if (c.nodeType === 1) {
+        kids.push(c)
+      }
+    }
+    return kids
+  })
+}
+```
