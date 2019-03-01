@@ -266,3 +266,45 @@ if (!document.documentElement.children) {
 
 ### 作为`Attr`节点的属性
 `Node`类型定义了`attributes`属性，针对非`Element`对象的任何节点，返回`null`。对于`Element`对象，`attributes`属性是只读的类数组对象，并且是实时的。它可以使用索引进行访问，也可以使用属性名进行访问
+
+## 元素的内容
+现在有一个标签`<p>This is a <i>simple</i> document</p>`，里面的的内容分为三种：
+- 内容是`HTML`字符串`This is a <i>simple</i> document`
+- 内容是存文本字符串 `This is a simple document`
+- 内容是一个`Text`节点、一个包含了一个`Text`节点的`Element`节点和另一个`Text`节点
+
+### 作为`HTML`的元素内容
+读取`Element`的`innerHTML`属性将作为字符串标记返回那个元素的内容。设置改属性会调用`web`浏览器的解析器，用新字符串内容的解析展现形式替换元素当前内容（也可以在`XML`中使用）
+
+`Web`浏览器设置`innerHTML`的效率非常高，但对`innerHTML`属性用`+=`操作符重复追加文本通常效率底下，因为它既要序列化又要解析
+
+除了`innerHTML`属性之外，`HTML5`还标准化了`outerHTML`属性，当查询`outerHTML`时，返回的`HTML`或`XML`标记的字符串包含被查询元素的开头和结尾标签。当设置元素的`outerHTML`时，元素本身被新的内容替换（只有`Element`元素定义了`outerHTML`属性，`Document`节点则无）
+
+### 作为纯文本的元素内容
+有时需要查询文本形式的元素内容，或者在文档中插入纯文本（不用转义`HTML`标记中使用的尖括号和`&`符号），可以使用`Node`的`textContent`来实现
+
+`textContent`属性在除了`IE`的所有当前的浏览器中都支持。在`IE`中，可以用`Element`的`innerText`属性来代替。`textContent`与`innerText`属性非常相似，通常可以替换使用
+
+#### `<script>`中的文本
+内联的`<script>`元素（也就是没有`src`属性的）有一个`text`属性来获取它们的文本。浏览器不显示`<script>`元素的内容，并且`HTML`解析器忽略脚本中的尖括号和星号。这使得`<script>`元素成为应用程序用来嵌入任意文本内容的一个理想地方。简单地将元素的`type`属性设置为某些值（如`text/x-custom-data`），就表明了脚本为不可执行的`javascript`代码，`js`解释器将忽略该脚本，但该元素将仍然存在于文档树中，它的`text`属性将返回数据给你
+
+### 作为`Text`节点的元素内容
+另一种方法处理元素的内容是来当作一个子节点列表，每个子节点可能有它自己的一组子节点。当考虑元素的内容时，通常感兴趣的是它的`Text`节点。在`XML`文档中，还有`CDATASection`节点
+```javascript
+// 返回元素e的纯文本内容，递归进入其子元素
+// 类似于 Element 的 textContent 属性
+
+function textContent(e) {
+  var child, type, s = ''
+  for (child = e.firstChild; child !== null; child = child.nextSibling) {
+    type = child.nodeType
+    if (type === 3 || type === 3) {
+      s += child.nodeValue
+    } else if (type === 1) {
+      s += textContent(child)
+    }
+  }
+  return s
+}
+```
+`nodeValue`属性定义在`Node`类型中，它保存`Text`或`CDATASection`节点的内容（其他节点调用返回`null`），可以读/写，设置它可以改变`Text`或`CDATASection`节点所显示的内容
