@@ -281,7 +281,7 @@ if (!document.documentElement.children) {
 除了`innerHTML`属性之外，`HTML5`还标准化了`outerHTML`属性，当查询`outerHTML`时，返回的`HTML`或`XML`标记的字符串包含被查询元素的开头和结尾标签。当设置元素的`outerHTML`时，元素本身被新的内容替换（只有`Element`元素定义了`outerHTML`属性，`Document`节点则无）
 
 ### 作为纯文本的元素内容
-有时需要查询文本形式的元素内容，或者在文档中插入纯文本（不用转义`HTML`标记中使用的尖括号和`&`符号），可以使用`Node`的`textContent`来实现
+有时需要查询文本形式的元素内容，或者在文档中插入纯文本（不用转义`HTML`标记中使用的尖括号和`&`符号），可以使用`Node`的`textContent`来实现，`textContent`属性会返回后代节点中所有的文本所拼接的字符串
 
 `textContent`属性在除了`IE`的所有当前的浏览器中都支持。在`IE`中，可以用`Element`的`innerText`属性来代替。`textContent`与`innerText`属性非常相似，通常可以替换使用
 
@@ -308,3 +308,37 @@ function textContent(e) {
 }
 ```
 `nodeValue`属性定义在`Node`类型中，它保存`Text`或`CDATASection`节点的内容（其他节点调用返回`null`），可以读/写，设置它可以改变`Text`或`CDATASection`节点所显示的内容
+
+## 创建、插入和删除节点
+`Document`类型定义了创建`Element`和`Text`对象的方法，`Node`类型定义了在节点树种插入、删除和替换的方法
+
+## 创建节点
+- 创建`Element`节点，`document.createElement()`，传递标签名
+- 创建`Text`节点，`document.createTextNode()`，传递文本内容
+- 创建`Comment`节点，`document.createComment()`
+- 创建`Fragment`，`document.createDocumentFragment()`
+- 复制已存在的节点，`cloneNode()`，返回该节点的一个全新副本，传入`true`为深复制，传入`false`为浅复制
+
+### 插入节点
+可以使用`Node`的方法`appendChild()`或`insertBefore()`将它插入到文档中
+- `appendChild()`，在需要插入的`Element`节点上调用，它插入指定的节点使其成为那个节点的最后一个子节点
+- `insertBefore()`，接受两个参数，第一个参数为待插入的节点，第二个参数是已存在的节点，新节点将插入到该节点的前面
+
+> 如果调用`appendChild()`或`insertBefore()`将已存在文档中的一个节点再次插入，那个节点将自动从它当前的位置删除并在新的位置重新插入，没有必要显式删除该节点
+
+### 删除和替换节点
+- 删除节点，`removeChild()`，`n.parentNode.removeChild(n)`
+- 替换节点，`replaceChild()`，第一个参数是新节点，第二个参数是需要代替的节点
+
+### 使用`DocumentFragment`
+`DocumentFragment`是一种特殊的`Node`，它作为其他节点的一个临时容器。与`Document`节点一样，`DocumentFragment`是独立的，而不是任何其他文档的一部分，它的`parentNode`为空，但可以有任意多的子节点，可以使用`appendChild()`、`removeChild()`等方法来进行操作
+
+`DocumentFragment`的特殊之处在于它使得一组节点被当作一个节点来看待：如果给`appendChild`、`insertBefore`或`replaceChild`传递一个`DocumentFragment`，其实是将该文档片段的所有子节点插入到文档中，而非片段本身
+```javascript
+// 将 n 中的元素反转
+function reverse(n) {
+  var f = document.createDocumentFragment()
+  while(n.lastChild) f.appendChild(n.lastChild)
+  n.appendChild(f)
+}
+```
