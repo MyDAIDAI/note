@@ -342,3 +342,66 @@ function reverse(n) {
   n.appendChild(f)
 }
 ```
+
+## 文档和元素的几何形状和滚动
+
+### 文档坐标和视口坐标
+元素的位置是以像素来度量的，向右代表`X`坐标的增加，向下代表`Y`坐标的增加。但是，会有两个不同的点作为坐标系的原点：元素的`X`和`Y`坐标可以相对与文档的左上角或者相对于显示文档的视口的左上角
+
+文档坐标比视口坐标更加基础，并且在用户滚动的时候它们不会发生变化。在使用`CSS`来指定元素位置的时候运用的是文档坐标。但一般查询元素位置时，返回的是其相对视口坐标的位置
+
+为了在坐标系之间互相转换，需要判断浏览器窗口滚动距离，也就是滚动条的位置。
+- `winodw.pageXOffset`、`window.pageYOffset` (只读)
+- `document.documentElement.scrollTop`、`document.documentElement.scrollLeft`(正常模式下，可写)
+- `document.body.scrollTop`、`document.body.scrollLeft`(怪异模式下，可写)
+
+```javascript
+// 查询窗口滚动条的位置
+function getScrollOffsets(w) {
+  // 使用指定的窗口，如果不带参数则使用当前窗口
+  w = w || window
+  if (w.pageXOffset !== null) {
+    return {
+      x: w.pageXOffset,
+      y: w.pageYOffset
+    }
+  }
+  var d = w.document
+  // 标准模式下的IE
+  if (document.compatMode === 'CSS1Compat') {
+    return {
+      x: d.documentElement.scrollLeft,
+      y: d.documentElement.scrollTop
+    }
+  }
+  // 怪异模式下的浏览器
+  return {
+    x: d.body.scrollLeft,
+    y: d.body.scrollTop
+  }
+}
+```
+
+获取视口的尺寸
+```javascript
+function getViewportSize (w) {
+  w = w || window
+  if (w.innerWidth !== null) {
+    return {
+      w: w.innerWidth,
+      h: w.innerHeight
+    }
+  }
+  var d = w.document
+  if (document.compatMode === 'CSS1Compat') {
+    return {
+      w: w.documentElement.clientWidth,
+      h: w.documentElement.clientHeight
+    }
+  }
+  return {
+    w: w.body.clientWidth
+    h: w.body.clientHeight
+  }
+}
+```
