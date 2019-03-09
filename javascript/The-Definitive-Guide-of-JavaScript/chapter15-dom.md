@@ -405,3 +405,21 @@ function getViewportSize (w) {
   }
 }
 ```
+
+### 查询元素的几何尺寸
+判断一个元素的尺寸和位置最简单的办法就是调用它的`getBoundingClientRect()`方法。该方法不需要参数，返回一个有`left`、`right`、`top`、`bottom`属性的对象，返回的坐标包含元素的内边距和边框，但是不包含外边距。这个方法返回元素在视口坐标中的位置。为了转化为元素在文档中的位置，需要加上滚动的偏移量：
+```javascript
+var box = e.getBoundingClientRect() // 视口坐标
+var offsets = getScrollOffsets()
+var x = offsets.x + box.left // 文档坐标
+var y = offsets.y + box.top
+```
+`getBoundingClientRect()`返回的对象还包含`width`和`height`属性，但在原始的`IE`中并没有实现，可以通过其他属性值进行计算
+```javascript
+var box = e.getBoundingClientRect()
+var width = box.width || (box.right - box.left)
+var height = box.height || (box.bottom - box.top)
+```
+> 需要注意的是，浏览器在布局时，块状元素总是为矩形，但是内联元素可能跨了多个文档，因此可能有多个矩形组成。如果在内联元素上调用`getBoundingClientRect()`，它返回"边界矩形", 如果想查询内联元素每个独立的矩形，可以使用`getClientRects()`
+
+最后需要注意的是，`getBoundingClientRect`和`getClientRects`并不是实时的，它们只是调用方法时文档视觉状态的静态快照，在用户滚动或者改变浏览器窗口大小的时候并不会进行更新
