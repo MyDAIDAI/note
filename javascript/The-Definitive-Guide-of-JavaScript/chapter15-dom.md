@@ -423,3 +423,61 @@ var height = box.height || (box.bottom - box.top)
 > 需要注意的是，浏览器在布局时，块状元素总是为矩形，但是内联元素可能跨了多个文档，因此可能有多个矩形组成。如果在内联元素上调用`getBoundingClientRect()`，它返回"边界矩形", 如果想查询内联元素每个独立的矩形，可以使用`getClientRects()`
 
 最后需要注意的是，`getBoundingClientRect`和`getClientRects`并不是实时的，它们只是调用方法时文档视觉状态的静态快照，在用户滚动或者改变浏览器窗口大小的时候并不会进行更新
+
+### 判定元素在某点
+`getBoundingClientRect()`方法使我们能在视口中判定元素的位置。但有时我们想要判断视口中某一个位置上有什么元素，这可以用`Document`对象的`elementFromPoint()`方法来进行判定。传递`X`和`Y`坐标（视口坐标），该方法返回在指定位置的一个元素。如果指定的点在视口以外，则返回`null`
+
+### 滚动
+可以设置`scrollLeft`以及`scrollTop`属性来让浏览器滚动，但还有一种更简单的方法，`Window`对象的`scrollTo()`方法，接受一个点的`X`和`Y`坐标（文档坐标），并作为滚动条的偏移量设置它们。也就是，窗口滚动到文档坐标中指定的点到视口的左上角。
+```javascript
+// 滚动浏览器到文档最下面的页面可见
+var documentHeight = document.documentElement.offsetHeight
+var viewportHeight = window.innerHeight
+window.scrollTo(0, documentHeight - viewportHeight)
+```
+`Window`的`scrollBy()`方法和`scroll()`和`scrollTo()`类似，但它的参数是相对的，并在当前滚动条的偏移量上增加。除此之外，还可以在需要显示的`HTML`元素上调用`scrollIntoView()`方法，此方法保证了元素能在视口中可见
+
+### 关于元素尺寸、位置和溢出的更多信息
+`getBoundingClientRect()`方法在当前的所有浏览器上都有定义，但如果需要支持老式浏览器，不能够依靠此方法而必须使用更老的技术来判断元素的尺寸和位置
+
+获得元素尺寸:
+- `offsetHeight`，返回尺寸包含元素的内边距和边框，不包含外边距
+- `offsetWidth`，返回尺寸包含元素的内边距和边框，不包含外边距
+
+获得元素坐标，对于很多元素，这些值是文档坐标，并直接指定元素的位置。但对于已定位元素的后代元素和一些其他元素，这些属性返回的坐标是相对于祖先元素的坐标而非文档:
+- `offsetLeft`
+- `offsetTop`
+
+可以通过`offsetParent`属性指定这些属性所相对的父元素，如果`offsetParent`为`null`，这些属性就为文档坐标
+```javascript
+// 计算一个元素的文档坐标，有两种方式
+// 第一种，使用 getBoundingClientRect + document.documentElement.clientHight
+// 第二种，循环获得父元素 offsetLeft 与 offsetTop
+function getElementPosition(e) {
+  var x = 0, y = 0
+  while(e !== null) {
+    x += e.offsetLeft
+    y += e.offsetTop
+    e = e.offsetParent
+  }
+  return {
+    x: x,
+    y: y
+  }
+}
+```
+除了这些名字以`offset`开头的属性之外，所有的文档元素定义了其他两组属性，一组以`client`开头，一组以`scroll`开头
+```javascript
+offsetHeight        clientWidth         scrollWidth
+offsetWidth         clientHeight        scrollHeight
+offsetLeft          clientLeft          scrollLeft
+offsetTop           clientTop           scrollTop
+offsetParent
+```
+- `offsetHeight`,`offsetWidht`:  `content + pad + border`
+- `clientHeight`,`clientWidth`: `content + pad`
+- `scrollHeight`,`scrollWidth`: `content + pad + overContent`
+
+- `offsetLeft`,`offsetTop`: 相对父元素或文档坐标
+- `clientLeft`,`clientTop`: 通常等于左边和上边的边框宽度
+- `scrollLeft`,`scrollTop`: 指定元素的滚动条的位置（可写）
