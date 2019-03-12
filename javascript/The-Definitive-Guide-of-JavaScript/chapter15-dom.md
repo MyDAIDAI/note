@@ -481,3 +481,50 @@ offsetParent
 - `offsetLeft`,`offsetTop`: 相对父元素或文档坐标
 - `clientLeft`,`clientTop`: 通常等于左边和上边的边框宽度
 - `scrollLeft`,`scrollTop`: 指定元素的滚动条的位置（可写）
+
+## 其他文档特性
+### `Document`的属性
+下面介绍一些`document`的属性：
+- `cookie`: 允许`javascript`程序读写`HTTP cookie`的特殊属性
+- `domain`: 该属性允许当`web`页面之间交互时，相同域名下互相信任的`web`服务器之间协作放宽同源策略安全限制
+- `lastModified`: 文档修改时间的字符串
+- `location`: 与`window`对象的`location`属性引用同一个`Location`对象
+- `referrer`: 如果有，它表示浏览器导航到当前链接的上一个文档。该属性值和`HTTP`的`Referer`头信息的内容相同
+- `title`: 文档的`<title>`和`</title>`标签之间的内容
+- `URL`: 文档的`URL`,只读字符串而不是`Location`对象
+
+### 查询选取的文本
+有时判定用户在文档中选取了那些文本非常有用
+```javascript
+function getSelectedText() {
+  if (window.getSelection) { // HTML5标准 API
+    return window.getSelection().toString()
+  } else if (document.selection) {
+    return document.selection.createRange().text
+  }
+}
+```
+需要注意的是,`Window`对象的`getSelection()`方法无法返回那些表单元素`<input>`或`<textarea>`内部选中的文本，它只返回在文档主体本身中选取的文本。但是,`IE`的`document.selection`属性可以返回文档中任意地方选取的文本,从文本输入域或`<textarea>`元素中获取选取的文本可以使用下面的代码：`elt.value.substring(elt.selectionStart, elt.selectionEnd)`
+
+### 可编辑的内容
+有两种方法可以启用元素的编辑功能：
+- 设置任何标签的`HTML contenteditable`属性
+- 设置对应元素的`JavaScript contenteditable`属性
+上面两种方法将使得元素的内容变成可编辑。当用户单击该元素的内容的时候就会出现插入光标，用户敲击键盘就可以插入其中
+
+浏览器可能为表单字段和`contenteditable`元素支持自动拼写检查。在支持该功能的浏览器中，检测可能默认开启或关闭。为元素添加`spellcheck`属性来显式开启拼写检查，而使用`spellcheck=false`来显式关闭该功能
+
+将`Document`对象的`designMode`属性设置为字符串`on`使得整个文档可编辑，设置为`off`将恢复为只读文档。`designMode`属性并没有对应的`HTML`属性，只能使用`js`进行添加
+```javascript
+const mode = document.designMode;
+document.designMode = "on";
+​document.designMode = "off";
+```
+浏览器定义了多项文本编辑命令，大部分没有键盘快捷键。为了执行这些命令，可以使用`document`的`execCommand()`方法，该方法的第一个参数为命令字符串，第二个参数如果为`true`，则浏览器会自动提示用户输入所需值。但为了提高可移植性，应该提示用户输入，并传递`false`作为第二个参数，传递用户输入的值作为第三个参数。下面有一些命令有关的方法：
+- `document.queryCommandSupport()`: 传递命令来查询浏览器是否支持该命令
+- `document.queryCommandEnabled()`: 查询当前所使用的命令
+- `document.queryCommandState()`: 判断命令当前是否可以使用
+- `document.queryCommandValue()`: 查询命令值
+- `document.queryCommandIndeterm()`: 检测命令值是否为不确定的
+
+一旦用户编辑了某元素的内容，该元素设置了`conteneditable`属性，就可以使用`innerHTML`属性得到已编辑内容的`HTML`标记
