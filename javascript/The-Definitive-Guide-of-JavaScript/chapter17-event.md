@@ -42,7 +42,7 @@
 - `mousewheel`事件，用户滚动鼠标滚轮时触发
 
 下面是`mouseout`与`mouseleave`的区别：
-![`mouseout`与`mouseleave`区别](https://github.com/MyDAIDAI/note/tree/master/javascript/The-Definitive-Guide-of-JavaScript/mouse.png)
+![`mouseout`与`mouseleave`区别](https://github.com/MyDAIDAI/note/blob/master/javascript/The-Definitive-Guide-of-JavaScript/mouse.png)
 
 ##### 键盘事件
 无论任何文档元素获取键盘焦点都会触发键盘事件，并且会冒泡到`Document`和`Window`对象
