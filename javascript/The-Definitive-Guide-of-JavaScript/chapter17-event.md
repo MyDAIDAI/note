@@ -18,7 +18,7 @@
 
 需要注意的时，`focus`与`blur`事件不会冒泡，但其他表单事件都可以。可以使用`focusin`和`focusout`事件来模拟这两个事件，这两个事件可以进行冒泡
 
-##### `Window`对象
+##### `Window`事件
 `window`事件是指事件的发生与浏览器窗口本身而非窗口中显示的任何特定文档内容相关
 - `load`事件，当文档和其所有的外部资源完全加载并显示给用户时就会进行触发
 - `unload`事件，当用户离开当前文档转向其他文档时会触发它
@@ -48,3 +48,64 @@
 无论任何文档元素获取键盘焦点都会触发键盘事件，并且会冒泡到`Document`和`Window`对象
 - `keydown`与`keyup`，按下或释放案件触发
 - `keypress`，在`keydown`与`keyup`之间触发，当按下键重复产生字符时，在`keyup`事件之前会产生很多`keypress`事件，其事件对象指定产生的字符而非按下的键
+
+### `HTML5`事件
+`HTML5`中新定义的事件包含`<audio>`以及`<vedio>`事件，拖拽相关事件，历史管理事件以及对离线`web`事件等的支持
+
+### 触摸屏和移动设备事件
+移动设备建立了许多事件，比如旋转设备时产生的`orientationchange`事件，手势事件`gesturestart`、`gesturechange`...以及触摸事件`touchstart`、`touchmove`、`touchend`事件等
+
+## 注册事件处理程序
+注册事件处理程序有两种基本方式：
+- 给事件目标元素或文档元素设置属性
+- 将事件处理程序传递给对象或元素的方法`addEventListener`
+
+### 设置`javascript`对象属性为事件处理程序
+注册事件处理程序最简单的方式就是通过设置事件目标的属性为所需事件处理程序函数。事件处理程序属性的名字由`on`后面跟随事件名所组成:`onclick`、`onchange`、`onload`等
+```javascript
+window.onload = function () {
+  var elt = document.getElementById('elt')
+  elt.onsubmit = function () {}
+}
+```
+这种事件处理程序注册技术适用于所有浏览器的所有常用类型，但缺点是每个事件目标的每种事件只能注册一个事件处理程序，后面的处理程序会覆盖前面的
+
+### 设置`HTML`标签属性为事件处理程序
+可以在`HTML`标签中为元素设置属性来添加事件处理程序，其属性值应该是`javascript`代码字符串，这段代码应该是事件处理程序函数的主体，而非完整的函数声明。也就是说，`HTML`事件处理程序代码不应该用大括号包围且使用`function`关键字作为前缀
+```html
+<button onclick="alert('click button')">确定</button>
+```
+如果`HTML`事件处理程序属性包含多条`javascript`语句，需要使用分号分隔这些语句或断开属性值使其跨多行。这种方式应该避免使用
+
+### `addEventListener()`
+任何能成为事件目标的对象，包括`window`对象、`document`对象和所有的文档元素都定义了一个`addEventListener()`方法，使用这个方法可以为事件目标注册事件处理程序，参数分别为：
+- 第一个参数，要注册处理程序的事件类型
+- 第二个参数，当指定类型的事件发生时应该调用的函数
+- 第三个参数，布尔值，`false`为冒泡阶段调用，`true`为捕获阶段调用
+下面是一个简单的例子：
+```javascript
+var b = document.getElementById("mybutton")
+b.onclick = function () { alert("thanks for clicking me") }
+b.addEventListener("click", function () { alert('thanks again') }, false)
+```
+用`click`作为第一个参数调用`addEventListener()`不会影响`onclick`属性的值，上面对`click`事件使用不同的方式注册的事件处理程序在事件发生时会按照注册顺序进行调用
+
+可以使用`removeEventListener()`方法来删除添加在事件上的事件处理程序，参数与`addEventListener`相同
+
+### `attachEvent`
+在`IE9`之前的`IE`不支持`addEventListener()`和`removeEventListener()`方法，可以使用`attachEvent()`与`detachEvent()`方法来进行添加与删除，这个方法的工作原理与`addEventListener`类似，但也有一些不同之处：
+- `IE`事件不支持事件捕获，所以其方法只有两个参数
+- `IE`的事件注册时事件类型需要添加`on`字符
+
+```javascript
+// 注册事件兼容
+var b = document.getElementById("mybutton")
+var handler = function () {
+  alert('thank')
+}
+if (b.addEventListener) {
+  b.addEventListener('click', handler, false)
+} else {
+  b.attachEvent('onclick', handler)
+}
+```
