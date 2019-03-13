@@ -166,7 +166,50 @@ function(event) {
 
 取消事件传播：
 
-在支持`addEventListener`的浏览器中，可以调用事件对象的一个`stopPropagation()`方法来阻止事件的继续传播。该方法可以在事件传播期间的任何时间调用，它能工作在捕获阶段，处于目标阶段以及冒泡阶段。该方法调用之后，阻止了事件的传播，任何其他对象的该事件处理程序将不会被调用，但同一个对象上所定义的其他事件处理程序，在事件发生时仍会被调用
+在支持`addEventListener`的浏览器中，可以调用事件对象的一个`stopPropagation()`方法来阻止事件的继续传播。该方法可以在事件传播期间的任何时间调用，它能工作在捕获阶段，处于目标阶段以及冒泡阶段。该方法调用之后，阻止了事件的传播，任何冒泡或捕获阶段的对象的该事件处理程序将不会被调用，但同一个对象上所定义的同一种事件类型的事件处理程序，在事件发生时仍会被调用
 
-除此之外，`DOM`中还定义了一个`stopImmediatePropagation`方法，该方法不仅会阻止事件的传播，也会阻止在相同对象上注册的其他事件处理程序的调用
+除此之外，`DOM`中还定义了一个`stopImmediatePropagation`方法，该方法不仅会阻止事件的传播，也会阻止在同一个对象上注册的相同类型的事件的处理程序的调用
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            p { height: 30px; width: 150px; background-color: #ccf; }
+            div {height: 30px; width: 150px; background-color: #cfc; }
+        </style>
+    </head>
+    <body>
+        <div>
+            <p>paragraph</p>
+        </div>
+        <script>
+            const p = document.querySelector('p')
+            p.addEventListener("click", (event) => {
+              alert("我是p元素上被绑定的第一个监听函数");
+            }, false);
+
+            p.addEventListener("click", (event) => {
+              alert("我是p元素上被绑定的第二个监听函数");
+              event.stopImmediatePropagation();
+              // event.stopPropagation();
+              // 执行stopImmediatePropagation方法,阻止click事件冒泡,并且阻止p元素上绑定的其他click事件的事件监听函数的执行.
+            }, false);
+
+            p.addEventListener("click",(event) => {
+              alert("我是p元素上被绑定的第三个监听函数");
+              // 调用stopImmediatePropagation方法时，该监听函数排在上个函数后面，该函数不会被执行
+              // 调用stopPropagation方法时，该函数仍会被执行
+            }, false);
+            p.addEventListener("mouseout", (event) => {
+                alert("我是p元素的 mouseout 事件")
+                // 该监听函数一直会执行
+            })
+            document.querySelector("div").addEventListener("click", (event) => {
+              alert("我是div元素,我是p元素的上层元素");
+              // p元素的click事件没有向上冒泡，该函数不会被执行
+            }, false);
+        </script>
+    </body>
+</html>
+```
 
