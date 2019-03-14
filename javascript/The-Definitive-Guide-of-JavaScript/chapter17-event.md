@@ -213,3 +213,95 @@ function(event) {
 </html>
 ```
 
+## 文档加载事件
+后续添加...
+
+## 鼠标事件
+鼠标事件的种类很多，除了`mouseenter`与`mouseleave`之外的所有鼠标事件都能冒泡，下面是一些鼠标类型
+- `click`, 当用户按下并释放鼠标按键或其他方式“激活”元素时触发，该事件在`mousedown`与`mouseup`之后触发
+- `contextmenu`, 可以取消的事件，当上下文菜单即将出现时触发。当前浏览器在鼠标右击时显示上下文菜单，所以这个事件也能像`click`事件那样使用
+- `dbclick`, 当用户双击鼠标时触发
+- `mousedown`, 当用户按下鼠标按键时触发
+- `mouseup`, 当用户释放鼠标按键时触发
+- `mousemove`, 当用户移动鼠标时触发
+- `mouseover`, 当鼠标进入元素时触发，`relatedTarget`指的是鼠标来自的元素
+- `mouseout`, 当鼠标离开元素时触发，`relatedTarget`指的是鼠标要去往的元素
+- `mouseenter`, 类似`mouseover`，但不冒泡
+- `mouseleave`, 类似`mouseout`，但不冒泡
+
+```html
+<!-- 这是一个拖拽例子 -->
+<!DOCTYPE html>
+<html>
+    <head>
+      <style>
+        .container {
+          position: absolute;
+          left: 100px;
+          top: 100px;
+          width: 250px;
+          background-color: white;
+          border: 1px solid black;
+          height: 100px;
+        }
+        .drag-ele {
+          background-color: gray;
+          border-bottom: 1px dotted black;
+          padding: 3px;
+          font-weight: bold;
+          height: 50px;
+        }
+      </style>
+    </head>
+    <body>
+        <div class="container">
+          <div class="drag-ele">拖动我</div>
+        </div>
+    </body>
+    <script>
+      document.getElementsByClassName('drag-ele')[0].addEventListener('mousedown', dragHandler)
+
+      function dragHandler (event) {
+        let dragParentEle = event.target.parentNode
+        let scroll = getScrollOffset()
+        let startX = event.clientX + scroll.x
+        let startY = event.clientY + scroll.y
+
+        let originX = dragParentEle.offsetLeft
+        let originY = dragParentEle.offsetTop
+
+        let deltaX = startX - originX
+        let deltaY = startY - originY
+
+        document.addEventListener('mousemove', moveHandler, true)
+        document.addEventListener('mouseup', upHandler, true)
+
+        
+        function moveHandler (event) {
+          let scroll = getScrollOffset()
+          dragParentEle.style.top = event.clientY + scroll.y - deltaY + 'px'
+          dragParentEle.style.left = event.clientX + scroll.x - deltaX + 'px'
+
+          if (event.stopPropagation) {
+            event.stopPropagation()
+          } else {
+            event.cancelBubble = true
+          }
+        }
+
+        function upHandler (event) {
+          document.removeEventListener('mousemove', moveHandler, true)
+          document.removeEventListener('mouseup', upHandler, true)
+        }
+      }
+
+
+      function getScrollOffset () {
+        return {
+          x: window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+          y: window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+        }
+      }
+    </script>
+</html>
+```
