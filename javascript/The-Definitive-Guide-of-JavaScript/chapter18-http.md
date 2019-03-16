@@ -3,7 +3,7 @@
 
 `Ajax`描述了了一种主要使用脚本操纵`HTTP`的`Web`应用架构。`Ajax`应用的主要特点是使用脚本操纵`HTTP`和`Web`服务器进行数据交换，不会导致页面重载。
 
-在某种意义上，`Comet`和`Ajax`相反，在`Comet`中，`Web`服务器发起通信并异步发生消息到客户端，如果`Web`应用需要响应服务端发生的消息，则会使用`Ajax`发送或请求数据。在`Ajax`中，客服端从服务器"拉"数据，而在`Comet`中，服务器向客户端"推"数据
+在某种意义上，`Comet`和`Ajax`相反，在`Comet`中，`Web`服务器发起通信并异步发送消息到客户端，如果`Web`应用需要响应服务端发生的消息，则会使用`Ajax`发送或请求数据。在`Ajax`中，客户端从服务器"拉"数据，而在`Comet`中，服务器向客户端"推"数据
 
 下面是一些常用的请求方式：
 - `<img src="URL">`：在`img`标签中设置`src`属性为`URL`时，浏览器会发起`HTTP`的`GET`请求来下载图片。因此，可以将信息设置为图片`URL`的查询字符串部分，这样就能将信息传输给服务器，服务器会返回某个图片作为请求结构，但它一定要不可见：比如，返回一个`1 x 1`像素的透明图片。这种方法的数据交换是单向的，因为服务器发送回客户端的数据是图片，客户端无法轻易从中提取信息
@@ -142,3 +142,161 @@ function get(url, callback) {
  `web`服务器通常使用二进制数据（图片文件）响应`HTTP`请求，`responseText`属性只能应用于文本，不能解析二进制数据，后面定制了解析二进制响应的办法
 
  服务器响应的正确解码是假设服务器为这个响应设置了`Content-Type`和正确的`MIME`类型，否则数据不能被正确解析，相应的属性也不能得到正确的值。可以在`send`发送之前通过调用`overrideMimeType()`方法来重写其`MIME`类型`request.overrideMimeType('text/plain; charset=utf-8')`
+
+ ### 编码请求主体
+`HTTP POST`请求包括请求主体，它包含客户端传递给服务器的数据，请求主体可能是简单的字符串，可能是表单数据、`JSON`数据、`XML`数据或者文件等.
+
+##### 表单编码的请求
+当用户提交表单时，表单中的数据（每个表单元素的名字和值）编码到一个字符串中并随请求发送。默认情况下，`HTML`表单通过`POST`方法发送给服务器，而编码后的表单数据则作为请求主体发送。对表单数据进行普通的`URL`编码，使用等号把编码后的名字和值分开，并使用`&`分开各个名/值对，比如:
+```javascript
+find=pizza&zipcode=02123&radius=1km
+```
+表单数据编码格式的`MIME`类型为：`application/x-www-form-urlencoded`，使用这种类型发送数据时，还可以发送`javascript`对象，上面的数据也可以使用下面的形式进行发送：
+```javascript
+{
+  find: 'pizza',
+  zipcode: 02134,
+  radius: '1km'
+}
+```
+下面是一个简单的样例
+```javascript
+// 编码发送数据
+function encodeFromData (data) {
+  if (!data) return ''
+  var paris = []
+  if (var name in data) {
+    if (!data.hasOwnProperty(name)) continue // 跳过继承属性
+    if (typeof data[name] === 'function') continue // 跳过方法
+    var value = data[name].toString()
+    name = encodeURIComponent(name.replace("%20", '+'))  // 编码名字
+    value = encodeURIComponent(value.relace("%20", '+'))
+    paris.push(name + '=' + value)
+  }
+  return paris.join('&')
+}
+// 使用 POST 发送数据
+function postData (url, data, callback) {
+  var request = new XMLHttpRequest()
+  request.open('POST', url)
+  request.onreadyStateChange = function () {
+    if (request.readyState === 4 && callback) {
+      callback(request)
+    }
+  }
+  request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+  request.send(encodeFromData(data))
+}
+```
+当表单提交只是为了查询时，可以使用`Get`方法进行提交，将查询参数放在`URL`中
+```javascript
+function getData(url, data, callback) {
+  var request = new XMLHttpRequest()
+  request.open('GET', url + '?' + encodeFromData(data))
+  request.onreadyStateChange = function () {
+    if (request.readyState === 4 && callback) {
+      callback(request)
+    }
+  }
+  request.send(null)
+}
+```
+
+##### `JSON`编码的请求
+使用`MIME`为`application/json`类型，可以发送请求主体为`json`的数据
+```javascript
+function postJSON(url, data, callback) {
+  var request = new XMLHttpRequest()
+  request.open('POST', url)
+  request.onreadyStateChange = function () {
+    if (request.readyState === 4 && callback) {
+      callback(request)
+    }
+  }
+  request.setRequestHeader("Content-Type", "application/json")
+  request.send(JSON.stringify(data))
+}
+```
+
+##### `XML`编码的请求
+`XML`也可以用于数据传输的编码，上面所传输的数据格式用`XML`可以表示为
+```xml
+<query>
+  <find zipcode="02134" radius="1km">
+    pizza
+  </find>
+</query>
+```
+下面将上面的`XML`数据格式使用`POST`方法进行传输
+```javascript
+function postQuery(url, what, where, radius, callback) {
+  var request = new XMLHttpRequest()
+  request.open('GET', url)
+  request.onreadyStateChange = function () {
+    if (request.readyState === 4 && callback) {
+      callback(request)
+    }
+  }
+
+  // 创建xml
+  var doc = document.implementation.createDocument("", "query", null)
+  var query = doc.documentElement
+  var find = doc.createElement("find")
+  query.appendChild(find)
+  find.setAttribute("zipcode", where)
+  find.setAttribute("radius", radius)
+  find.appendChild(doc.createTextNode(what))
+
+  request.send(doc) // 为`send`方法传入xml文档，会自动设置请求头
+}
+```
+
+##### 上传文件
+由于没有`File()`对象构造函数，脚本只能获得表示用户当前选择文件的`file`对象。在支持`File`对象的浏览器中，每个`<input type="file">`元素有一个`files`属性，它是一个类数组对象，获取其中的文件传入`send()`方法即可。在拖拽的`API`中，可以通过拖放事件的`dataTransfer.files`属性获取文件
+```javascript
+var elts = document.getElementByTagName("input")
+for (var i = 0; i < elts.length; i++) {
+  var input = elts[i]
+  if (input.type !== "file") continue
+  var url = input.getAttribute("data-uploadto")
+  if (!url) continue
+
+  input.addEventListener("change", function () {
+    var file = this.files[0]
+    var request = new XMLHttpRequset()
+    if (!file) return 
+    request.open("POST", url)
+    request.send(file)
+  }) 
+}
+```
+在`HTML5`可以使用`Blob`类型来传递文件类型
+
+##### `multipart/form-data`请求
+当`HTML`表单同时包含文件上传元素和其他元素时，浏览器不能使用普通的表单编码而必须使用`multipart/form-data`类型的来进行编码。这种编码包括使用长“边界”字符串把请求主体分离成多个部分
+
+在`XHR2`中定义了`FormData API`，它能够实现多部分请求主体。首先，使用`FormData()`构造函数创建`FormData`对象，然后按需多次调用这个对象的`append()`方法把值添加到请求中。最后，把`FromData`对象传递给`send()`对象即可
+```javascript
+function postFromData(url, data, callback) {
+  if (typeof FormData === "undefined") {
+    throw new Error("FormData is not implemented")
+  }
+  var request = new XMLHttpRequest()
+  request.open("POST", url)
+  request.onreadyStateChange = function () {
+    if (request.readyState === 4 && callback) {
+      callback(request)
+    }
+  }
+  
+  var formData = new FromData
+  for(var name in data) {
+    if (!data.hasOwnProperty(name)) continue
+    var value = data[name]
+    if (typeof value === "function") continue
+    formData.append(name, value)
+  }
+
+  request.send(formData) // send 会自动设置 Content-Type 头
+}
+```
