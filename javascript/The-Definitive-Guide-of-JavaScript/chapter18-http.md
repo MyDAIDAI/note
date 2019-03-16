@@ -179,7 +179,7 @@ function encodeFromData (data) {
 function postData (url, data, callback) {
   var request = new XMLHttpRequest()
   request.open('POST', url)
-  request.onreadyStateChange = function () {
+  request.onreadystatechange = function () {
     if (request.readyState === 4 && callback) {
       callback(request)
     }
@@ -193,7 +193,7 @@ function postData (url, data, callback) {
 function getData(url, data, callback) {
   var request = new XMLHttpRequest()
   request.open('GET', url + '?' + encodeFromData(data))
-  request.onreadyStateChange = function () {
+  request.onreadystatechange = function () {
     if (request.readyState === 4 && callback) {
       callback(request)
     }
@@ -208,7 +208,7 @@ function getData(url, data, callback) {
 function postJSON(url, data, callback) {
   var request = new XMLHttpRequest()
   request.open('POST', url)
-  request.onreadyStateChange = function () {
+  request.onreadystatechange = function () {
     if (request.readyState === 4 && callback) {
       callback(request)
     }
@@ -232,7 +232,7 @@ function postJSON(url, data, callback) {
 function postQuery(url, what, where, radius, callback) {
   var request = new XMLHttpRequest()
   request.open('GET', url)
-  request.onreadyStateChange = function () {
+  request.onreadystatechange = function () {
     if (request.readyState === 4 && callback) {
       callback(request)
     }
@@ -283,7 +283,7 @@ function postFromData(url, data, callback) {
   }
   var request = new XMLHttpRequest()
   request.open("POST", url)
-  request.onreadyStateChange = function () {
+  request.onreadystatechange = function () {
     if (request.readyState === 4 && callback) {
       callback(request)
     }
@@ -300,3 +300,29 @@ function postFromData(url, data, callback) {
   request.send(formData) // send 会自动设置 Content-Type 头
 }
 ```
+
+### `HTTP`进度事件
+在前面的代码中，使用的是`readystatechange`事件来检测`HTTP`请求的完成。在后续的`XHR2`定于了更多的事件集，能够使其`XMLHttpRequest`对象在请求的不同阶段触发不同的事件，也就不需要再检测`readystate`属性了
+
+- `loadstart`: 调用`send()`方法时触发
+- `progress`: 正在加载服务器响应时触发,每个`50ms`左右触发一次。其中有一些属性可以进行使用, `loaded`属性表示目前传输字节数值，`total`属性时`Content-Length`头传输数据的整体长度，如果不知道内容长度则为0, 如果知道内容长度，其`lengthComputable`属性为`true`，否则为`false`
+- `load`: 请求完成
+
+请求完成不一定是一个成功的请求，请求无法完成一般有三种情况：
+- `timeout`: 请求超时
+- `abort`: 请求中止
+- `error`: 请求发生错误
+
+监控响应进度：
+```javascript
+request.onprogress = function (e) {
+  if (e.lengthComputable) {
+    progress.innerHTML = Math.round(100 * e.loaded / e.total) + '% Complete'
+  } 
+}
+```
+
+##### 上传进度事件
+`XHR2`中也给出了用于监控`HTTP`请求上传的事件。在`XMLHttpRequest`中有一个`upload`属性，该属性是一个对象，在该对象有`onprogress`、`onload`等事件来监控上传进度
+
+可以像使用常见的`progress`事件处理程序一样使用`upload`事件处理程序。对于`XMLHttpRequest`对象`x`，设置`x.onprogress`以监控下载进度，设置`x.upload.onprogress`来监控上传进度
