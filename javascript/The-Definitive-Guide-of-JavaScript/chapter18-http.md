@@ -365,3 +365,36 @@ function timedGetText(url, timeout, callback) {
 需要注意的是，`CORS`请求默认不发送`Cookie`和`HTTP`认证信息，如果要把`Cookie`信息发送到服务器，首先要服务器同意，服务器需要指定`Access-Control-Allow-Credentials`字段为`true`，然后需要设置请求头中的`withCredentails`为`true`。并且如果要发送`Cookie`，那么`Access-Controll-Allow-Origin`就不能设置为星号，必须指定明确的、与请求网页一致的域名
 
 详情见[跨域资源共享 CORS 详解](http://www.ruanyifeng.com/blog/2016/04/cors.html)
+
+## 借助`<script>`发送`HTTP`请求：`JSONP`
+设置`<script>`元素的`src`属性，然后浏览器就会发送一个`HTTP`请求以下载`src`属性所指向的`URL`。使用`<script>`元素进行`ajax`传输的一个主要原因是，它不受同源策略的影响，因此可以使用它们从其他的服务器请求数据，第二个元素是所包含的`JSON`的编码数据的响应体会自动进行解码
+
+使用`<script>`响应的数据需要使用函数名和圆括号包裹起来，当浏览器下载完毕后就可以执行其中的代码。在下载之前可以在`src`中指定函数名称，并在下载前进行声明，这样响应的编码数据就可以进行解析执行
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>JSONP 实例</title>
+</head>
+<body>
+    <div id="divCustomers"></div>
+    <script type="text/javascript">
+      // 声明响应返回的函数
+      function callbackFunction(result, methodName)
+        {
+            var html = '<ul>';
+            for(var i = 0; i < result.length; i++)
+            {
+                html += '<li>' + result[i] + '</li>';
+            }
+            html += '</ul>';
+            document.getElementById('divCustomers').innerHTML = html;
+        }
+</script>
+<!--  使用 script 进行跨域，在URL中设置返回的函数名callbackFucntion -->
+<script type="text/javascript" src="http://www.runoob.com/try/ajax/jsonp.php?jsoncallback=callbackFunction"></script>
+</body>
+</html>
+```
