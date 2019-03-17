@@ -326,3 +326,31 @@ request.onprogress = function (e) {
 `XHR2`中也给出了用于监控`HTTP`请求上传的事件。在`XMLHttpRequest`中有一个`upload`属性，该属性是一个对象，在该对象有`onprogress`、`onload`等事件来监控上传进度
 
 可以像使用常见的`progress`事件处理程序一样使用`upload`事件处理程序。对于`XMLHttpRequest`对象`x`，设置`x.onprogress`以监控下载进度，设置`x.upload.onprogress`来监控上传进度
+
+### 中止请求和超时
+可以通过调用`XMLHttpRequest`对象的`abort`方法来中止请求，调用会触发`onabort`事件。调用这个方法的主要原因是完成取消或超时请求消耗的时间或者当响应无关的时候，比如，使用`XMLHttpRequest`为文本输入域请求自动完成推荐。如果用户在服务器的建议到达之前输入了新的字符，那么就中止上一次的请求
+
+`XHR2`定义了`timeout`属性来设置中止的毫秒数，也定义了`timeout`事件用于在请求超时的时候触发
+
+```javascript
+// 在不支持 timeout 属性的浏览器中使用
+
+function timedGetText(url, timeout, callback) {
+  var request = new XMLHttpRequest()
+  request.open('GET', url)
+  var timedout = false
+  var timer = setTimeout(function () {
+    timedout = true
+    request.abort()
+  }, timeout)
+  request.onreadystatechange = function () {
+    if (request.readyState !== 4) return
+    if (timedout) return
+    clearTimeout(timer)
+    if (request.status === 200) {
+      callback(request)
+    }
+  }
+  request.send(null)
+}
+```
