@@ -354,3 +354,14 @@ function timedGetText(url, timeout, callback) {
   request.send(null)
 }
 ```
+
+### 跨域`HTTP`请求
+作为同源策略的一部分，`XMLHttpRequest`对象通常仅可以发起和文档具有相同服务的`HTTP`请求。这个限制关闭了安全漏洞，但也限制了跨域的请求。在`XHR2`中通过在`HTTP`响应中选择发送合适的`CORS`（`Cross-Origin Resource Sharing`，跨域资源共享）允许跨域访问网站。使用这个功能并不需要做什么额外的工作：如果浏览器支持`XMLHttpRequest`的`CORS`且实现跨域请求的网站决定使用`CORS`允许跨域请求，那么同源策略将不放宽而跨域请求会正常工作
+
+整个`CORS`通信过程，都是浏览器自动完成，不需要用户参与。对于开发者来说，`CORS`通信与同源的`AJAX`通信没有差别，代码完全一样。浏览器一旦发现`AJAX`请求跨源，就会自动添加一些附加的头信息，有时还会多出一次附加的请求，但用户不会有感觉。
+
+因此，实现`CORS`通信的关键是服务器。只要服务器实现了`CORS`接口，就可以跨源通信。
+
+需要注意的是，`CORS`请求默认不发送`Cookie`和`HTTP`认证信息，如果要把`Cookie`信息发送到服务器，首先要服务器同意，服务器需要指定`Access-Control-Allow-Credentials`字段为`true`，然后需要设置请求头中的`withCredentails`为`true`。并且如果要发送`Cookie`，那么`Access-Controll-Allow-Origin`就不能设置为星号，必须指定明确的、与请求网页一致的域名
+
+详情见[跨域资源共享 CORS 详解](http://www.ruanyifeng.com/blog/2016/04/cors.html)
