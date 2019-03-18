@@ -37,3 +37,13 @@ var data = JSON.parse(localStorage.data)
 | `localStorage` | `setItem(name, value)`方法或通过属性直接设置 | `getItem(name)`方法或通过属性直接查询 | `removeItem(name)` | `clear()` | `length` | `key(index)` | 
 | `sessionStorage` | `setItem(name, value)`方法或通过属性直接设置 | `getItem(name)`方法或通过属性直接查询 | `removeItem(name)` | `clear()` | `length`| `key(index)` |
 
+### 存储事件
+无论什么时候存储在`localStorage`或者`sessionStorage`的数据发送改变，浏览器都会在其他对该数据可见的窗口对象上触发存储事件`storage`（在对数据进行改变的窗口对象上不会触发）。只有当存储数据真正发生改变的时候才会触发，设置一个一样的值或者删除不存在的值是不会触发的
+
+与存储事件相关事件对象的重要属性：
+- `key`: 被设置或者移除的项的名字或者键名。若调用`clear()`函数，则该属性值为`null`
+- `newValue`: 新值，调用`removeItem`后，该值为`null`
+- `oldValue`: 原先的值，当插入一个新项的时候，该属性值为`null`
+- `url`: 触发该存储变化脚本所在文档的`URL`
+
+需要注意的是，`localStorage`和存储事件都采用的是广播机制，浏览器会对当前正在访问同样站点的所有窗口发生消息
