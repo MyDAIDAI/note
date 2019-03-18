@@ -30,3 +30,10 @@ var data = JSON.parse(localStorage.data)
 | `sessionStorage` | 窗口或标签页被关闭，数据被删除 | 同源且同一个窗口（标签页） |
 
 需要注意的是，`sessionStorage`中一个标签页中的脚本是无法读取或者覆盖由另一个标签页脚本写入的数据，即使这两个标签页渲染的是同一个页面，运行的是同一个脚本。除此之外，`session`中的窗口作用域指的是顶级窗口，若一个标签页中包含不同的`<iframe>`，则它们的`sessionStorage`是可以共享的
+
+### 存储`API`
+|  | 设置 | 查询 | 删除 | 清除所有 | 获取长度 | 获取键名 |
+| ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+| `localStorage` | `setItem(name, value)`方法或通过属性直接设置 | `getItem(name)`方法或通过属性直接查询 | `removeItem(name)` | `clear()` | `length` | `key(index)` | 
+| `sessionStorage` | `setItem(name, value)`方法或通过属性直接设置 | `getItem(name)`方法或通过属性直接查询 | `removeItem(name)` | `clear()` | `length`| `key(index)` |
+
