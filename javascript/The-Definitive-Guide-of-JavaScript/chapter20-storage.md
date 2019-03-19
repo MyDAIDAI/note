@@ -94,3 +94,21 @@ index.example.com // 所有页面共享
 ```
 
 `cookie`的属性`secure`属性，是一个布尔类型的值，用来表明`cookie`的值以何种形式进行传播。其默认传播形式是不安全的(`http`)。若设置为“安全的”，那么只能当浏览器和服务器通过`https`或者其他安全协议链接时才传递
+
+### 保存`cookie`
+保存`cookie`只需将`cookie`属性设置为一个字符串形式的值: `name=value`，如`document.cookie="version" + encodeURIComponent(document.lastModified)`，`cookie`的名/值中不允许包含分号、逗号和空白符，所以需要进行编码
+
+设置`max-age`: `name=value;max-age=seconds`
+
+```javascript
+function setCookie(name, value, daysToLive) {
+  var cookie = name + '=' + encodeURICcomponent(value)
+  if (type daysToLive === 'number') {
+    cookie += ';max-age=' + (daysToLive * 60 * 60 * 24)
+  }
+  document.cookie = cookie
+}
+```
+设置其他属性： `name=value;max-age=seconds;path=path;domain=domain;secure`新设置的属性值会覆盖原来的属性值
+
+删除`cookie`，指定一个非空的值，并将其`max-age=0`即可
