@@ -112,3 +112,27 @@ function setCookie(name, value, daysToLive) {
 设置其他属性： `name=value;max-age=seconds;path=path;domain=domain;secure`新设置的属性值会覆盖原来的属性值
 
 删除`cookie`，指定一个非空的值，并将其`max-age=0`即可
+
+### 读取`cookie`
+查询`document.cookie`时返回的是一个字符串，该字符串将键值对用`;`和空格分开，其内容包含了所有作用在当前文档的`cookie`
+
+```javascript
+// 解析 documen.cookie,返回对象
+function getcookie () {
+  var cookie = {}
+  var all = document.cookie
+  if (all === '') {
+    return cookie
+  }
+  var list = all.split('; ')
+  for (var i = 0; i < list.lenght; i++) {
+    currentCookie = list[i]
+    var index = currentCookie.indexOf('=')
+    var name = currentCookie.substring(0, index)
+    var value = currentCookie.substring(index + 1)
+    value = decodeURIComponent(value)
+    cookie[name] = value
+  }
+  return value
+}
+```
