@@ -47,3 +47,50 @@ var data = JSON.parse(localStorage.data)
 - `url`: 触发该存储变化脚本所在文档的`URL`
 
 需要注意的是，`localStorage`和存储事件都采用的是广播机制，浏览器会对当前正在访问同样站点的所有窗口发生消息
+
+## `cookie`
+`cookie`是指`web`浏览器存储的少量数据，会自动在`web`浏览器与`web`服务器之间传输，因此服务端脚本就可以读、写存储在客户端的`cookie`的值
+
+##### 检测`cookie`是否启用
+在绝大多数的浏览器中，可以通过检测`navigator.cookieEnable`这个属性，若值为`true`，那么当前的`cookie`是启用的，否则是禁用的。但该属性不是所有浏览器都支持
+
+### `cookie`属性: 有效期和作用域
+
+##### 有效期
+`cookie`默认的有效期很短暂，它只能持续在`web`浏览器的会话期间，一旦用户关闭浏览器，`cookie`保存的数据就丢失了。
+
+`cookie`的有效期与`sessionStorage`还是有区别的，`cookie`的作用域并不是局限在浏览器的单个窗口中，它的有效期和整个浏览器进程一致而不是单个浏览器窗口一致。
+
+若想要延长`cookie`的有效期，可以通过设置`max-age`属性，但必须明确告诉浏览器有效期是多长（单位是秒）。一旦设置了有效期，浏览器就会将`cookie`数据存储在一个文件，并且直到过了指定有效期才会删除文件
+
+##### 作用域
+`cookie`的作用域是通过文档源与文档路径来确定的，其可以通过`cookie`的`path`和`domain`来进行配置
+```
+http://www.example.com/catalog/index.html // 在该页面设置 cookie
+
+http://www.example.com/catalog/order.html // 同源且路径为 /catalog ，cookie 可以共享
+
+http://www.example.com/catalog/widgest/index.html // 同源且路径为 /catalog ，cookie 可以共享
+
+http://www.example.com/index.html // 同源但路径不同，不共享
+```
+可以通过设置`cookie`的`path`属性来指定路径
+```
+http://www.example.com/catalog/widgest/index.html // 设置 cookie.path = '/catalog'
+
+http://www.example.com/catalog/order.html // 可共享
+
+// 设置 cookie.path = '/', 则http://www.example.com上的所有页面均共享
+```
+当`cookie.path='/'`时，与`localStorage`有相同的作用域，同时当它请求该站点上任何一个`web`页面的时候，浏览器都必须将`cookie`的名字和值传递给服务器
+
+`cookie`的作用域默认由文档源限制，如果想要在子域之间互相共享`cookie`，那么可以设置`cookie`的`domain`属性，需要注意的是，`cookie`只能设置为当前服务器的域
+
+```
+// 设置 cookie.path = '/', cookie.domain = '.example.com'
+catalog.example.com // 所有页面共享
+index.example.com // 所有页面共享
+***.expample.com // 所有页面共享
+```
+
+`cookie`的属性`secure`属性，是一个布尔类型的值，用来表明`cookie`的值以何种形式进行传播。其默认传播形式是不安全的(`http`)。若设置为“安全的”，那么只能当浏览器和服务器通过`https`或者其他安全协议链接时才传递
