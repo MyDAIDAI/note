@@ -255,3 +255,90 @@ video/ offline_help.html
 NETWORK:
 cgi/
 ```
+
+### 缓存的更新
+当一个`web`应用从缓存中载入的时候，所有与之相关的文件也是直接从缓存中获取。在线状态下，浏览器会异步检查清单文件是否有更新。如果有更新，新的清单文件以及清单中列举的所有文件都会下载下来重新保存到应用程序缓存中。但是需要注意的是，浏览器只是检查清单文件，而不会去检测缓存的文件是否有更新
+
+比如，修改一个缓存的`javascript`文件，并且想要该文件生效，就需要更新清单文件。由于应用程序依赖文件列表其实没有变化，所以最简单的方式就是更新版本号
+```
+CACHE MANIFEST
+# myapp version 1
+myapp.html
+myapp.js
+myapp.css
+```
+
+将`web`应用卸载，需要在服务器端删除清单文件，并且修改`html`文件中的`manifest`属性
+
+浏览器在更新缓存过程中会触发一系列的事件，可以通过注册事件处理程序来跟踪这个过程同时反馈给用户
+```javascript
+// 检测清单文件时触发
+window.applicationCache.onchecking = function () {
+    alert('this version is up-to-date')
+    return false
+}
+// 清单文件没有改动，应用程序已缓存触发
+window.applicationCache.onnoupdate = function () {
+    alert('this version is up-to-date')
+    return false
+}
+// 未缓存应用程序或清单文件有改动，浏览器下载文件时开始时触发
+window.applicationCache.ondownloading = function () {
+    alert('downloading new version')
+    window.processcount = 0
+    return false
+}
+// 下载过程中触发
+window.applicationCache.onprogress = function (e) {
+    var process = ''
+    if (e && e.lengthComputable) {
+        process = ' ' + Math.round(100 * e.loaded / e.total) + '%'
+    } else {
+        process = "(" + ++processcount +")"
+    }
+    alert('downloading new version' + process)
+    return false
+}
+// 下载完成并且首次将应用程序下载到缓存中触发
+window.applicationCache.oncached = function () {
+    alert('this application is now cached locally')
+    return false
+}
+// 下载完成且将缓存中的应用程序更新后触发
+window.applicationCache.onupdateready = function () {
+    alert('a new version has been downloaded, reload to run it')
+    return false
+}
+// 浏览器处于离线，检测清单列表失败时
+// 未缓存的应用程序引用一个不存在的清单文件时触发
+window.applicationCache.onerror = function () {
+    alert('could not load manifest or cache application')
+    return false
+}
+// 一个缓存的应用程序引用一个不存在的清单文件触发该事件
+// 并且会将应用从缓存中移除之后都不会从缓存而是通过网络请求来加载资源
+window.applicationCache.onobsolete = function () {
+    alert('this application is no longer cached. reload to get tht latest version form the network')
+    return false
+}
+```
+
+事件过程：
+- 载入设置了`manifest`属性的`HTML`文件，触发`checking`事件
+- 没有可用的更新，如果应用程序已经缓存，并且清单文件没有改动，触发`noupdate`事件
+- 有可用的更新，如果应用程序已经缓存了并且清单文件发生了改动，则浏览器会触发`downloading`事件，并开始下载和缓存清单文件中列举的所有资源。在下载过程中，还会触发`progress`事件，在下载完成之后会触发`updateready`事件
+- 首次载入新的应用程序，如果还未缓存应用程序，上面的`downloading`和`progress`事件都会触发，但是，下载完成之后，浏览器会触发`cached`事件而不是`updateready`事件
+- 浏览器处于离线状态，如果浏览器处于离线状态，它无法检测清单文件，会触发`error`事件。如果一个未缓存的应用程序引用一个不存在的清单文件，也会触发
+- 清单文件不存在，浏览器处于在线状态，应用程序也已缓存，但是清单文件不存在，则浏览器会触发`obsolete`事件，并将该应用程序从缓存中移除
+
+使用`applicationCache.status`属性来查看缓存状态：
+- `ApplicationCache.UNCACHED(0)`：应用程序没有设置`manifest`属性，未缓存
+- `ApplicationCache.IDLE(1)`: 清单文件已经检查完毕，并且已经缓存了最新的应用程序
+- `ApplicationCache.CHECKING(2)`: 浏览器正在检查清单文件
+- `ApplicationCache.DOWNLOADING(3)`: 浏览器正在下载并缓存清单中列举的所有文件
+- `ApplicationCache.UPDATEREADY(4)`: 已经下载和缓存了最新版的应用程序
+- `ApplicationCache.OBSOLETE(5)`: 清单文件不存在，缓存将被清除
+
+`ApplicationCache`方法：
+- `update()`: 显式调用了更新缓存算法以检测是否有最新版本的应用程序
+- `swapCache()`: 该方法告诉浏览器它可以弃用老的缓存，所有的请求都从新缓存中获取。可能会导致版本错乱的问题，一般不推荐使用
