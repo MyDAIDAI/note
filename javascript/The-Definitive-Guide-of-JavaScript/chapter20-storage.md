@@ -210,3 +210,48 @@ cookieStorage.prototype.clear = function () {
     }
 }
 ```
+
+## 应用程序存储和离线`web`应用
+`HTML5`中新增了“应用程序缓存”，允许`web`应用将应用程序自身本地保存到用户的浏览器中，它是将应用程序自身保存起来--应用程序运行所需要的文件(`HTML`、`CSS`、`javaScript`，图片等)。“应用程序缓存”和一般浏览器缓存不同: 它不会随着用户清除浏览器缓存而被清除。同时，缓存起来的应用程序的老数据会被新数据替换。
+
+### 应用程序缓存清单
+将应用程序进行缓存，首先要创建一个清单，该清单包含所有应用程序所依赖的所有的`URL`列表。然后在应用程序主`HTML`页面的`<html>`标签中设置`manifest`属性，将该属性指向清单文件
+```html
+<!DOCTYPE HTML>
+<html manifest="myapp.appcache">
+  <head></head>
+  <body></body>
+</html>
+```
+```
+// myapp.appcache
+CACHE MANIFEST // 清单文件标识，必须包含
+
+// 应用程序依赖 URL
+myapp.html
+myapp.css
+myapp.js
+images/backgroud.png
+```
+
+##### 复杂的清单
+在清单文件中可以使用特殊的区域头来标识该头信息之后清单项的类型，默认为`CACHE`区域头，还有`NETWORK`与`FALLBACK`区域头
+
+- `NETWORK`：该区域标识了`URL`中的资源从不缓存，总要通过网络获取。支持`*`通配符，该通配符表示对任何不在清单中的资源，浏览器都将通过网络加载
+
+- `FALLBACK`: 该区域中包含两个`URL`，当能够匹配到第一个`URL`时，就从网络中载入。否则，使用第二个`URL`指定的缓存资源来代替，从缓存中获取
+
+```
+CACHE MANIFEST
+
+CACHE:
+myapp.html
+myapp.css
+myapp.js
+
+FALLBACK:
+video/ offline_help.html
+
+NETWORK:
+cgi/
+```
