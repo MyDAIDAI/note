@@ -136,3 +136,77 @@ function getcookie () {
   return value
 }
 ```
+
+### `cookie`的局限性
+- 浏览器保存不能超过 300 个`cookie`
+- 每个服务器不超过 20 个
+- `cookie`保存的数据不超过 `4kb`
+
+### `cookie`相关的存储
+下面为`cookie`定义一些方法，可以更方便的进行操作
+```javascript
+function cookieStorage (maxage, path) {
+    var cookie = (function () {
+        var cookie = {}
+        var all = document.cookie
+        if (all === '') {
+            return cookie
+        }
+        var list = all.split('; ')
+        for (var i = 0; i < list.length; i++) {
+            var item = list[i]
+            var index = item.indexOf('=')
+            var name = item.substring(0, index)
+            var vallue = item.substring(index + 1)
+            value = decodeURIComponent(value)
+            cookie[name] = value
+        }
+        return cookie
+    })()
+    var keys = []
+    for (var key in keys) keys.push(key)
+    this.length = keys.length
+    this.keys = keys
+    this.cookie = cookie
+    this.maxage = maxage
+    this.path = path
+}
+cookieStorage.prototype.getKey = function (n) {
+    if (n < 0 || n >= this.keys.length) return null
+    return this.keys[n]
+}
+cookieStorage.prototype.getItem = function (name) {
+    return this.cookie[name] || null
+}
+cookieStorage.prototype.setItem = function (key, value) {
+    // key 不存在则添加 key
+    if (!(key in this.cookie)) {
+        this.keys.push(key)
+        this.length++
+    }
+    this.cookie[key] = value
+    // 将值设置到 document.cookie 中
+    var cookie = key + '=' + encodeURIComponent(value)
+    if (this.maxage) cookie += "; max-age=" + this.maxage
+    if (this.path) cookie += "; path=" + this.path
+    document.cookie = cookie
+} 
+cookieStorage.prototype.removeItem = function (key) {
+    if (!(key in this.cookie)) return
+    delete this.cookie[key]
+    var index = this.keys.indexOf(key)
+    this.keys.splice(index, 1)
+    this.length--
+    // 将 max-age 设置为 0来删除指定的 cookie
+    document.cookie = key + '=;max-age=0' 
+}
+cookieStorage.prototype.clear = function () {
+    this.keys = []
+    this.length = 0
+    this.cookie = {}
+
+    for (var i = 0; i < this.keys.length; i++) {
+        document.cookie = this.keys[i] + '=; max-age=0' 
+    }
+}
+```
