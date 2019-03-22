@@ -40,3 +40,50 @@ function getMap () {
 
 最后，传入回调函数的参数对象，除了包含地理位置，精度等信息之外，可能还包含海拔、速度和航向之类的额外信息
 
+## 历史记录管理
+`web`浏览器会记录在一个窗口中载入的所有文档，同时提供了“后退”和“前进”按钮，允许用户在这些文档之间切换浏览。现在的`web`应用通常都是动态地生成或者载入页面内容，并在无须刷新页面的情况下就显示新的应用状态。
+
+- 使用`location.hash`和`hashchange`事件。设置`location.hash`属性会更新显示在地址栏中的`URL`，同时会在浏览器的历史记录中添加一条记录。当浏览器中`URL`的`hash`值发生了变化，就会在`window`对象上触发一个`hashchange`事件。
+- `history.pushState()`方法与`popstate`事件。当一个`web`应用进入一个新的状态的时候，它就会调用`history.pushState()`方法将该状态添加到浏览器的浏览历史记录中
+  - 第一个参数，状态对象，该对象包含用于恢复当前文档所需要的所有信息，可以是使用`JSON.stringify()`方法转换为字符串形式的对象，也可以是`Date`与`RegExp`类型的对象
+  - 第二个参数，可选标题，浏览器可以使用它来标识浏览历史记录中保存的状态
+  - 第三个参数，可选`URL`，当前状态的位置
+
+除了`pushState()`方法之外，`History`对象上还定义了`replaceState()`方法，该方法不是将新的状态添加到浏览历史记录中，而是用新的状态代替当前的历史状态
+
+当用户通过"后退"和"前进"按钮浏览保存的历史记录时，或者调用`history`的`back()`，`go()`等方法时，浏览器会在`Window`对象上触发一个`popstate`事件，该事件会传入一个事件对象，事件对象中有一个`state`属性，包含传递给`pushState()`方法的状态对象的副本
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Page Title</title>
+</head>
+<body>
+  <button id="clickMe">点我</button>
+  <div id="show"></div>
+</body>
+<script>
+window.onload = function () {
+  let btn = document.getElementById('clickMe')
+  let state = {
+    page: 1
+  }
+  let show = document.getElementById('show')
+  show.innerText = window.location.search
+  btn.addEventListener('click', function () {
+    history.pushState(state, 'page' + state.page, "?page=" + state.page)
+    state.page++
+    show.innerText = window.location.search
+  })
+  window.onpopstate = function (event) {
+    console.log('location: ' + window.location + ', state: ' + JSON.stringify(event.state))
+    console.log('event', event)
+    show.innerText = window.location.search
+  }
+}
+</script>
+</html>
+```
