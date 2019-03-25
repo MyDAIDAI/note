@@ -87,3 +87,138 @@ window.onload = function () {
 </script>
 </html>
 ```
+
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Page Title</title>
+  <style>
+    #prompt { font-size: 16pt }
+    table {
+      width: 90%;
+      margin: 10px;
+      margin-left: 5%;
+    }
+    #low, #high {
+      background-color: lightgray;
+      height: 1em;
+    }
+    #mid {
+      background-color: green
+    }
+  </style>
+</head>
+<body>
+  <h1 id="heading">i am thinking of a number</h1>
+  <table>
+    <tr>
+      <td id="low"></td>
+      <td id="mid"></td>
+      <td id="high"></td>
+    </tr>
+  </table>
+  <label id="prompt"></label>
+  <input id="input" type="text">
+</body>
+<script>
+window.onload = newgame
+window.onpopstate = popstate
+var state, ui
+
+function newgame(playagian) {
+  ui = {
+    heading: null,
+    prompt: null,
+    input: null,
+    low: null,
+    mid: null,
+    high: null
+  }
+
+  for (var id in ui) ui[id] = document.getElementById(id)
+
+  ui.input.onchange = handleGuess
+
+  state = {
+    n: Math.floor(99 * Math.random()) + 1,
+    low: 0,
+    high: 100,
+    guessnum: 0,
+    guess: undefined
+  }
+
+  display(state)
+
+  // 重玩游戏，则重新保存游戏状态
+  // 通过 load 事件触发时，则不保存游戏状态
+  // 由于通过浏览器历史记录从其他文档状态回退到当前状态时，也会触发 load 事件
+  // 如果这种情况下保存，那么会将当前的状态进行覆盖
+  // 在支持pushState()方法的浏览器中，load事件之后会触发popstate事件
+  if (playagian) save(state)
+}
+
+function save(state) {
+  if (!history.pushState) return
+
+  var url = "#guess" + state.guessnum
+
+  history.pushState(state, "", url)
+}
+
+function popstate(event) {
+  if (event.state) {
+    state = event.state
+    display(state)
+  } else {
+    // 当第一次载入页面时，会触发一个没有状态的popstate事件
+    history.replaceState(state, "", "#guess" + state.guessnum)
+  }
+}
+
+function handleGuess() {
+  var g = parseInt(this.value)
+
+  if ((g > state.low) && (g < state.high)) {
+    if (g < state.n) {
+      state.low = g
+    } else if (g > state.n) {
+      state.high = g
+    }
+    state.guess = g
+    state.guessnum++
+    save(state)
+    display(state)
+  } else {
+    alert（'低:' + state.low + '; 高:' + state.high）
+  }
+}
+function display(state) {
+  ui.heading.innerHTML = document.title = "I am thinking of a number between " + state.low + " and" + state.high + '.'
+
+  ui.low.style.width = state.low + "%"
+  ui.mid.style.width = (state.high - state.low) + "%"
+  ui.high.style.width = (100 - state.high) + "%"
+
+  ui.input.style.visibility = "visible"
+  ui.input.value = ""
+  ui.input.focus()
+
+  if (state.guess === undefined) {
+    ui.prompt.innerHTML = "Type your guess and hit Enter"
+  } else if (state.guess < state.n) {
+    ui.prompt.innerHTML = state.guess + "is too low. Guess again"
+  } else if (state.guess > state.n) {
+    ui.prompt.innerHTML = state.guess + "is too high.Guess again"
+  } else {
+    ui.input.style.visibility = "hidden"
+    ui.heading.innerHTML = document.title = state.guess + "  is correct!"
+    ui.prompt.innerHTML = "You win! <button onclick='newgame(true)'>Play again</button>"
+  }
+}
+</script>
+</html>
+```
