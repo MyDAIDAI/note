@@ -222,3 +222,69 @@ function display(state) {
 </script>
 </html>
 ```
+
+## 跨域消息传递
+`window.postMessage()`方法可以安全地实现跨域通信。通常，对于两个不同页面的脚本，只有当指向它们的页面位于具有相同的协议，端口号以及相同的主机时才能互相通信。该方法允许有限的通信--通过异步消息传递的方式--在两个不同的源的脚本之间。
+
+参数：
+- 要传递的消息，该参数可以是任意基本类型值或者可以复制的对象
+- 指定目标窗口的源，其中包括协议、主机名和端口号，其他信息会被忽略。如果传递的信息不包含任意敏感消息并且愿意将其传递给任何窗口，就可以直接将参数设置为`*`通配符即可。如果要指定和当前窗口同源的化，那么可以简单的使用`/`
+
+当调用方法之后，在目标窗口的`Window`对象上就会触发一个`message`事件。在目标窗口中的脚本则可以定义通知`message`事件的处理程序函数，调用该处理程序函数时会传递一个事件对象，该事件对象有以下属性：
+- `data`: `postMessage`方法的第一个参数的副本
+- `source`: 消息源的`window`对象
+- `origin`: 指定消息来源(`URL`)
+
+```javascript
+/*
+ * A窗口的域名是<http://example.com:8080>，以下是A窗口的script标签下的代码：
+ */
+
+var popup = window.open(...popup details...);
+
+// 如果弹出框没有被阻止且加载完成
+
+// 这行语句没有发送信息出去，即使假设当前页面没有改变location（因为targetOrigin设置不对）
+popup.postMessage("The user is 'bob' and the password is 'secret'",
+                  "https://secure.example.net");
+
+// 假设当前页面没有改变location，这条语句会成功添加message到发送队列中去（targetOrigin设置对了）
+popup.postMessage("hello there!", "http://example.org");
+
+function receiveMessage(event)
+{
+  // 我们能相信信息的发送者吗?  (也许这个发送者和我们最初打开的不是同一个页面).
+  if (event.origin !== "http://example.org")
+    return;
+
+  // event.source 是我们通过window.open打开的弹出页面 popup
+  // event.data 是 popup发送给当前页面的消息 "hi there yourself!  the secret response is: rheeeeet!"
+}
+window.addEventListener("message", receiveMessage, false);
+
+
+
+/*
+ * 弹出页 popup 域名是<http://example.org>，以下是script标签中的代码:
+ */
+
+//当A页面postMessage被调用后，这个function被addEventListenner调用
+function receiveMessage(event)
+{
+  // 我们能信任信息来源吗？
+  if (event.origin !== "http://example.com:8080")
+    return;
+
+  // event.source 就当前弹出页的来源页面
+  // event.data 是 "hello there!"
+
+  // 假设你已经验证了所受到信息的origin (任何时候你都应该这样做), 一个很方便的方式就是把enent.source
+  // 作为回信的对象，并且把event.origin作为targetOrigin
+  event.source.postMessage("hi there yourself!  the secret response " +
+                           "is: rheeeeet!",
+                           event.origin);
+}
+
+window.addEventListener("message", receiveMessage, false);
+```
+应该注意的是，用于接受消息的任何事件监听器必须首先使用`origin`和`source`属性来检查消息的发送者身份。否则会导致跨站点脚本攻击
