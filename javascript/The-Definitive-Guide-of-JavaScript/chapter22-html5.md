@@ -288,3 +288,141 @@ function receiveMessage(event)
 window.addEventListener("message", receiveMessage, false);
 ```
 应该注意的是，用于接受消息的任何事件监听器必须首先使用`origin`和`source`属性来检查消息的发送者身份。否则会导致跨站点脚本攻击
+
+## `Web Worker`
+// 后续学习...
+
+## 类型化数组和`ArrayBuffer`
+
+##### 类型化数组`TypedArray`
+类型化数组描述了一个基于二进制数据缓存的类数组对象。类型化数组中的元素都是数字。使用构造函数在创建类型化数组的时候决定了数组中数组（有符号或者无符号整数或者浮点数）的类型和大小（以位为单位）
+
+语法：
+```javascript
+new TypedArray()
+new TypedArray(length)
+new TypedArray(typedArray)
+new TypedArray(object)
+new TypedArray(buffer [, byteOffset [, length]])
+```
+
+有许多中类型化数组，每一种的元素类型都不同。可以使用如下构造函数创建每种的类型化数组
+```javascript
+Int8Array()
+Uint8Array()
+Uint8ClampedArray()
+Int16Array();
+Uint16Array();
+Int32Array();
+Uint32Array();
+Float32Array();
+Float64Array();
+BigInt64Array();
+BigUint64Array();
+```
+在创建一个类型化数组的时候，可以传递数组大小给构造函数，或者传递一个数组或者类型化数组来用于初始化数组元素。一旦创建了类型化数组，就可以像操作其他类数组对象那样，通过常规的中括号表示法来对数组元素进行读/写操作：
+```javascript
+// From a length
+var int8 = new Int8Array(2);
+int8[0] = 42;
+console.log(int8[0]); // 42
+console.log(int8.length); // 2
+console.log(int8.BYTES_PER_ELEMENT); // 1
+
+// From an array
+var arr = new Int8Array([21,31]);
+console.log(arr[1]); // 31
+
+// From another TypedArray
+var x = new Int8Array([21, 31]);
+var y = new Int8Array(x);
+console.log(y[0]); // 21
+
+// From an ArrayBuffer
+var buffer = new ArrayBuffer(8);
+var z = new Int8Array(buffer, 1, 4);
+
+// From an iterable
+var iterable = function*(){ yield* [1,2,3]; }();
+var int8 = new Int8Array(iterable);
+// Int8Array[1, 2, 3]
+```
+
+类型化数组还有一个`subarray()`方法，调用该方法返回部分数组内容：
+```javascript
+var ints = new Int16Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+var lasts = ints.subarray(ints.length -3, ints.length)
+lasts // Int16Array(3) [7, 8, 9]
+lasts[2] // 2
+// subarray()不会创建数据的副本，只是直接返回原数组的一部分，
+// ints修改了之后其lasts返回的值也会进行相应的修改
+ints[9] = -1 // -1
+lasts[2] // -1
+```
+
+##### `ArrayBuffer`
+继续使用上面的例子
+```javascript
+ints.buffer
+// ArrayBuffer(20) {}
+//   [[Int8Array]]: Int8Array(20) [0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, -1, -1]
+//   [[Int16Array]]: Int16Array(10) [0, 1, 2, 3, 4, 5, 6, 7, 8, -1]
+//   [[Int32Array]]: Int32Array(5) [65536, 196610, 327684, 458758, -65528]
+//   [[Uint8Array]]: Uint8Array(20) [0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 255, 255]
+//   byteLength: (...)
+//   __proto__: ArrayBuffer
+
+lasts.buffer
+  // ArrayBuffer(20) {}
+  //   [[Int8Array]]: Int8Array(20) [0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, -1, -1]
+  //   [[Int16Array]]: Int16Array(10) [0, 1, 2, 3, 4, 5, 6, 7, 8, -1]
+  //   [[Int32Array]]: Int32Array(5) [65536, 196610, 327684, 458758, -65528]
+  //   [[Uint8Array]]: Uint8Array(20) [0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 255, 255]
+  //   byteLength: (...)
+  //   __proto__: ArrayBuffer
+
+ints.buffer === lasts.buffer
+// true
+
+lasts.byteLength
+// 6
+lasts.byteOffset
+// 14
+```
+上面的例子说明了类型化数组中某些重要的概念：它们都是基本字节块的视图，称为`ArrayBuffer`.每个类型化数组都有与基本缓冲区相关的三个属性：
+- `buffer`: 返回一个`ArrayBuffer`对象
+- `byteOffset`: 返回偏移量
+- `bytelength`: 返回该视图字节长度
+
+```javascript
+lasts.byteLength
+// 6
+lasts.buffer.byteLength
+// ints中有10个数据，一个数据用16位表示，一共160位，
+// ArrayBuffer一个字节8位，则在缓冲区中字节长度为 160 / 8 = 20
+// 20
+```
+
+`ArrayBuffer`对象用来表示通用的，固定长度的原始二进制数据缓冲区。`ArrayBuffer`不能直接操作，而是要通过类型数组对象或者`DataView`对象来操作，它们会将缓冲区中的数据表示为特定的格式，并通过这些格式来读写缓冲区的内容
+```javascript
+var buffer = new ArrayBuffer(8) // length: 要创建的ArrayBuffer大小，单位为字节，一个字节8位，共 8 * 8 = 64 位
+buffer
+ArrayBuffer(8) {}
+[[Int8Array]]: Int8Array(8) [0, 0, 0, 0, 0, 0, 0, 0] // 64 / 8 = 8， 长度为8
+[[Int16Array]]: Int16Array(4) [0, 0, 0, 0] // 64 / 16 = 4， 长度为4
+[[Int32Array]]: Int32Array(2) [0, 0] // 64 / 32 = 2, 长度为2
+[[Uint8Array]]: Uint8Array(8) [0, 0, 0, 0, 0, 0, 0, 0]
+byteLength: (...)
+__proto__: ArrayBuffer
+```
+
+字节顺序，字节组织成更长的字的顺序。为了高效，类型化数组采用底层硬件的原生顺序。在低位优先(`little-endian`)系统中，`ArrayBuffer`中数字的字节是按照从低位到高位的顺序排列的。在高位优先(`big-endian`)系统中，字节是按照从高位到低位的顺序排列的
+```javascript
+// 低位：0x00000001 -> 01 00 00 00
+// 高位: 0x00000001 -> 00 00 00 01
+// 测试系统字节排列顺序
+var little_endian = new Int8Array(new Int32Array([1]).buffer)[0] === 1
+```
+大多数的`CPU`架构都是采用低位优先的，但是在文件中的字节可能是高位优先。当读取文件类型的数据时，可以使用`DataView`类，该类定义了采用显式指定的字节顺序从`ArrayBuffer`中读/写其值的方法
+
+`DataView`类详情见: [`DataView`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/DataView)
