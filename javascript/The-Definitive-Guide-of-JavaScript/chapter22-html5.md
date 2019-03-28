@@ -502,3 +502,91 @@ window.onload = function () {
   createDownload('text.txt', 'this is a test file')
 }
 ```
+
+### `Blob URL`
+可以创建一个`URL`来指向`Blob`，然后可以像使用一般`URL`形式在任何地方使用该`URL`: 可以在`DOM`中，在`CSS`中，也可以在`XMLHttpRequest`中
+
+使用`createObjectURL()`函数来创建一个`Blob URL`:
+```javascript
+// 跨浏览器获取 createObjectURL方法
+var getBlobURL = (window.URL && URL.createObjectURL.bind(URL)) ||
+  (window.webkitURL && webkitURL.createObjectURL.bind(webkitURL)) ||
+    window.createObjectURL
+```
+传递一个`Blob`给`createObjectURL()`方法会返回一个`URL`(以普通字符串形式).该`URL`以`blob://`开头，紧跟着一小串文本字符串，该字符串用不透明的唯一标识符来标识`Blob`。
+
+要注意的是，这与`data://URL`不同，`data://URL`会对内容进行编码，而`Blob URL`只是对浏览器存储在内存中或者磁盘文件上的`Blob`的一个简单引用。`blob://URL`和`file://URL`也是不同的，`file://URL`直接指向的是本地文件系统中的文件，只暴露了文件的路径、浏览目录的许可等。
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Page Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    window.onload = function () {
+      var droptarget = document.getElementById('droptarget')
+      // 移入区域高亮
+      droptarget.ondragenter = function (e) {
+        var types = e.dataTransfer.types
+        if (!types ||
+            (types.contains && types.contains('Files')) ||
+            (types.indexOf && types.indexOf('Files')) !== -1) {
+              droptarget.classList.add('active')
+              return false
+        }
+      }
+      // 移出区域，取消高亮
+      droptarget.ondragleave = function () {
+        droptarget.classList.remove('active')
+      }
+      
+      droptarget.ondragover = function () {
+        return false
+      }
+      
+      // 用户放下文件，获取文件的blob url,并显示对应图片
+      droptarget.ondrop = function (e) {
+        var files = e.dataTransfer.files
+        for (var i = 0; i < files.length; i++) {
+          var type = files[i].type
+          if (type.substring(0, 6) !== "image/") {
+            continue
+          }
+          var img = document.createElement('img')
+          img.src = URL.createObjectURL(files[i])
+          img.onload = function () {
+            this.width = 100
+            document.body.appendChild(this)
+            // URL.revokeObjectURL(this.src)
+          }
+        }
+        droptarget.classList.remove("active")
+        return false
+      }
+    }
+  </script>
+  <style>
+    #droptarget {
+      border: 2px solid black;
+      width: 200px;
+      height: 100px;
+    }
+    #droptarget.active {
+      border: solid red 4px;
+    }
+  </style>
+</head>
+<body>
+  <div id="droptarget">Drop image files here</div>
+</body>
+</html>
+```
+`Blob URL`只有在同源的文档中才是有效的。将一个`Blob URL`通过`postMessage()`传递给一个非同源窗口，则该`URL`对于该窗口来说是没有任何意义的。并且`Blob URL`并不是永久有效的，当用户关闭了或者离开了包含创建`Blob URL`脚本的文档，则该`Blob URL`就失效了。
+
+可以调用`URL.revokeObjectURL`方法来手动让`Blob URL`失效。
+
+
+
