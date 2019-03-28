@@ -459,3 +459,46 @@ var little_endian = new Int8Array(new Int32Array([1]).buffer)[0] === 1
 </script>
 ```
 除了通过`<input>`元素来选择文件之外，用户还可以使用拖拽来上传文件，`drop`事件对象的`dataTransfer.files`属性会和放入的`FileList`进行关联，所以可以通过`dataTransfer.files`获取`File`对象
+
+### 下载`Blob`
+使用`XHR2`，将返回的内容指定以`Blob`的形式
+```javascript
+// 以Blob的形式获取URL指定的内容，并将其传递给指定的回调函数
+// 浏览器可能不支持
+function getBlob(url, callback) {
+  var xhr = new XMLHttpRequest()
+  xhr.open('GET', url)
+  xhr.responseType = "blob"
+  xhr.onload = function () {
+    callback(xhr.response)
+  }
+  xhr.send(null)
+}
+```
+### 构造`Blob`
+`Blob()`构造函数返回一个新的`Blob`对象，`Blob`的内容由参数数组中给出的值串联组成
+```javascript
+var blob = new Blob(array, options)
+```
+传入参数：
+- `array`: 是一个由`ArrayBuffer`、`ArrayBufferView`、`Blob`、`DOMString`等对象构成的`Array`，或者其他类似对象的混合体
+
+- `options`: 可选的`BlobPropertyBag`字典，它指定如下两个属性：
+  - `type`, 默认值为`""`，它代表了将会被放入到`Blob`中的数组内容的`MIME`类型
+  - `endings`: 默认值为`transparent`，用于指定包含行结束符`\n`的字符串如何被写入。
+    - `native`: 代表行结束符会被更改为适合宿主操作系统文件系统的换行符
+    - `transparent`: 代表会保持`blob`中保存的结束符不变
+
+```javascript
+window.onload = function () {
+  function createDownload(filename, content) {
+    var blob = new Blob([content])
+    var link = document.createElement('a')
+    link.innerHTML = filename
+    link.download = filename
+    link.href = URL.createObjectURL(blob)
+    document.getElementsByTagName('body')[0].appendChild(link)
+  }
+  createDownload('text.txt', 'this is a test file')
+}
+```
