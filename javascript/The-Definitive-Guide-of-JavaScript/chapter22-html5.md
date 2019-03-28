@@ -426,3 +426,36 @@ var little_endian = new Int8Array(new Int32Array([1]).buffer)[0] === 1
 大多数的`CPU`架构都是采用低位优先的，但是在文件中的字节可能是高位优先。当读取文件类型的数据时，可以使用`DataView`类，该类定义了采用显式指定的字节顺序从`ArrayBuffer`中读/写其值的方法
 
 `DataView`类详情见: [`DataView`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/DataView)
+
+## `Blob`
+在`javascript`中，`Blob`通常表示二进制数据，`Blob`是不透明的，能对它们进行直接操作就只有获取大小（以字节为单位），`MIME`类型以及将它们分隔为更小的`Blob`.`File`接口基于`Blob`，继承了`Blob`的功能并将其扩展使其支持用户系统上的文件
+
+使用`Blob`的场景：
+- `Blob`支持结构性复制算法，可以通过`message`事件从其他窗口或者线程中获取`Blob`(`postMessage`或者`webworker`)
+- 可以从客户端数据库中获取`Blob`
+- 可以使用`XHR2`标准，通过脚本化`HTTP`从`web`中下载`Blob`
+- 可以使用`Blob`构造函数来创建一个`Blob`(`BlobBuilder`已经废弃)
+- `File`对象是`Blob`的子类，可以通过`<input type="file">`元素以及拖放`API`来获取`File`对象
+
+### 文件作为`Blob`
+`<input type="file">`元素上的`files`属性则是一个`FileList`对象，该对象是一个类数组对象，里面的元素为用户选择的`File`对象。一个`File`对象就是一个`Blob`对象。`File`对象比`Blob`对象多了`name`以及`lastModifiedDate`属性
+```html
+<input type="file" multiple onchange="fileChange(this.files)">
+<script>
+  function fileChange(files) {
+    console.log('files', files)
+    // FileList {0: File, length: 1}
+        // 0: File
+          // lastModified: 1550822435439
+          // lastModifiedDate: Fri Feb 22 2019 16:00:35 GMT+0800 (中国标准时间) {}
+          // name: "微贷网及宇视项目周报（尹金铭）.xlsx"
+          // size: 13481
+          // type: ""
+          // webkitRelativePath: ""
+          // __proto__: File
+        // length: 1
+        // __proto__: FileList
+  }
+</script>
+```
+除了通过`<input>`元素来选择文件之外，用户还可以使用拖拽来上传文件，`drop`事件对象的`dataTransfer.files`属性会和放入的`FileList`进行关联，所以可以通过`dataTransfer.files`获取`File`对象
