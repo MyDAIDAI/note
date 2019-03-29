@@ -588,5 +588,42 @@ var getBlobURL = (window.URL && URL.createObjectURL.bind(URL)) ||
 
 可以调用`URL.revokeObjectURL`方法来手动让`Blob URL`失效。
 
+### 读取`Blob`
+前面只允许通过`Blob URL`来间接地访问`Blob`中的内容，现在介绍`FileReader`，这个对象允许访问`Blob`中的字符或者字节（`FileReader`对象允许`web`应用程序异步读取存储在用户计算机上的文件或原始数据缓冲区的内容），使用`File`或者`Blob`对象指定要读取的文件或数据
 
+`FileReader`属性：
+- `error`: 读取文件时发生的错误
+- `readyState`: 表示`FileReader`状态的数字
+  - `EMPTY`: 0， 还没有加载任何数据
+  - `LOADING`: 1, 数据正在被加载
+  - `DONE`: 2，已完成全部的读取请求
+- `result`: 文件的内容，该属性仅在读取操作完成后才有效，数据的格式取决于使用哪个方法来启动读取操作
 
+事件处理：
+- `onabort`: 处理`abort`事件，该事件在读取操作被中断时触发
+- `onerror`: 处理`error`事件，该事件在读取操作发生错误时触发
+- `onload`: 处理`load`事件，该事件在读取操作完成时触发
+- `onloadstart`: 该事件在读取操作开始时触发
+- `onloadend`: 该事件在读取操作结束时（成功或失败）触发
+- `onprogress`: 该事件在读取`Blob`时触发
+
+方法：
+- `abort()`: 中止读取操作，在返回时，`readyState`属性为`DONE`
+- `readAsArrayBuffer()`: 开始读取指定的`Blob`中的内容，一旦完成，`result`属性中保存的将时被读取文件的`ArrayBuffer`数据对象
+- `readAsBinaryString()`: 开始读取指定的`Blob`中的内容，一旦完成，`result`属性中将包含所读取文件的原始二进制数据
+- `readAsDataURL()`: 开始读取指定的`Blob`中的内容，一旦完成，`result`属性中将包含一个`data: URL`格式的字符串以表示所读取文件的内容
+- `readAsText()`:  开始读取指定的`Blob`中的内容，一旦完成，`result`属性中将包含一个字符串以表示所读取的文件内容
+
+```html
+<input type="file" onchange="getTextContent(this.files[0])">
+<script>
+  function getTextContent(file) {
+    var fileReader = new FileReader()
+    fileReader.readAsText(file)
+    fileReader.onload = function () {
+      var text = fileReader.result
+      console.log('text', text)
+    }
+  }
+</script>
+```
