@@ -109,7 +109,7 @@ div, #log // 选取所有 <div> 元素以及 id="log" 的元素
 
 除了`querySelectorAll()`方法之外，文档对象还定义了`querySelector()`方法，与`querySelectorAll`原理类型，但是它只是返回以文档顺序所匹配的第一个元素，没有匹配元素则返回`null`
 
-上面的方法在`Element`中也有定义，在元素上调用时，指定的选择器仍然在整个文档中进行匹配，然后过滤除结果集以便它只包含指定元素的后代元素。这意味着选择器字符串能包含元素的祖先而不经就是上诉所匹配元素
+上面的方法在`Element`中也有定义，在元素上调用时，指定的选择器仍然在整个文档中进行匹配，然后过滤除结果集以便它只包含指定元素的后代元素。这意味着选择器字符串能包含元素的祖先而不仅是所匹配元素
 
 > 注意，在`css`中定义的`:first-line`，`:first-letter`等伪元素在`querySelector()`等方法中是不匹配的
 
@@ -528,3 +528,4 @@ document.designMode = "on";
 - `document.queryCommandIndeterm()`: 检测命令值是否为不确定的
 
 一旦用户编辑了某元素的内容，该元素设置了`conteneditable`属性，就可以使用`innerHTML`属性得到已编辑内容的`HTML`标记
+

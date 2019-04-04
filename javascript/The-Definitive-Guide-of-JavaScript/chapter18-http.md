@@ -398,3 +398,6 @@ function timedGetText(url, timeout, callback) {
 </body>
 </html>
 ```
+
+## 基于服务器端推送事件的`Comet`技术
+// 待完成
