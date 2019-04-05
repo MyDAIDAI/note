@@ -200,3 +200,47 @@ function resolvePromise(promise2, x, resolve, reject) {
     resolve(x)
   }
 }
+
+// 其他方法
+Promise.prototype.catch = function(callback) {
+  return this.then(null, callback)
+}
+
+Promise.all = function (promises) {
+  return new Promise(function (resolve, reject) {
+    let arr = []
+    let i = 0
+    function processData (index, y) {
+      arr[index] = y
+      // 执行完毕后将执行结果返回
+      if (++i === promises.length) {
+        resolve(arr)
+      }
+    }
+    for (let i = 0; i < promises.length; i++) {
+      promises[i].then(function (data) {
+        processData[i, data]
+      }, reject)
+    }
+  })
+}
+
+Promise.race = function (promises) {
+  return new Promise(function (resolve, reject) {
+    for (let i = 0; i < promises.length; i++) {
+      promises[i].then(resolve, reject)
+    }
+  })
+}
+
+Promise.reslove = function (value) {
+  return new Promise(function (reslove, reject) {
+    reslove(value)
+  })
+}
+
+Promise.reject = function (reason) {
+  return new Promise(function (resolve, reject) {
+    reject(reason)
+  })
+}
