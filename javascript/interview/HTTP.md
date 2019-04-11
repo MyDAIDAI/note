@@ -64,3 +64,45 @@
     - 浏览器在`Document`对象上触发`DOMContentLoaded`事件
     - 文档完全解析完成，浏览器可能等待图片等内容的加载，图片等内容完全载入并且所有异步脚本完成载入和执行后，`document.readystate`变为`complete`，在`window`对象上触发`load`事件
   - 显示页面（浏览器解析过程中会逐步显示页面）
+
+## `HTTP`请求的报文结构
+- 首行包括：请求方法  请求`URL`  协议
+- 首行之后是请求头，包括`general-header`，`request-header`或者`entity-header`
+- 最后是请求实体
+
+```
+GET /Protocols/rfc2616/rfc2616-sec5.html HTTP/1.1
+Host: www.w3.org
+Connection: keep-alive
+Cache-Control: max-age=0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36
+Referer: https://www.google.com.hk/
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: zh-CN,zh;q=0.8,en;q=0.6
+Cookie: authorstyle=yes
+If-None-Match: "2cc8-3e3073913b100"
+If-Modified-Since: Wed, 01 Sep 2004 13:24:52 GMT
+
+name=qiu&age=25
+```
+
+## `HTTP`响应报文结构
+- 首行是状态行：`HTTP`版本  状态码 状态描述
+- 响应头部，包括通用头部，响应头部以及实体头部
+- 响应实体
+```
+HTTP/1.1 200 OK
+Date: Tue, 08 Jul 2014 05:28:43 GMT
+Server: Apache/2
+Last-Modified: Wed, 01 Sep 2004 13:24:52 GMT
+ETag: "40d7-3e3073913b100"
+Accept-Ranges: bytes
+Content-Length: 16599
+Cache-Control: max-age=21600
+Expires: Tue, 08 Jul 2014 11:28:43 GMT
+P3P: policyref="http://www.w3.org/2001/05/P3P/p3p.xml"
+Content-Type: text/html; charset=iso-8859-1
+
+{"name": "qiu", "age": 25}
+```
