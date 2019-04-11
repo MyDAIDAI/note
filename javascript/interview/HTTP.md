@@ -106,3 +106,50 @@ Content-Type: text/html; charset=iso-8859-1
 
 {"name": "qiu", "age": 25}
 ```
+
+## 如何进行网站性能优化
+- `Content`
+  - `Make Fewer HTTP Requests`
+  - `Reduce DNS Lookups`
+  - `Avoid Redirects`
+  - `Make Ajax Cacheable`
+  - `Postload Components`
+  - `Preload Comoonents`
+  - `Reduce the Number of DOM Elements`
+  - `Split Components Across Domains`
+  - `Minimize Number of iframes`
+  - `Avoid 404s`
+- `Server`
+  - `Use a Content Delivery Network(CDN)`
+  - `Add Expires or Cache-Control Header`
+  - `Gzip Components`
+  - `Configure ETags`
+  - `Flush Buffer Early`
+  - `Use GET for Ajax Requests`
+  - `Avoid Empty Image src`
+- `Cookie`
+  - `Reduce Cookie Size`
+  - `Use Cookie-Free Domains for Components`
+- `Css`
+  - `Put Stylesheets at Top`
+  - `Avoid CSS Expressions`
+  - `Choose <link> over @import`
+  - `Avoid Filters`
+- `JavaScript`
+  - `Put Script at Bottom`
+  - `Make JavaScript and CSS External`
+  - `Minify JavaScript and CSS`
+  - `Remove Duplicate Scripts`
+  - `Minimize DOM Access`
+  - `Develop Smart Event Handlers`
+- `Images`
+  - `Optimize Images`
+  - `Optimize CSS Sprites`
+  - `Do Not Scale Images in HTML`
+  - `Make favicon.ico Small and Cacheable`
+- `Mobile`
+  - `Keep Components Under 25 KB`
+  - `Pack Components Into a Multipart Document`
+
+详情见[雅虎Best Practices for Speeding Up Your Web Site](https://developer.yahoo.com/performance/rules.html#etags)
+
