@@ -37,22 +37,13 @@
   // each
   _.each = _.forEach = function (list, iteratee, context) {
     iteratee = optimizeCb(iteratee, context)
-    let i, len
-    // 判断 list 类型
-    if (isArrayLike(list)) {
-      for (i = 0, len = list.length; i < len; i++) {
-        iteratee(list[i], i, list)
-      }
-    } else {
-      // if (Object.prototype.toString.call(list) !== '[object Object]') {
-      //   list = []
-      // }
-      // Object.keys 返回自身可枚举属性键名所组成的数组
-      // let keys = Object.keys(list)
-      let keys = _.keys(list)
-      for (i = 0, len = keys.length; i < len; i++) {
-        iteratee(list[keys[i]], keys[i], list)
-      }
+
+    let keys = !isArrayLike(list) && _.keys(list)
+    let len = (keys || list).length
+    
+    for (let i = 0; i < len; i++) {
+      let currentKey = keys ? keys[i] : i
+      iteratee(list[currentKey], currentKey, list)
     }
   }
 
