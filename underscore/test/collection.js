@@ -67,5 +67,45 @@
       }, context)
     })
   })
+  
+  QUnit.test('map', function (assert) {
+    _.map([1, 2, 3], function(num, i) {
+      assert.strictEqual(num, i + 1, 'map iterators provide value and iteraction count')
+    })
+    
+    var answer = _.map([1, 2, 3], function (num) {
+      return num * this.multiplier
+    }, {multiplier: 5})
+    assert.deepEqual(answer, [5, 10, 15], 'context object property accessed')
+
+    answer = _.map([1, 2, 3], function (num) { return num })
+    assert.deepEqual(answer, [1, 2, 3], 'can iterator a simple array')
+
+    
+    var obj = {one: 1, two: 2, three: 3}
+    answer = _.map(obj, function (value, key) {
+      return key
+    })
+    assert.deepEqual(answer, ['one', 'two', 'three'], 'iterator over objects works')
+
+    obj.constructor.prototype.four = 4
+    answer =_.map(obj, function (value, key) {
+      return key
+    })
+    assert.deepEqual(answer, ['one', 'two', 'three'], 'iterator ignore the object prototype')
+
+    var count = 0
+    obj = {1: 'foo', 2: 'bar', 3: 'baz'}
+    _.map(obj, function () { count++ })
+    assert.strictEqual(count, 3, 'the function should be called 3 times')
+
+    answer = 0
+    _.map(null, function () { ++answer })
+    assert.strictEqual(answer, 0, 'null should be called 0 times')
+
+    answer = 0
+    _.map(false, function () { ++answer })
+    assert.strictEqual(answer, 0, 'false should be called 0 times')
+  })
 
 })()
