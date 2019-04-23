@@ -200,16 +200,133 @@ var o = Object.create({name: 'name'}, {
 ```javascript
 function cloneDeep(obj) {
   var _toString = Object.prototype.toString
-  if (!obj || typeof obj === 'object') {
+  if (!obj || typeof obj !== 'object') {
     return obj
   }
   if (obj.nodeType && 'cloneNode' in obj) {
     return obj.cloneNode(true)
   }
+  
   var result = Array.isArray(obj) ? [] : obj.constructor ? new obj.constructor() : {}
   for (var key in obj) {
     result[key] = cloneDeep(obj[key])
   }
   return result
+}
+```
+
+## 如果判断一个对象是否是数组
+
+```javascript
+function isArray (arr) {
+  if (Array.isArray) {
+    return Array.isArray(arr)
+  }
+  if (typeof arr === 'object') {
+    return Object.prototype.toString.call(arr)
+  }
+  return false
+}
+```
+
+## 完成函数`getViewportSize`返回指定窗口的视口尺寸
+
+```javascript
+function getViewportSize (w) {
+  w = w || window
+  
+  // IE9以及标准浏览器模式下
+  if ('innerHight' in w) {
+    return {
+      width: w.innerWidth,
+      height: w.innerHeight
+    }
+  }
+
+  // IE8以下浏览器的标准模式下
+  var d = w.document
+  if (document.compatMode === 'CSS1Compat') {
+    return {
+      width: d.documentElement.clientWidth,
+      height: d.documentElement.clientHight
+    }
+  }
+  // IE8及以下浏览器怪异模式
+  return {
+    width: d.body.clientWidth,
+    height: d.body.clientHeight
+  }
+}
+```
+
+## 完成函数`getScrollOffset`返回窗口滚动条偏移量
+
+```javascript
+function getScrollOffset(w) {
+  w = w || window
+  if ('pageXOffset' in w) {
+    return {
+      x: w.pageXOffset,
+      y: w.pageYOffset
+    }
+  }
+  // ie8
+  var d = w.document
+  if (d.compatMode === 'CSS1Compat') {
+    return {
+      x: d.documentElement.scrollLeft,
+      y: d.documentElement.scrollTop
+    }
+  }
+  return [
+    x: d.body.scrollLeft,
+    y: d.body.scrollTop
+  ]
+}
+```
+
+## 请实现一个`Event`类，继承此对象都有方法`on`, `off`, `once`和`trigger`
+
+```javascript
+function Event () {
+  // 防止直接调用 Event
+  if (!this instanceof Event) {
+    return new Event()
+  }
+  this._callbacks = {}
+}
+Event.prototype.on = function (type, handler) {
+  this._callbacks = this._callbacks || {}
+  this.callbacks[type] = this._callbacks[type] || []
+  this.callbacks[type].push(handler)
+  return this
+}
+Event.prototype.off = function (type, handler) {
+  var list = this._callbacks[type]
+  for (let i = 0; i < list.length; i++) {
+    if (list[i] === handler) {
+      list.splice(i, 1)
+    }
+  }
+  return this
+}
+Event.prototype.trigger = function (type, data) {
+  let list = this._callbacks[type]
+  if (list) {
+    for (let i = 0; i < list.length; i++) {
+      list[i].call(this, data)
+    }
+  }
+  return this
+}
+Event.prototype.once = function (type, handler) {
+  let self = this
+  
+  function wrapper () {
+    handler.call(self, arguments)
+    this.off(type, wrapper)
+  }
+  this.on(type, wrapper)
+  return this
 }
 ```
