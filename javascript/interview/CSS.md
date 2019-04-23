@@ -203,4 +203,25 @@
 
 ## 清除浮动
 - 容器元素闭合标签前添加额外元素并设置`clear: both`
-- 
+- 父元素触发块级格式化上下文(`overflow: auto`)
+- 设置容器元素的伪元素进行清理
+```css
+/* 1 content: ''用于修复opera下文档中出现contenteditable属性时在清理浮动元素上下的空白 */
+/* 2 使用display: table而不是block可以防止容器与子元素top-margin折叠 */
+.clearfix:before,
+.clearfix:after {
+  content: ''; /* 1 */
+  display: table; /* 1 */
+}
+.clearfix:after {
+  clear: both;
+}
+/* IE 6/7下使用 */
+.clearfix {
+  *zoom: 1;
+}
+```
+
+## 什么是`FOUC`?如何避免
+`FOUC`(`Flash Of Unstyled Content`)：用户定义样式表加载之前浏览器使用默认样式显示文档，用户样式加载渲染之后再重新显示文档，造成页面闪烁
+解决办法：将样式表放在`head`标签中

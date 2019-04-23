@@ -40,7 +40,7 @@
 
     let keys = !isArrayLike(list) && _.keys(list)
     let len = (keys || list).length
-    
+
     for (let i = 0; i < len; i++) {
       let currentKey = keys ? keys[i] : i
       iteratee(list[currentKey], currentKey, list)
@@ -60,6 +60,10 @@
     }
 
     return results
+  }
+
+  _.redude = function (list, iteratee, memo, context) {
+    
   }
 
   // Object
