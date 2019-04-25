@@ -17,9 +17,38 @@ L instanceof R
 function instance_if (L, R) {
   let O = R.prototype // 获取构造函数的原型对象
   L = L.__proto__ // 获取实例的隐式原型
-  
+  while (true) {
+    if (L === null) {
+      return false
+    }
+    if (L === O) {
+      return true
+    }
+    L = L.__proto__
+  }
 }
 ```
+
+## `for of`、`for in`和`forEach`、`map`的区别
+|   | 可使用 | 是否可中断 |
+| ------ | ------ | ------ |
+| `for of` | 具有`iterator`接口(数组，类数组对象，`Set`，`Map`，`Generator`对象，字符串) | 可以中断循环 |
+| `for in` | 遍历对象自身的和可继承的可枚举属性 | 可以中断 |
+| `forEach` | 只能遍历数组 | 不能中断 |
+| `map` | 只能遍历数组 | 不能中断 |
+
+`Object.keys()`返回给定对象自身可枚举的属性的字符串数组
+
+## 如何判断一个变量是不是数组
+- `Array.isArray`, 返回`true`, 则说明是数组
+- `instanceof Array`, 返回`true`, 则说明是数组
+- `Object.prototype.toString.call()`, 返回值为`[object Array]`
+- 通过`constructor`判断，如果是数组，`arr.constructor === Array`(不准确，因为可以指定一个对象的构造函数为`Array`)
+
+## 类数组和数组的区别是什么
+- 类数组
+  - 拥有`length`属性，其他属性
+
 ## `offsetWidth/offsetHeight`, `clientWidth/clientHeight`与`scrollWidth/scrollHeight`区别
 - `offsetWidth/offsetHeight` = `content + padding + border`, 效果与`e.getBoundingClientRect()`相同
 - `clientWidth/clientHeight` = `content + padding`, 如果有滚动条也不包含
@@ -171,16 +200,133 @@ var o = Object.create({name: 'name'}, {
 ```javascript
 function cloneDeep(obj) {
   var _toString = Object.prototype.toString
-  if (!obj || typeof obj === 'object') {
+  if (!obj || typeof obj !== 'object') {
     return obj
   }
   if (obj.nodeType && 'cloneNode' in obj) {
     return obj.cloneNode(true)
   }
+  
   var result = Array.isArray(obj) ? [] : obj.constructor ? new obj.constructor() : {}
   for (var key in obj) {
     result[key] = cloneDeep(obj[key])
   }
   return result
+}
+```
+
+## 如果判断一个对象是否是数组
+
+```javascript
+function isArray (arr) {
+  if (Array.isArray) {
+    return Array.isArray(arr)
+  }
+  if (typeof arr === 'object') {
+    return Object.prototype.toString.call(arr)
+  }
+  return false
+}
+```
+
+## 完成函数`getViewportSize`返回指定窗口的视口尺寸
+
+```javascript
+function getViewportSize (w) {
+  w = w || window
+  
+  // IE9以及标准浏览器模式下
+  if ('innerHight' in w) {
+    return {
+      width: w.innerWidth,
+      height: w.innerHeight
+    }
+  }
+
+  // IE8以下浏览器的标准模式下
+  var d = w.document
+  if (document.compatMode === 'CSS1Compat') {
+    return {
+      width: d.documentElement.clientWidth,
+      height: d.documentElement.clientHight
+    }
+  }
+  // IE8及以下浏览器怪异模式
+  return {
+    width: d.body.clientWidth,
+    height: d.body.clientHeight
+  }
+}
+```
+
+## 完成函数`getScrollOffset`返回窗口滚动条偏移量
+
+```javascript
+function getScrollOffset(w) {
+  w = w || window
+  if ('pageXOffset' in w) {
+    return {
+      x: w.pageXOffset,
+      y: w.pageYOffset
+    }
+  }
+  // ie8
+  var d = w.document
+  if (d.compatMode === 'CSS1Compat') {
+    return {
+      x: d.documentElement.scrollLeft,
+      y: d.documentElement.scrollTop
+    }
+  }
+  return [
+    x: d.body.scrollLeft,
+    y: d.body.scrollTop
+  ]
+}
+```
+
+## 请实现一个`Event`类，继承此对象都有方法`on`, `off`, `once`和`trigger`
+
+```javascript
+function Event () {
+  // 防止直接调用 Event
+  if (!this instanceof Event) {
+    return new Event()
+  }
+  this._callbacks = {}
+}
+Event.prototype.on = function (type, handler) {
+  this._callbacks = this._callbacks || {}
+  this.callbacks[type] = this._callbacks[type] || []
+  this.callbacks[type].push(handler)
+  return this
+}
+Event.prototype.off = function (type, handler) {
+  var list = this._callbacks[type]
+  for (let i = 0; i < list.length; i++) {
+    if (list[i] === handler) {
+      list.splice(i, 1)
+    }
+  }
+  return this
+}
+Event.prototype.trigger = function (type, data) {
+  let list = this._callbacks[type]
+  if (list) {
+    for (let i = 0; i < list.length; i++) {
+      list[i].call(this, data)
+    }
+  }
+  return this
+}
+Event.prototype.once = function (type, handler) {
+  let self = this
+  
+  function wrapper () {
+    handler.call(self, arguments)
+    this.off(type, wrapper)
+  }
+  this.on(type, wrapper)
+  return this
 }
 ```
