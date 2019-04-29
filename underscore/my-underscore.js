@@ -13,10 +13,24 @@
   let nativeKeys = Object.keys
 
   // 根据传入参数不同，返回带有不同参数的函数
-  function optimizeCb(fn, context) {
-    return function (value, index, collection) {
-      return fn.call(context, value, index, collection)
+  function optimizeCb(fn, context, argCount) {
+    switch (argCount == null ? 3 : argCount) {
+      case 3: return function (value, index, collection) {
+        return fn.call(context, value, index, collection)
+      };
+      case 4: return function (accumulator, value, index, collection) {
+        return fn.call(context, accumulator, value, index, collection)
+      };
     }
+    return function () {
+      return fn.call(context, arguments)
+    }
+  }
+
+  var cb = function (value, context, argCount) {
+    if (_.isFunction(value)) return optimizeCb(value, context)
+    // if (_.isObject(value)) return _.matcher(value)
+    // return _.property(value)
   }
 
   // 获取属性函数
@@ -47,7 +61,7 @@
     }
   }
 
-  _.map = function (list, iteratee, context) {
+  _.map = _.collect = function (list, iteratee, context) {
     iteratee = optimizeCb(iteratee, context)
 
     let keys = !isArrayLike(list) && _.keys(list)
@@ -62,8 +76,48 @@
     return results
   }
 
-  _.redude = function (list, iteratee, memo, context) {
-    
+  // 模拟原生reduce函数
+  _.reduce = function (list, iteratee, memo, context) {
+    iteratee = optimizeCb(iteratee, context, 4)
+
+    let keys = !isArrayLike(list) && _.keys(list)
+    let length = (keys || list).length
+    if (arguments.length < 3) {
+      memo = 0
+    }
+
+    for (let i = 0; i < length; i++) {
+      let currentKey = keys ? keys[i] : i
+      memo = iteratee(memo, list[currentKey], currentKey, list)
+    }
+    return memo
+  }
+
+  // list: array, object
+  // predicate: function, object...
+  _.find = function (list, predicate, context) {
+    let key = isArrayLike(list) ? _.findIndex(list, predicate, context) : _.findKey(list, predicate, context)
+    if (key !== void 0 && key !== -1) return list[key] 
+  }
+
+  _.findIndex = createPredicateIndexFinder(1)
+
+  _.findLastIndex = createPredicateIndexFinder(-1)
+
+  function createPredicateIndexFinder(dir) {
+    return function (array, predicate, context) {
+      predicate = cb(predicate, context)
+      
+      let index = dir > 0 ? 0 : array.length - 1
+      let length = array.length
+      for (; index >= 0 && index < length; index += dir) {
+        if (predicate(array[index], index, array)) {
+          console.log('index', index)
+          return index
+        }
+      }
+      return -1
+    }
   }
 
   // Object
@@ -72,13 +126,13 @@
     let type = typeof obj
     return type === 'function' || (type === 'object' && !!obj)
   }
+
   // 判断是否为自身属性
   _.has = function (obj, key) {
     return obj != null && hasOwnProperty.call(obj, key)
   }
 
-  
-
+  // 获取对象中所有自身可枚举的keys
   _.keys = function (obj) {
     // 判断是否是 object 类型
     if (!_.isObject(obj)) return []
@@ -94,8 +148,45 @@
         keys.push(item)
       }
     }
-    
     // TODO:IE9以下对toString等原型上方法重写不会被遍历的兼容
+  }
+
+  // 获取对象所有可枚举的keys，包括自身以及继承
+  _.allKeys = function (obj) {
+    if (!_.isObject(obj)) return []
+    var keys = []
+    for (let key in obj) {
+      keys.push(key)
+    }
+    return keys
+  }
+  
+  // 将传入对象的所有自身属性复制到传入的第一个参数中
+  _.extendOwn = _.assign = createAssigner(_.keys)
+
+  // 内部函数
+  function createAssigner(keysFunc) {
+    return function (obj) {
+      let length = arguments.length
+      // 处理只传入一个参数
+      if (length < 2 || obj == null) return obj
+      for (let index = 1; index < length; index++) {
+        let source = arguments[index]
+        let keys = keysFunc(source)
+        let len = keys.length
+        for (let i = 0; i < len; i++) {
+          let key = keys[i]
+          if (obj[key] === void 0) obj[key] = source[key] 
+        }
+      }
+      return obj
+    }
+  }
+
+  // function
+  // 判断是否是函数
+  _.isFunction = function (obj) {
+    return typeof obj === 'function'
   }
   window._ = _
 })()

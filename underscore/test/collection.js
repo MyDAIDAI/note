@@ -108,4 +108,48 @@
     assert.strictEqual(answer, 0, 'false should be called 0 times')
   })
 
+  QUnit.test('reduce', function (assert) {
+    var answer = 0
+    answer = _.reduce([1, 2, 3, 4], function (memo, value, index, list) {
+      return memo + value
+    }, 1)
+    assert.strictEqual(answer, 11, 'the value should be equal to 11')
+
+    answer = _.reduce([1, 2, 3, 4], function (memo, value, index, list) {
+      return memo + value
+    })
+    assert.strictEqual(answer, 10, 'the value should be equal to 10')
+
+    var obj = {'foo': 1, 'bar': 2, 'baz': 3}
+    answer = _.reduce(obj, function (memo, value) { 
+      return memo + value
+    }, 10)
+    assert.strictEqual(answer, 16, 'the test of object value should be equal to 16')
+
+    var obj = {'foo': 'foo', 'bar': 'bar', 'baz': 'baz'}
+    answer = _.reduce(obj, function (memo, value) { 
+      return memo + value
+    }, '')
+    assert.strictEqual(answer, 'foobarbaz', 'the test of object string value should be equal to foobarbaz')
+  })
+
+  QUnit.test('findIndex', function (assert) {
+    let index = _.findIndex([1, 2, 3], function (value) {
+      return value === 1
+    })
+    assert.strictEqual(index, 0, 'find index from array')
+  })
+  QUnit.test('findLastIndex', function (assert) {
+    let index = _.findLastIndex([1, 2, 3], function (value) {
+      return value === 3
+    })
+    assert.strictEqual(index, 2, 'find index from array')
+  })
+  QUnit.test('find', function (assert) {
+    let result = _.find([1, 2, 3], function (value) {
+      return value === 1
+    })
+    assert.strictEqual(result, 1, 'find 1 from array')
+  })
+  
 })()
