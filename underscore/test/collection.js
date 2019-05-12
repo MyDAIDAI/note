@@ -132,6 +132,27 @@
     }, '')
     assert.strictEqual(answer, 'foobarbaz', 'the test of object string value should be equal to foobarbaz')
   })
+  QUnit.test('reduceRight', function (assert) {
+    var list = _.reduceRight(['foo', 'bar', 'baz'], function (memo, str) {
+      return memo + str
+    }, '')
+    assert.strictEqual(list, 'bazbarfoo', 'can perform right folds')
+
+    list = _.reduceRight(['foo', 'bar', 'baz'], function (memo, str) {
+      return memo + str
+    })
+    assert.strictEqual(list, 'bazbarfoo', 'default inital value')
+
+    var sum = _.reduceRight({a: 1, b: 2, c: 3}, function (memo, num) {
+      return memo + num
+    })
+    assert.strictEqual(sum, 6, 'default inital object')
+
+    assert.strictEqual(_.reduceRight(null, _.noop, 138), 138, 'handles a null (with initial value) properly')
+    assert.strictEqual(_.reduceRight([_], _.noop), _, 'collection of length one with no initial value returns the first item')
+    assert.strictEqual(_.reduceRight([], _.noop, void 0), void 0, 'undefined can be passed as a special case')
+    assert.strictEqual(_.reduceRight([], _.noop), void 0, 'return undefined when collection is empty and no initial value')
+  })
 
   QUnit.test('findIndex', function (assert) {
     let index = _.findIndex([1, 2, 3], function (value) {
