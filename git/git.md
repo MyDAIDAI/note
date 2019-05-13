@@ -1,5 +1,11 @@
 # `Git`操作总结
 
+## 生成`ssh`公钥
+
+- `cd ~/.ssh`
+- `ssh-keygen`
+- `cat ~/.ssh/id_rsa.pub`
+
 ## `Git`配置
 
 - 全局配置用户信息
