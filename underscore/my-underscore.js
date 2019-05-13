@@ -76,21 +76,46 @@
     return results
   }
 
-  // 模拟原生reduce函数
-  _.reduce = function (list, iteratee, memo, context) {
-    iteratee = optimizeCb(iteratee, context, 4)
+  // 模拟原生reduce函数, reduce简单实现
+  // _.reduce = function (list, iteratee, memo, context) {
+  //   iteratee = optimizeCb(iteratee, context, 4)
+  //
+  //   let keys = !isArrayLike(list) && _.keys(list)
+  //   let length = (keys || list).length
+  //   if (arguments.length < 3) {
+  //     memo = 0
+  //   }
+  //
+  //   for (let i = 0; i < length; i++) {
+  //     let currentKey = keys ? keys[i] : i
+  //     memo = iteratee(memo, list[currentKey], currentKey, list)
+  //   }
+  //   return memo
+  // }
 
-    let keys = !isArrayLike(list) && _.keys(list)
-    let length = (keys || list).length
-    if (arguments.length < 3) {
-      memo = 0
-    }
+  _.reduce = _.foldl = createReduce(1)
 
-    for (let i = 0; i < length; i++) {
-      let currentKey = keys ? keys[i] : i
-      memo = iteratee(memo, list[currentKey], currentKey, list)
+  _.reduceRight = _.foldr = createReduce(-1)
+
+  function createReduce(dir) {
+    var reducer = function (obj, iteratee, memo, initial) {
+      var keys = !isArrayLike(obj) && _.keys(obj)
+      var length = (keys || obj).length
+      var index = dir > 0 ? 0 : length - 1
+      if (!initial) {
+        memo = obj[keys ? keys[index] : index]
+        index += dir
+      }
+      for (; index >= 0 && index < length; index += dir) {
+        var currentKey = keys ? keys[index] : index
+        memo = iteratee(memo, obj[currentKey], currentKey, obj)
+      }
+      return memo
     }
-    return memo
+    return function (obj, iteratee, memo, context) {
+      var initial = arguments.length >= 3
+      return reducer(obj, optimizeCb(iteratee, context, 4), memo, initial)
+    }
   }
 
   // list: array, object
@@ -171,7 +196,7 @@
       // 处理只传入一个参数
       if (length < 2 || obj == null) return obj
       for (let index = 1; index < length; index++) {
-        let source = arguments[index]
+        let source = arguments[index] // 从第二个参数后面以此取变量
         let keys = keysFunc(source)
         let len = keys.length
         for (let i = 0; i < len; i++) {
