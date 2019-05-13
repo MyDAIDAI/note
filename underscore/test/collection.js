@@ -172,5 +172,23 @@
     })
     assert.strictEqual(result, 1, 'find 1 from array')
   })
+  QUnit.test('filter', function (assert) {
+    var evenArray = [1, 2, 3, 4, 5, 6]
+    var evenObject = {one: 1, two: 2, three: 3}
+    var isEven = function (num) { return num % 2 === 0 }
+
+    assert.deepEqual(_.filter(evenArray, isEven), [2, 4, 6])
+    assert.deepEqual(_.filter(evenObject, isEven), [2])
+    // assert.deepEqual(_.filter([{}, evenObject, []], 'two'), )
+
+    // var list = [{a: 1, b: 2}, {a: 2, b: 2}, {a: 1, b: 3}, {a: 1, b: 4}]
+    // assert.deepEqual(_.filter(list, {a: 1}), [{a: 1, b: 2}, {a: 1, b: 3}, {a: 1, b: 4}])
+    // assert.deepEqual(_.filter(list, {b: 2}, [{a: 1, b: 2}, {a: 2, b: 2}]))
+    // assert.deepEqual(_.filter(list, {}), list, 'empty object accepts all items')
+
+    _.filter([1], function () {
+      assert.strictEqual(this, evenObject, 'given context')
+    }, evenObject)
+  })
   
 })()

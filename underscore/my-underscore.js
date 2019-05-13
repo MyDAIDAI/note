@@ -29,8 +29,9 @@
 
   var cb = function (value, context, argCount) {
     if (_.isFunction(value)) return optimizeCb(value, context)
-    // if (_.isObject(value)) return _.matcher(value)
-    // return _.property(value)
+    // TODO: 对 object 值以及其他值得处理
+    if (_.isObject(value)) return _.matcher(value)
+    return _.property(value)
   }
 
   // 获取属性函数
@@ -207,6 +208,44 @@
       return obj
     }
   }
+
+  _.matcher = function (attrs) {
+    attrs = _.extendOwn(attrs)
+    return function (obj) {
+      return _.isMatch(obj, attrs)
+    }
+  }
+
+  _.isMatch = function (object, attrs) {
+    var keys = _.keys(attrs)
+    var length = keys.length
+    if (object == null) return !length
+    var obj = Object(object)
+
+    for (var i = 0; i < length; i++) {
+      var key = keys[i]
+      if (attrs[key] !== obj[key] || !(key in obj)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  /**
+   * 遍历 obj 中的每个值，返回所有通过 predicate 真值检测的元素所组成的数组
+   * @type {function(*=, *=, *=): Array}
+   */
+  _.filter = _.select = function (obj, predicate, context) {
+    var results = []
+    predicate = cb(predicate, context)
+    _.each(obj, function (value, index, list) {
+      if (predicate(value, index, list)) {
+        results.push(value)
+      }
+    })
+    return results
+  }
+
 
   // function
   // 判断是否是函数
