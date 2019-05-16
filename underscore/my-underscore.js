@@ -27,9 +27,15 @@
     }
   }
 
+  /**
+   * 根据传入参数类型返回不同的函数进行调用
+   * @param value
+   * @param context
+   * @param argCount
+   * @returns {(function(*=, *=, *=): *)|(function(*=, *=, *=, *=): *)|(function(): *)|(function(*=): (*|boolean))|Function}
+   */
   var cb = function (value, context, argCount) {
     if (_.isFunction(value)) return optimizeCb(value, context)
-    // TODO: 对 object 值以及其他值得处理
     if (_.isObject(value)) return _.matcher(value)
     return _.property(value)
   }
@@ -119,8 +125,13 @@
     }
   }
 
-  // list: array, object
-  // predicate: function, object...
+  /**
+   * 返回 predicate 为 true 的第一个值
+   * @param list
+   * @param predicate
+   * @param context
+   * @returns {*}
+   */
   _.find = function (list, predicate, context) {
     let key = isArrayLike(list) ? _.findIndex(list, predicate, context) : _.findKey(list, predicate, context)
     if (key !== void 0 && key !== -1) return list[key] 
@@ -138,12 +149,108 @@
       let length = array.length
       for (; index >= 0 && index < length; index += dir) {
         if (predicate(array[index], index, array)) {
-          console.log('index', index)
           return index
         }
       }
       return -1
     }
+  }
+
+  /**
+   * 返回 obj 中包含 attrs 的第一个值
+   * @param obj
+   * @param attrs
+   * @returns {*}
+   */
+  _.findWhere = function (obj, attrs) {
+    return _.find(obj, _.matcher(attrs))
+  }
+
+  /**
+   * 返回 obj 包含 attrs 的所有值
+   * @param obj
+   * @param attrs
+   * @returns {Array}
+   */
+  _.where = function (obj, attrs) {
+    return _.filter(obj, _.matcher(attrs))
+  }
+
+  /**
+   * 遍历 obj 中的每个值，返回所有通过 predicate 真值检测的元素所组成的数组
+   * @type {function(*=, *=, *=): Array}
+   */
+  _.filter = _.select = function (obj, predicate, context) {
+    var results = []
+    predicate = cb(predicate, context)
+    _.each(obj, function (value, index, list) {
+      if (predicate(value, index, list)) {
+        results.push(value)
+      }
+    })
+    return results
+  }
+
+  /**
+   * 遍历 obj, 返回 predicate 返回值为 false 的值组成的数组
+   * @param obj
+   * @param predicate
+   * @param context
+   * @returns {Array}
+   */
+  _.reject = function (obj, predicate, context) {
+    return _.filter(obj, _.negate(cb(predicate)), context)
+  }
+
+  /**
+   * 对 predicate 执行的结果取反
+   * @param predicate
+   * @returns {function(): boolean}
+   */
+  _.negate = function (predicate) {
+    return function () {
+      return !predicate.apply(this, arguments)
+    }
+  }
+
+  /**
+   * 遍历 obj, predicate 都返回 true，则返回 true
+   * @param obj
+   * @param predicate
+   * @param context
+   * @returns {boolean}
+   */
+  _.every = _.all = function (obj, predicate, context) {
+    predicate = cb(predicate, context)
+    let keys = !isArrayLike(obj) && _.keys(obj)
+    let length = (keys || obj).length
+    for (let index = 0; index < length; index++) {
+      let currentKey = keys ? keys[index] : index
+      if (!predicate(obj[currentKey], currentKey, obj)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  /**
+   * 遍历 obj, predicate 有一个返回 true, 则返回 true
+   * @param obj
+   * @param predicate
+   * @param context
+   * @returns {boolean}
+   */
+  _.some = _.any = function (obj, predicate, context) {
+    predicate = cb(predicate, context)
+    let keys = !isArrayLike(obj) && _.keys(obj)
+    let length = (keys || obj).length
+    for (let index = 0; index < length; index++) {
+      let currentKey = keys ? keys[index] || index
+      if (predicate(obj[currentKey], currentKey, obj)) {
+        return true
+      }
+    }
+    return false
   }
 
   // Object
@@ -230,22 +337,6 @@
     }
     return true
   }
-
-  /**
-   * 遍历 obj 中的每个值，返回所有通过 predicate 真值检测的元素所组成的数组
-   * @type {function(*=, *=, *=): Array}
-   */
-  _.filter = _.select = function (obj, predicate, context) {
-    var results = []
-    predicate = cb(predicate, context)
-    _.each(obj, function (value, index, list) {
-      if (predicate(value, index, list)) {
-        results.push(value)
-      }
-    })
-    return results
-  }
-
 
   // function
   // 判断是否是函数
