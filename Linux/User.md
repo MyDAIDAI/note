@@ -110,3 +110,44 @@ drwxrwxrwt.  9 root root 4096 6月   8 03:48 .
 当目录被设置`SBIT`特殊权限位之后，文件的其他权限位部分的`x`会被替换为`t/T`(原本有`x`权限被替换为`t`,没有`x`权限被替换为`T`)
 
 设置`SBIT`, `chmod -R o+t 目录名`
+
+## 文件的隐藏属性
+`linux`系统中的文件除了具备一般权限和特殊权限之外，还有一种隐藏权限，即被隐藏起来的权限，默认情况下不能直接被用户发觉
+
+### `chattr`命令
+`chattr` - `change file attributes on a linux file system`, 格式为`chattr [参数] 文件`
+- 如果想要把某个隐藏功能添加到文件上，则需要在命令后面追加“+参数”
+- 如果想要把某个功能移出文件，则需要追加“-参数”
+
+参数：
+- `i`: 无法对文件进行修改，若对目录设置了该参数，则仅能修改其中的子文件内容而不能新建或删除文件
+- `a`: 仅允许追加内容，无法覆盖，删除内容
+- `S`: 文件内容在变更后立即同步到硬盘
+- `s`: 彻底从硬盘删除，不可恢复
+- `A`: 不再修改这个文件或目录的最后访问时间`atime`
+- `b`: 不再修改文件或目录的存取时间
+- `D`: 检查压缩文件中的错误
+- `d`: 使用`dump`命令备份时忽略本文件/目录
+- `c`: 默认将文件或目录压缩
+- `u`: 当删除该文件后依然保留其在硬盘中的数据，方便日后恢复
+- `t`: 让文件系统支持尾部合并
+- `X`: 可以直接访问压缩文件内容
+  
+```
+chattr +a testfile
+lsattr testfile
+// -----a-------e-- testfile
+rm testfile
+// rm：是否删除普通文件 "testfile"？yes
+// rm: 无法删除"testfile": 不允许的操作
+```
+
+### `lsattr`命令
+`lsattr` - `list file attributes on a linux second extended file system`, 用于显示文件的隐藏权限，格式为`lsattr [参数] 文件`
+```
+lsattr testfile
+// -----a-------e-- testfile
+chattr -a testfile
+lsattr testfile
+// -------------e-- testfile
+```
