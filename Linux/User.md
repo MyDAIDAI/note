@@ -151,3 +151,86 @@ chattr -a testfile
 lsattr testfile
 // -------------e-- testfile
 ```
+
+## 文件访问控制列表
+前面讲解的一般权限、特殊权限以及隐藏权限都会针对某一类用户设置的，如果需要对某个指定的用户进行单独的权限控制，就需要用到文件的访问控制列表。基于普通文件或目录设置`ACL`就是针对指定用户或用户组设置文件或目录的操作权限
+
+对某个目录设置了`ACL`,则目录中的文件会继承`ACL`;若针对文件设置了`ACL`,则文件不再继承所在目录的`ACL`
+
+```
+[root@izm5e3ysu09m3fsttcfydjz ~]# su dp
+[dp@izm5e3ysu09m3fsttcfydjz root]$ ls
+ls: 无法打开目录.: 权限不够
+[dp@izm5e3ysu09m3fsttcfydjz root]$ cd /root/
+bash: cd: /root/: 权限不够
+[dp@izm5e3ysu09m3fsttcfydjz root]$ cd ~
+[dp@izm5e3ysu09m3fsttcfydjz ~]$ cd /root/
+bash: cd: /root/: 权限不够
+```
+切换到普通用户之后，不能进入`root`文件
+
+### `setfacl`命令
+`setfacl` - `set file access control lists`, 格式为`setfacl [参数] 文件名称`
+
+文件的`ACL`提供的是所有者，所属组，其他人的读/写/执行权限之外的特殊权限，使用`setfacl`命令可以针对单一用户或用户组，单一文件或目录类进行读/写/执行权限的控制
+
+- `-R`: 针对目录文件
+- `-m`: 针对普通文件
+- `-b`: 删除文件的`ACL`
+
+```
+setfacl -Rm u:dp:rwx /root
+[dp@izm5e3ysu09m3fsttcfydjz ~]$ ls -ld /root/     // 修改之后可以游行
+dr-xrwx---+ 13 root root 4096 6月  10 09:24 /root/
+```
+文件权限后的`.`变成了`+`，意味着该文件已经设置了`ACL`
+
+`ACL`类型：
+- `ACL_USER_OBJ`: 相当于`Linux`里`file_owner`的权限
+- `ACL_USER`: 定义了额外的用户可以对此文件拥有的权限
+- `ACL_GROUP_OBJ`: `Linux`里`Group`的权限
+- `ACL_GROUP`: 定义了额外的组可以对此文件拥有的权限
+- `ACL_MASK`: 定义了`ACL_USER`、`ACL_GROUP_OBJ`和`ACL_GROUP`的最大权限
+- `ACL_OTHER`: 定义了`other`的权限
+
+### `getfacl`命令
+`getfacl` - `get file access control lists`， 格式`getfacl 文件名称`
+```
+[dp@izm5e3ysu09m3fsttcfydjz ~]$ getfacl /root/
+getfacl: Removing leading '/' from absolute path names
+# file: root/
+# owner: root
+# group: root
+user::r-x  定义了 ACL_USER_OBJ, 说明文件所有者拥有读和执行的权限
+user:dp:rwx 定义了 ACL_USER, 这样用户 dp 就拥有了读，写，执行的权限
+group::r-x 定义了 ACL_GROUP_OBJ, 文件的用户组拥有读与执行的权限
+mask::rwx 定义了 ACL_MASK, 其权限为读，写，执行
+other::--- 定义了 ACL_OTHER的权限
+```
+
+当为文件设置了`ACL`之后，使用`ls -l`命令中的用户组权限就显示的为`mask`的权限，而具体的用户组权限需要使用`getfacl`查看
+```
+[root@izm5e3ysu09m3fsttcfydjz ~]# ls -l index.html
+-rw-rwxr--+ 1 root root 230 4月  29 09:34 index.html
+[root@izm5e3ysu09m3fsttcfydjz ~]# getfacl index.html
+# file: index.html
+# owner: root
+# group: root
+user::rw-
+user:dp:rwx
+group::r--
+mask::rwx
+other::r--
+```
+
+`mask`规定了`ACL_USER`,`ACL_GROUP`,`ACL_GROUP_OBJ`的最大值
+```
+[root@localhost ~]# setfacl -m mask::r-- ./test.sh
+[root@localhost ~]# getfacl --omit-header ./test.sh
+user::rwx
+user:john:rwx   #effective:r--
+group::rw-      #effective:r--
+mask::r--
+other::r--
+```
+它规定了`ACL_USER`，`ACL_GROUP_OBJ`和`ACL_GROUP`的最大权限。那么在我们这个例子中他们的最大权限也就是`read only`。虽然我们这里给`ACL_USER`和`ACL_GROUP_OBJ`设置了其他权限，但是他们真正有效果的只有read权限。
