@@ -58,3 +58,39 @@ mount /dev/sdb2 /backup
 `umount`命令用于撤销已经挂载的设备文件，格式为`umount [挂载点/设备文件]`
 
 挂载文件系统的目的是为了使用硬件资源，而卸载文件系统意味着不再使用硬件的设备资源 `umount /dev/sdb2`
+
+## 添加硬盘设备
+
+### `fdish`命令
+`fdisk` -- `manipulate disk partition table`, 管理磁盘分区，格式为`fdisk [磁盘名称]`
+
+## 软硬方式链接
+在`window`中，快捷方式就是指向原始文件的一个链接文件，可以让用户从不同的位置来访问原始文件；原始文件一旦被删除或剪切到其他地方后，会导致链接失败
+
+在`Linux`系统中存在硬链接和软链接两种文件
+
+- 硬链接(`hard link`): 可以理解为指向原始文件的指针，系统不为它分配独立的`inode`和文件。所以，**硬链接文件和原始文件其实是同一个文件**，只是名字不同。每添加一个硬链接，该文件的`inode`连接数就会增加1，只有当该文件的`inode`连接数为0时，才算彻底将其删除。也就是说，由于硬链接实际上是指向原文件`inode`的指针，即使原始文件被删除，依然可以通过硬链接文件来访问。需要注意的是，由于技术的局限性，不能跨分区对目录文件进行链接
+
+- 软链接(符号链接`[symbolic link]`): 仅仅包含所链接文件的路径名，因此能链接目录文件，也可以跨域文件系统进行链接。但是，当原始文件本删除后，链接文件也会失效，这与`window`中的快捷方式相似
+
+### `ln`
+`ln` -- `make links between files`, 用于创建链接文件，格式为`ln [选项] 目标`
+参数：
+- `-s`: 创建“符号链接”（默认创建硬链接）
+- `-f`: 强制创建文件或者目录的链接
+- `-i`: 覆盖前先询问
+- `-v`: 显示创建链接的过程
+
+```
+[root@izm5e3ysu09m3fsttcfydjz ~]# echo "welcome to daidai de website" > readme.txt
+[root@izm5e3ysu09m3fsttcfydjz ~]# cat readme.txt
+welcome to daidai de website
+[root@izm5e3ysu09m3fsttcfydjz ~]# ln -s readme.txt readit.txt // 软链接文件
+
+[root@izm5e3ysu09m3fsttcfydjz ~]# ls -l readit.txt
+lrwxrwxrwx 1 root root 10 6月  17 17:44 readit.txt -> readme.txt // 软连接文件第一个为 l
+
+[root@izm5e3ysu09m3fsttcfydjz ~]# ln readme.txt readit1.txt
+[root@izm5e3ysu09m3fsttcfydjz ~]# ls -l readit1.txt
+-rw-r--r-- 1 root root 18 6月  17 17:47 readit1.txt // 硬链接文件与原始文件为同一个文件
+```
