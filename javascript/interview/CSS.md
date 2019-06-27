@@ -225,3 +225,36 @@
 ## 什么是`FOUC`?如何避免
 `FOUC`(`Flash Of Unstyled Content`)：用户定义样式表加载之前浏览器使用默认样式显示文档，用户样式加载渲染之后再重新显示文档，造成页面闪烁
 解决办法：将样式表放在`head`标签中
+
+## 使用`css`画箭头
+```html
+<div class="arrow"></div>
+<div class="triangle"></div>
+```
+```css
+.arrow {
+    width: 14px;
+    height: 14px;
+    border-top: 1px solid;
+    border-right: 1px solid;
+    transform: rotate(45deg);
+    position: relative;
+}
+.arrow::after {
+    content: '';
+    height: 25px;
+    width: 1px;
+    background: black;
+    position: absolute;
+    top: -4px;
+    left: 5px;
+    transform: rotate(45deg);
+}
+.triangle {
+    width: 0;
+    height: 0;
+    border: 50px solid transparent;
+    border-left-color: red;
+}
+
+```
