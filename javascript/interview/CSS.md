@@ -197,7 +197,118 @@
 - `cursor`
 
 ## 块格式化上下文
-块格式化上下文(`Block Formatting Context`, `BFC`)是`Web`页面的可视化`css`渲染的一部分，是块盒子的布局过程发生的区域，也是浮动元素与其他元素交互的区域
+块格式化上下文(`Block Formatting Context`, `BFC`)是`Web`页面的可视化`css`渲染的一部分，块格式化上下文会包含创建它的元素内部的所有内容
+
+下面的方式会创建块格式化上下文：
+- 根元素或者包含根元素的元素
+- 浮动元素（元素的`float`不为`none`）
+- 绝对定位元素（元素的`position`为`absolute`或`fixed`）
+- 行内块元素（元素的`display`为`inline-block`）
+- 表格单元格（元素的`display`为`table-cell`， `HTML`表格单元格默认为该值）
+- 表格标题（元素的`display`为`table-caption`, `  HTML`表格标题默认为该值）
+- `overflow`值不为`visible`的块元素
+- `display`值为`flow-root`的元素
+- `contain`值为`layout`、`content`或`strict`的元素
+- 弹性元素（`display`为`flex`或`inline-flex`元素的直接子元素）
+- 网格元素（`display`为`grid`或`line-grid`元素的直接子元素）
+- 多列容器（元素的`column-count`或`column-width`不为`auto`, 包括`column-count`为`1`）
+
+浮动不会影响其他`BFC`中元素的布局，而清除浮动只能清除同一个`BFC`中在它前面的元素的浮动。外边距折叠(`margin collapsing`)也只会发生在属于同一个`BFC`的块级元素之间
+
+### 清除浮动
+```html
+<div class="box">
+    <div class="float">this is a float box
+    </div>
+    <p>i am content inside the container</p>
+</div>
+```
+```css
+.box {
+    background: rgb(224, 206, 247);
+    border: 5px solid rebeccapurple;
+    overflow: auto;
+    /*display: inline-block;*/
+    /*float: left;*/
+}
+.float {
+    float: left;
+    width: 40px;
+    height: 200px;
+    background: aliceblue;
+    border: 1px solid black;
+    margin-right: 20px;
+}
+```
+在上面的实例中，浮动元素的高度高于容器内容的高度，容器没有包含浮动元素，为容器添加`float: left`或者`display: inline-block`将其设置`BFC`, 那么就可以包裹内部的所有元素，也就可以包裹浮动元素，容器的高度也与浮动元素相同
+
+### 外边距塌陷
+一个`BFC`中相邻的两个元素之间的外边距会发生塌陷，可以通过创建新的`BFC`来避免
+```html
+<div class="container">
+    <p>Sibling 1</p>
+    <p>Sibling 2</p>
+</div>
+```
+```css
+.container {
+    background-color: red;
+    overflow: hidden;
+}
+p {
+    background-color: lightgreen;
+    margin: 10px 0;
+}
+```
+上面可以看到在`Sibling 1`跟`Sibling 2`之间的边距为`10`, 不折叠应该为`20`, 为了避免发生边距折叠，可以在外层添加`BFC`
+```html
+<div class="container">
+    <p>Sibling 1</p>
+    <div class="bfc-container">
+        <p>Sibling 2</p>
+    </div>
+</div>
+```
+```css
+.container {
+    background-color: red;
+    overflow: hidden;
+}
+p {
+    background-color: lightgreen;
+    margin: 10px 0;
+}
+.bfc-container {
+    overflow: hidden;
+}
+```
+修改为上面以后，可以看到`Sibling 1`与`Sibling 2`之间的间距变为了`20`
+
+### `BFC`阻止内容环绕浮动元素
+```html
+<div class="outer">
+    <div class="float">i am a float element</div>
+    <div class="text">i am a text</div>
+</div>
+```
+```css
+.float {
+    float: left;
+    width: 40px;
+    height: 200px;
+    background: aliceblue;
+    border: 1px solid black;
+    margin-right: 20px;
+}
+.outer {
+    background-color: #ccc;
+    overflow: auto;
+}
+```
+上面的实例中浮动元素会遮挡`text`的背景，但是不会遮挡其内容，为上面的`text`添加`overflow: hidden;`将其变为`BFC`, 两个`BFC`之间互相隔离，互不影响
+
+### 创建`BFC`
+一般使用`float: left`或者`overflow: auto`来设置`BFC`, 会产生副作用。可以使用一个新的`display`属性的值，它可以创建无副作用的`BFC`。在父级块中使用`display: flow-root`可以创建新的`BFC`
 
 详情见[块格式化上下文](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)
 
