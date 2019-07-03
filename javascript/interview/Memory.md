@@ -57,6 +57,9 @@ var b = a
 a.x = a = {m: 2}
 // b的值?a的值
 ```
+答案： 
+`b:{n: 1, x: {m: 2}}`，`a: {m:2}`
+上面的代码重点在与执行顺序与操作符优先级，`.`操作符优先级最高，所以优先执行`a.x`，也就是向`a`中添加属性`x`，其值为`undefined`，此时`a`的值为`{n: 1, x: undefined}`, 然后按照表达式从右向左执行，也就是`a.x = (a = {m:2})`,先执行`a = {m:2}`将`a`指向其他对象，然后执行`a.x = a`，此时的`a`指向的是`{m:2}`，而`a.x`此时为`b.x`中的值，所以执行后`b.x`引用的`a`中的值，也就是`{m: 2}`
 
 ### 参考
 [javaScript深入之内存空间详细图解](https://github.com/yygmind/blog/issues/14)
@@ -133,10 +136,17 @@ displayList.removeAllChildren()
   - `heapUsed`: "堆"使用内存
   - `external`: `v8`引擎内部`c++`对象占用的对象
 
+### `WeakMap`
+及时的清除引用，释放内存非常重要，但经常很容易忽视。那么最好有一种方法，在新建引用的时候就声明，哪些引用必须手动清除，哪些引用可以忽略不计，当其他的引用释放后，垃圾回收机制就可以释放内存。这样就能大大减少程序员的负担，只需要清除主要的引用就可以了
 
-
-
-
+`ES6`为此新加了两种数据结构`WeakSet`和`WeakMap`。它们对于值得引用都是不计入垃圾回收机制的，前面的`Weak`表示为"弱引用"
+```javascript
+const wm = new WeakMap()
+const element = document.getElementById('example')
+wm.set(element, 'some information')
+wm.get(element)
+```
+上面代码中`element`变量与元素之间就是弱引用，如果没有其他变量引用该`DOM`元素，那么该节点所占用的内存就会被垃圾回收机制释放，`WeakMap`保存的这个键值对，也会自动消失
 
 
 ### 参考
