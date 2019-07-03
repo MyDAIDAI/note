@@ -100,8 +100,46 @@ div.onclick = function (e) {
 无法到达的对象包含了没有引用对象的概念，但反之不一定成立
 
 所以对现在的主流浏览器，只需要切断需要回收的对象与根之间的联系。最常见的泄露一般都与`DOM`元素绑定有关
+```javascript
+var message = document.createElement("div")
+displayList.appendChild(message)
+displayList.removeAllChildren()
+```
+上面的代码中，创建的`div`元素虽然已经从`DOM`树中清除，但变量`message`还保存着对它的引用，所以`div`元素就会一直保存在内存中，需要进行手动释放或者使用`WeakMap`
+
+### 内存泄露
+程序的运行需要内存，只要程序提出要求，操作系统或者运行时`runtime`就必要要供给内存。对于持续运行的服务进程，必须及时释放不再使用到的内存。否则，内存占用会越来越高
+
+#### 识别方法
+1. 开发者工具
+   - 打开`chrome`开发者工具，点击`Performance`
+   - 点击左上角录制按钮
+   - 在页面上进行各种操作，模拟用户使用情况
+   - 操作完成之后，点击对话框`stop`按钮，面板上就会显示这段时间的网页性能情况，其中包含内存占用
+
+   ![内存使用情况](images/memory.jpg)
+
+2. 命令行
+  命令行可以使用`Node`提供的`process.memoryUsage`方法
+  ```javascript
+  console.log(process.memoryUsage());
+  // { rss: 27709440,
+  //  heapTotal: 5685248,
+  //  heapUsed: 3449392,
+  //  external: 8772 }
+  ```
+  - `rss`: `resident set size` 所有内存占用，包括指令区和堆栈
+  - `heapTotal`: "堆"占用的内存，包含使用以及未使用的
+  - `heapUsed`: "堆"使用内存
+  - `external`: `v8`引擎内部`c++`对象占用的对象
+
+
+
+
 
 
 
 ### 参考
 - [深入理解JavaScript系列（16）：闭包（Closures）](https://www.cnblogs.com/TomXu/archive/2012/01/31/2330252.html)
+- [JavaScript 内存泄漏教程](http://www.ruanyifeng.com/blog/2017/04/memory-leak.html)
+- [JavaScript深入之带你走进内存机制](https://github.com/yygmind/blog/issues/15)
