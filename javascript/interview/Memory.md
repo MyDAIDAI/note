@@ -153,3 +153,62 @@ wm.get(element)
 - [深入理解JavaScript系列（16）：闭包（Closures）](https://www.cnblogs.com/TomXu/archive/2012/01/31/2330252.html)
 - [JavaScript 内存泄漏教程](http://www.ruanyifeng.com/blog/2017/04/memory-leak.html)
 - [JavaScript深入之带你走进内存机制](https://github.com/yygmind/blog/issues/15)
+
+
+## 常见内存泄露
+常见的垃圾回收算法为**标记清除**算法，算法由以下几步组成：
+- 垃圾回收期创建了一个`roots`列表，该`roots`通常是代码中全局变量的引用，在浏览器端，`window`对象就是一个全局变量，被当作`root`。`window`对象总是存在的，因此垃圾回收器可以检查它和它的所有子对象是否存在，存在则不是垃圾，不存在则是垃圾
+- 所有的`roots`被检查和标记为激活（不是垃圾）。所有的子对象也被递归进行检查，从`root`开始，对象可达，则不是垃圾
+- 所有未被标记的内存会被当做垃圾，被垃圾收集器进行回收释放
+
+**常见内存泄露**
+- 全局变量：无意创建的全局变量
+```javascript
+function foo () {
+  bar = 'this is a global variable' // 不使用var进行声明，会创建全局变量
+}
+function foo () {
+  this.bar = 'maybe a global variable'
+}
+foo() // 直接调用，内部 this 执行 window，相当于创建了一个全局变量
+```
+解决办法：
+  - 在`javascript`文件头部加上`use strict`，使用严格模式避免意外的全局变量
+  - 使用全局变量存储大量数据的时候，确保用完之后使用`null`将其释放
+
+- 被遗忘的计时器或回调函数
+```javascript
+setInterval(function () {
+  var node = document.getElementById('node')
+  if (node) {
+    node.innerHTML = JSON.stringify(data)
+  }
+}, 1000)
+```
+上面的例子中，在节点`node`或者是数据不再需要的时候，定时器依然会指向这些数据。即使`node`节点被移除，定时器仍旧存在，依赖也就没有办法被回收，除非清除定时器
+
+- 脱离`DOM`的引用
+将`DOM`节点保存在对象或者数组中，此时，同样的`DOM`元素存在两个引用，一个在`DOM`树中，另一个保存在对象或者数组中。如果不需要，需要将两个都清除
+```javascript
+var elements = {
+  button: document.getElementById('button')
+  image: document.getElementById('image')
+}
+function removeButton () {
+  document.body.removeChild(document.getElementById('button'))
+  // 删除掉DOM树中对元素的引用，但仍有一个引用保存在elements.button中，需要手动将其清除
+}
+```
+
+- 闭包
+  闭包可以访问父级作用域中的变量，被闭包内引用的变量会一直保存在堆内存中，不使用后请将其释放
+
+思考题
+- 从内存看`null`与`undefined`本质的区别是什么？
+  - `null`表示一个“无”的对象
+  - `undefined`表示“缺少值”，就是此处应该有一个值，但是没有定义，也就是一个“无”的原始值
+
+
+## 参考
+- [JS解惑-undefined和null](https://github.com/sunmaobin/sunmaobin.github.io/issues/17)
+- [4类 JavaScript 内存泄漏及如何避免](https://jinlong.github.io/2016/05/01/4-Types-of-Memory-Leaks-in-JavaScript-and-How-to-Get-Rid-Of-Them/)
