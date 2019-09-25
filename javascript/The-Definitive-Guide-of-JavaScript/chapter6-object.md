@@ -141,17 +141,17 @@ var a = inherit(Object.prototype)
 ```javascript
 var o = {x: "don't change this object"}
 function otherFunction(data) {
-	console.log(data.x) // don't change this object
+	console.log(data.x) // don't change this object: 读取继承属性
 	data.y = "y value"
-	data.x = "change this object"
+	data.x = "change this object" // 继承属性的值只能被读取，不能写入，所以是在对象上重新添加了一个x属性
 	console.log(data)
 }
 otherFunciton(inherit(o)) 
-// don't change this object
-// x: "change this object"
+// don't change this object： 读取的继承属性值
+// x: "change this object"： 设置的对象自身属性值
 // y: "y value"
 // __proto__:
-// 	x: don't change this object
+// 	x: don't change this object: 读取的继承属性值
 //	__proto__:
 // 		...
 ```
@@ -215,13 +215,13 @@ console.log(p)
 
 ## `delete`运算符
 
-`delete`运算符可以删除对象的属性，但是只能删除只有属性，不能删除继承的属性（要删除继承属性必须从定义这个属性的原型对象上删除它，否则会影响到所有继承自这个原型的对象）
+`delete`运算符可以删除对象的属性，但是只能删除自有属性，不能删除继承的属性（要删除继承属性必须从定义这个属性的原型对象上删除它，否则会影响到所有继承自这个原型的对象）
 
 ![image-20181119220704845](https://github.com/MyDAIDAI/The-Definitive-Guide-of-Ja:vaScript/blob/master/image-20181119220704845.png)
 
 从上面的图中可以发现，当使用`delete`删除继承属性的时候，返回了`true`，但是并没有删除掉`p`原型链中的`x`属性。只能在被继承的原型对象`o`上删除，然后所有继承这个对象的对象都会被影响，因为对象之间的传递是引用传递。
 
-`delete`表达式删除成功或者没有任何副作用（比如删除不存在的属性）时，都会返回`true`，比如删除`p.x`。除此之外`delete`不能删除其可配置项为`false`（即：不可配置）的属性。某些内置对象的属性是不可配置的，比如通过变量声明和函数声明创建的全局对象属性。
+`delete`表达式删除成功或者失败没有任何副作用（比如删除不存在的属性）时，都会返回`true`，比如删除`p.x`。除此之外`delete`不能删除其可配置项为`false`（即：不可配置）的属性。某些内置对象的属性是不可配置的，比如通过变量声明和函数声明创建的全局对象属性。
 
 ```javascript
 delete Object.prototype // false
@@ -247,7 +247,7 @@ function inherit(obj) {
 }
 var o = {x: 1}
 var p = inherit(o)
-o.y = 2
+p.y = 2
 'y' in p // true
 'x' in p // true
 p.hasOwnProperty('y') // true
@@ -504,7 +504,7 @@ var random = {
 - 若数据属性不可配置，则不能将它的可写性从`false`修改为`true`，但是可以将`true`修改为`false`
 - 如果数据属性是不可配置且不可写，那么不能修改它的值。如果是可配置但不可写属性，则属性的值是可以修改的
 
-```
+```javascript
 var o = {}
 Object.defineProperty(o, 'x', {}) 
 // {value: undefined, writable: false, enumerable: false, configurable: false}
@@ -555,7 +555,7 @@ Object.defineProperty(Object.prototype, 'extend', {
 
 | 检测属性操作符                    | 自有属性     | 继承属性     | 只可枚举     |
 | --------------------------------- | ------------ | ------------ | ------------ |
-| `in`                              | ok           | ok           |              |
+| `in`                              | ok           | ok           | ok           |
 | `hasOwnproperty`                  | ok           |              |              |
 | `propertyIsEnumerable`            | ok           |              | ok           |
 | **枚举属性操作符**                | **自有属性** | **继承属性** | **只可枚举** |
@@ -566,18 +566,13 @@ Object.defineProperty(Object.prototype, 'extend', {
 | `Object.getOwnPropertyDescriptor` | ok           |              |              |
 | `Object.defineProperty`           | ok           |              |              |
 
-由上面的表中可以得出以下：
-
-- 检测属性操作符，只检测属性是否存在，无论是否可枚举，但`propertyIsEnumerable`为增加版，来检测属性是否为自有属性且可枚举
-- 枚举属性操作符，枚举的属性必须是可以枚举的，`getOwnPropertyNames`为扩展版，来获取所有自有属性名，依次来枚举所有属性
-
 ## 对象的三个属性
 
 每一个对象都有与之相关的原型`prototype`、类`class`和可扩展性`extensible`
 
 ### 原型对象
 
-对象的原型呀从来继承属性，原型属性是在实例对象创建之初就设置好的。通过对象直接量创建的对象使用`Object.prototype`作为它们的原型，使用`new`操作符创建的实例对象使用构造函数的`prototype`属性作为它们的原型，使用`Object.create(obj)`创建的对象使用传入的`obj`作为它们的原型。
+对象的原型用来继承属性，原型属性是在实例对象创建之初就设置好的。通过对象直接量创建的对象使用`Object.prototype`作为它们的原型，使用`new`操作符创建的实例对象使用构造函数的`prototype`属性作为它们的原型，使用`Object.create(obj)`创建的对象使用传入的`obj`作为它们的原型。
 
 在`es6`中可以使用`Object.getPropertyOf()`来查询它的原型对象，在`es3`中可以使用`o.constructor.prototype`来检测一个对象的原型。对象的`constructor`属性指代创建这个对象的构造函数，`constructor.prototype`指代构造函数的原型属性。通过对象直接量可以使用`constructor.prototype`来查询其原型属性，但是使用`Object.create()`创建的对象往往不能这样使用。
 
