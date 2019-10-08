@@ -103,18 +103,28 @@ index.example.com // 所有页面共享
 ```javascript
 function setCookie(name, value, daysToLive) {
   var cookie = name + '=' + encodeURICcomponent(value)
-  if (type daysToLive === 'number') {
+  if (typeof daysToLive === 'number') {
     cookie += ';max-age=' + (daysToLive * 60 * 60 * 24)
   }
   document.cookie = cookie
 }
 ```
+设置`expires=date-in-GMTString-format`，如果没有定义，`cookie`会在会话结束时过期
 设置其他属性： `name=value;max-age=seconds;path=path;domain=domain;secure`新设置的属性值会覆盖原来的属性值
 
 删除`cookie`，指定一个非空的值，并将其`max-age=0`即可
 
+#### `max-age`与`expires`的区别
+- `expires`为`cookie`的删除设置一个过期的日期，删除值将其设置为`Thu, 01 Jan 1970 00:00:00 GMT`
+- `max-age`设置一个`cookie`将要过期的秒数，删除值将其设置为`0`
+- `IE`浏览器(6, 7, 8)不支持`max-age`，所有浏览器都支持`expires`
+
+`expires`参数是网景公司推出的`cookie`原有的一部分，在`HTTP1.1`中，`expires`被弃用并且被更加易用的`max-age`所代替，设置二者其中的一个，`cookie`会一直会在过期时间之前一直保存，如果一个都没有设置，那么这个`cookie`将会一直存在直到关闭浏览器，这种被称为`session cookie`
+
+[Http Cookies 中 Max-age 和 Expires 有什么区别](https://jpanj.com/2017/cookies-max-age-vs-expires/)
+
 ### 读取`cookie`
-查询`document.cookie`时返回的是一个字符串，该字符串将键值对用`;`和空格分开，其内容包含了所有作用在当前文档的`cookie`
+查询`document.cookie`时返回的是一个字符串，该字符串将键值对用`;`和空格分开，其内容包含了所有作用在**当前文档**(只能设置以及读取当前域的值)的`cookie`
 
 ```javascript
 // 解析 documen.cookie,返回对象
@@ -133,7 +143,7 @@ function getcookie () {
     value = decodeURIComponent(value)
     cookie[name] = value
   }
-  return value
+  return cookie
 }
 ```
 
@@ -145,6 +155,7 @@ function getcookie () {
 ### `cookie`相关的存储
 下面为`cookie`定义一些方法，可以更方便的进行操作
 ```javascript
+// 类方法
 function cookieStorage (maxage, path) {
     var cookie = (function () {
         var cookie = {}
@@ -209,6 +220,45 @@ cookieStorage.prototype.clear = function () {
         document.cookie = this.keys[i] + '=; max-age=0' 
     }
 }
+// 对象方法
+var docCookies = {
+  getItem: function (sKey) {
+    return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[-.+*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+  },
+  setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+    var sExpires = "";
+    if (vEnd) {
+      switch (vEnd.constructor) {
+        case Number:
+          // Infinity 设置为永不过期
+          sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
+          break;
+        case String:
+          sExpires = "; expires=" + vEnd;
+          break;
+        case Date:
+          sExpires = "; expires=" + vEnd.toUTCString();
+          break;
+      }
+    }
+    document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+    return true;
+  },
+  removeItem: function (sKey, sPath, sDomain) {
+    if (!sKey || !this.hasItem(sKey)) { return false; }
+    document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + ( sDomain ? "; domain=" + sDomain : "") + ( sPath ? "; path=" + sPath : "");
+    return true;
+  },
+  hasItem: function (sKey) {
+    return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[-.+*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+  },
+  keys: /* optional method: you can safely remove it! */ function () {
+    var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+    for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+    return aKeys;
+  }
+};
 ```
 
 ## 应用程序存储和离线`web`应用
