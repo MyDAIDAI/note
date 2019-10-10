@@ -102,38 +102,38 @@
 
 - 修改`webpack.base.conf.js`中入口与出口路径
   
-```javascript
-module.exports = {
-  entry: {
-    app: utils.pageEntryFile
-  },
-  output: {
-    path: utils.pageAssetsRoot, // edit
-    filename: '[name].js',
-    publicPath: process.env.NODE_ENV === 'production'
-      ? utils.pageAssetsPublicPath // edit
-      : config.dev.assetsPublicPath
+  ```javascript
+  module.exports = {
+    entry: {
+      app: utils.pageEntryFile
+    },
+    output: {
+      path: utils.pageAssetsRoot, // edit
+      filename: '[name].js',
+      publicPath: process.env.NODE_ENV === 'production'
+        ? utils.pageAssetsPublicPath // edit
+        : config.dev.assetsPublicPath
+    }
   }
-}
-```
+  ```
 
 - 修改`webpack.prod.conf.js`中的配置
   
-```javascript
-output: {
-  path: utils.pageAssetsRoot, // edit
-},
-new HtmlWebpackPlugin({
-  filename: utils.pageFileName, // edit
-}),
-new CopyWebpackPlugin([
-  {
-    from: path.resolve(__dirname, utils.staticPath),
-    to: utils.pageAssetsSubDirectory, // edit
-    ignore: ['.*']
-  }
-])
-```
+  ```javascript
+  output: {
+    path: utils.pageAssetsRoot, // edit
+  },
+  new HtmlWebpackPlugin({
+    filename: utils.pageFileName, // edit
+  }),
+  new CopyWebpackPlugin([
+    {
+      from: path.resolve(__dirname, utils.staticPath),
+      to: utils.pageAssetsSubDirectory, // edit
+      ignore: ['.*']
+    }
+  ])
+  ```
 
 - 运行`npm run dev`、`npm run dev:page1`或者其他，打开浏览器，会分别显示每个页面的内容
 - 运行`npm run build`会在`dist`中生成`default`文件夹，静态文件都包含其中
