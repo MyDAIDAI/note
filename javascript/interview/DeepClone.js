@@ -12,16 +12,17 @@ var a2 = shallowClone(a1)
 console.log('a2.b.c === a1.b.c', a2.b.c === a1.b.c)
 
 function isObject (obj) {
-  return Object.prototype.toString.call(obj) === '[object Object]'
+  return typeof obj === 'object' && obj != null
+  // return Object.prototype.toString.call(obj) === '[object Object]'
 }
 
 function clone (source) {
   if (!isObject(source)) {
     return source
   }
-  var target = {}
+  var target = Array.isArray(source) ? [] : {}
   for (var i in source) {
-    if (source.hasOwnProperty(i)) {
+    if (Object.prototype.hasOwnProperty.call(source, i)) {
       if (isObject(source[i])) {
         target[i] = clone(source[i])
       } else {
@@ -70,11 +71,11 @@ function cloneLoop (x) {
 
     let res = parent
     if (typeof key !== 'undefined') {
-      res = parent[key] = {}
+      res = parent[key] = Array.isArray(data) ? [] : {}
     }
 
     for (let k in data) {
-      if (data.hasOwnProperty(k)) {
+      if (Object.prototype.hasOwnProperty.call(data, k)) {
         if (isObject(data[k])) {
           loopList.push({
             parent: res,
@@ -146,7 +147,7 @@ function cloneForce (x) {
     })
 
     for (let key in data) {
-      if (data.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(data, key)) {
         if (isObject(data[key])) {
           loopList.push({
             parent: res,
