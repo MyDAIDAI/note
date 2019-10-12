@@ -108,7 +108,7 @@ function instance_if (L, R) {
 - 域名相同
 - 端口相同
 跨域通信
-- 简单跨域： `<img>`、`<link>`、`<iframe>`
+- 简单跨域： `<img>`、`<link>`
 - `jsonp`: `<script>`
 - 多窗口通信: `otherwindow.postMessage(message, originTarget)`以及`window.onmessage`事件
 - `CORS`：服务器端设置`Access-Control-Allow-Origin`
@@ -198,20 +198,40 @@ var o = Object.create({name: 'name'}, {
 
 ## 编写`javascript`深度克隆函数
 ```javascript
-function cloneDeep(obj) {
-  var _toString = Object.prototype.toString
-  if (!obj || typeof obj !== 'object') {
-    return obj
+function cloneDeep (source, hash = new WeakMap()) {
+  let root = {}
+  let loopList = [{
+    parent: root,
+    key: undefined,
+    data: source
+  }]
+  while(loopList.length) {
+    let node = loopList.pop()
+    let key = node.key
+    let parent = parent
+    let data = node.data
+    let res = parent
+    if (key !== undefined) {
+      res = parent[key] = Array.isArray(data) ? [] : {}
+    }
+    if (hash.get(data)) {
+      parent[key] = hash.get(data)
+      break
+    }
+    hash.set(data, res)
+    for (let index = 0, len = data.length; index < len; index++) {
+      if (Object.prototype.hasOwnProperty.call(data, index)) {
+        loopList.push({
+          parent: res,
+          data: data[index],
+          key: index
+        })
+      } else {
+        res[index] = data[index]
+      }
+    }
   }
-  if (obj.nodeType && 'cloneNode' in obj) {
-    return obj.cloneNode(true)
-  }
-  
-  var result = Array.isArray(obj) ? [] : obj.constructor ? new obj.constructor() : {}
-  for (var key in obj) {
-    result[key] = cloneDeep(obj[key])
-  }
-  return result
+  return root
 }
 ```
 
