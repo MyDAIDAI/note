@@ -255,13 +255,15 @@ console.log(t) // undefined
 
 #### `ToString`
 
-- `undefined` -> `'undefined'`
-- `null` -> `'null'`
-- `true` -> `'true'`
-- `NaN` -> `'NaN'`
-- `0` -> `'0'`
-- `{}` -> `'[object Object]'`
-- `[1, 2]` -> `'1, 2'`
+- 基本类型值转换
+  - `undefined` -> `'undefined'`
+  - `null` -> `'null'`
+  - `true` -> `'true'`
+  - `NaN` -> `'NaN'`
+  - `0` -> `'0'`
+- 对象类型值转换
+  - `{}` -> `'[object Object]'`
+  - `[1, 2]` -> `'1, 2'`
   
   ```javascript
   > String(undefined)
@@ -359,6 +361,67 @@ console.log(t) // undefined
   '{\n   "b": 42,\n   "c": "a.c"\n}'
   > JSON.stringify(a, null, '---')
   '{\n---"b": 42,\n---"c": "a.c"\n}'
+  ```
+
+#### `ToNumber`
+
+- 基本类型值转换
+  - `true` -> `1`
+  - `false` -> `0`
+  - `undefined` -> `NaN`
+  - `null` -> `0`
+- 对象类型值转换
+  - 使用抽象操作`ToPrimitive`检查该值是否含有`valueOf`方法，如果有并且返回基本类型值，就是用该值进行类型转换
+  - 如果上面没有`valueOf`方法，或者其没有返回基本类型的值，则调用`toString`方法将其强制转换为基本类型的值
+  - 如果使用`valueOf`与`toString`均没有返回基本类型的值，会产生`TypeError`错误
+  - 根据上面的转换原理，使用`Object.create(null)`生成的对象，不能转换为数字以及字符串类型
+
+  ```javascript
+  // 基本类型值转换
+  > Number(true)
+  1
+  > Number(false)
+  0
+  > Number(undefined)
+  NaN
+  > Number(null)
+  0
+  > Number(NaN)
+  NaN
+  > var o = {}
+  > o.valueOf()
+  {}
+  > o.toString()
+  '[object Object]'
+  > Number(o) // o.toString()返回的为字符串'[object Object]'，该字符串不能转换为数字，则返回NaN
+  NaN
+  > o.a = 1
+  1
+  > o.valueOf()
+  { a: 1 }
+  > o.toString()
+  '[object Object]'
+  > Number(o) // 同上
+  NaN
+  > o.valueOf = function () {return '1'} // 自定义 valueOf 方法
+  [Function]
+  > Number(o)
+  1
+  > o
+  { a: 1, valueOf: [Function] }
+  > var a = {}
+  > Number(a)
+  NaN
+  > a.toString = function () {return '123'} // 自定义 toString 方法
+  [Function]
+  > Number(a)
+  123
+  > a
+  { toString: [Function] }
+  > var otherObj = Object.create(null)
+  > Number(otherObj)  // 内部没有 valueOf 方法与 toString 方法
+  TypeError: Cannot convert object to primitive value
+      at Number (<anonymous>)
   ```
 
 | 值                        | 字符串         | 数字 | 布尔值 | 对象                  |
