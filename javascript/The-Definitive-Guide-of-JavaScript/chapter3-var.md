@@ -251,6 +251,116 @@ console.log(t) // undefined
 
 ## 类型转换
 
+### 抽象值操作
+
+#### `ToString`
+
+- `undefined` -> `'undefined'`
+- `null` -> `'null'`
+- `true` -> `'true'`
+- `NaN` -> `'NaN'`
+- `0` -> `'0'`
+- `{}` -> `'[object Object]'`
+- `[1, 2]` -> `'1, 2'`
+  
+  ```javascript
+  > String(undefined)
+  'undefined'
+  > String(null)
+  'null'
+  > String('')
+  ''
+  > String({})
+  '[object Object]'
+  > String([])
+  ''
+  > String([1, 2])
+  '1,2'
+  > String([1, 0])
+  '1,0'
+  > String([1, null])
+  '1,' // TODO: 为什么没有 'null' 值
+  > String([1, undefined])
+  '1,' // TODO: 为什么没有 'undefined' 值
+  > String([1, NaN])
+  '1,NaN'
+  ```
+
+- `JSON`
+  - 不能转换的值`undefined`, `function () {}`, `symbol`
+    - 对不能转换的值得处理
+      - 值在数组内，将其转换为`null`， 使其占位
+      - 在其他中，将其忽略
+  - `NaN`序列化转换为 `null`
+  - 在转换对象时，对象会调用`toJson`方法，在将其`toJson`方法返回的值进行序列化，可以自定义`toJSON`方法
+  - 可选参数
+    - `replace`， 类型为`Array`或者`Function`，可以对序列化的属性进行处理以及筛选
+    - `space`, 类型为`Number`或者`String`, 指定缩进间隔或者缩进字符
+
+  ```javascript
+  > JSON.stringify(42)
+  '42'
+  > JSON.stringify('42')
+  '"42"'
+  > JSON.stringify([])
+  '[]'
+  // 数组中使用 null 对其 undefined 以及 function () {} 等值进行占位
+  > JSON.stringify([1, undefined])
+  '[1,null]'
+  > JSON.stringify([1, null])
+  '[1,null]'
+  > JSON.stringify([1, function () {}])
+  '[1,null]'
+  > JSON.stringify([1, NaN])
+  '[1,null]'
+  > JSON.stringify(null)
+  'null'
+  > JSON.stringify(undefined)
+  undefined // 忽略 undefined 值
+  > JSON.stringify(function () {})
+  undefined // 忽略 function () {} 值
+  > JSON.stringify(NaN)
+  'null'
+  > JSON.stringify([1, null, undefined, 2, function () {}])
+  '[1,null,null,2,null]'
+  > JSON.stringify([1, null, undefined, 2, function () {}, NaN])
+  '[1,null,null,2,null,null]'
+  // 在对象中直接忽略值为 undefined, function () 等的属性
+  > JSON.stringify({a: 2, b: undefined, c: function () {}})
+  '{"a":2}'
+  // 循环调用会报错
+  > var o = {}
+  undefined
+  > var a = {b: 42, c: o, d: function () {}}
+  undefined
+  > o.e = a
+  { b: 42, c: { e: [Circular] }, d: [Function: d] }
+  > JSON.stringify(a)
+  TypeError: Converting circular structure to JSON
+      at JSON.stringify (<anonymous>)
+  // 对循环调用的对象定义toJSON方法，因为JSON字符串化时会首先调用该方法
+  // 可以使用该方法返回指定的值，再将返回的值进行序列化
+  > a.c.toJSON = function () {return 'a.c'}
+  [Function]
+  > JSON.stringify(a)
+  '{"b":42,"c":"a.c"}'
+  > JSON.stringify(a, ['b'])
+  '{"b":42}'
+  > JSON.stringify(a, function (k, v) {console.log(k, v);return v})
+  { b: 42,
+    c: { e: [Circular], toJSON: [Function] },
+    d: [Function: d] }
+  b 42
+  c a.c
+  d function () {}
+  '{"b":42,"c":"a.c"}
+  // 添加可选参数
+  > JSON.stringify(a, null, 3)
+  '{\n   "b": 42,\n   "c": "a.c"\n}'
+  > JSON.stringify(a, null, '---')
+  '{\n---"b": 42,\n---"c": "a.c"\n}'
+  ```
+
 | 值                        | 字符串         | 数字 | 布尔值 | 对象                  |
 | ------------------------- | -------------- | ---- | ------ | --------------------- |
 | undefined                 | "undefined"    | NaN  | false  | throws TypeError      |
@@ -630,7 +740,7 @@ Object(3) // new Number(3)
   
   ```javascript
   function setName (obj) {
-	  obj.name = 'asdasdf';
+	  obj.name = 'asdasdf'; // 函数传递的是堆内存中的引用，修改obj，也就是修改传入的person
     obj = new Object() // 重新将 obj 局部变量指向一个新堆内存地址，不会影响外部引用变量
     obj.name = 'new name'
   }
@@ -644,7 +754,7 @@ Object(3) // new Number(3)
       return num
   }
   var count = 10
-  var result = addTen(count)
+  var result = addTen(count) // 复制的是值，不会影响外部变量
   console.log(count, result)
   // 10 20
   ```
@@ -680,7 +790,7 @@ function instance_of (L, R) {
  对于有块级作用域的语言来说，`for`语句初始化变量的表达式所定义的变量，只会存在于循环的环境之中。而在`js`中，在循环结束之后，会存在于外部环境之中
 
  ### 垃圾收集
- 在`javascript`程序中，所需内存的分配以及无用内存的回收完全实现了自动管理。这种垃圾收集机制的原理就是找出那些不再继续使用的变量，然后释放其占用的内存。所以，垃圾收集器会按照固定的事件间隔（或代码执行中预定的收集时间）周期性地执行这一操作
+ 在`javascript`程序中，所需内存的分配以及无用内存的回收完全实现了自动管理。这种垃圾收集机制的原理就是找出那些不再继续使用的变量，然后释放其占用的内存。所以，垃圾收集器会按照固定的时间间隔（或代码执行中预定的收集时间）周期性地执行这一操作
 
  对于函数中的局部变量而言，由于局部变量只在函数执行的过程中存在。在这个过程中，会为局部变量在栈（堆）内存上分配相应的空间来存储其值，在函数执行结束后，局部变量就没有存在的必要了，就可以释放它们的内存。
  
