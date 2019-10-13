@@ -424,6 +424,59 @@ console.log(t) // undefined
       at Number (<anonymous>)
   ```
 
+#### `ToBoolean`
+- 假值
+  - `undefined`
+  - `null`
+  - `0`
+  - `''`
+  - `false`
+  - `NaN`
+- 真值
+  - 除了假值之外的其他值都为真值
+  - `"''"`
+  - `[]`
+  - `{}`
+  - `'0'`
+  - `'false'`
+  - `function () {}`
+  - `new Boolean(false)`
+  - `new String('')`
+  - `new Number(0)`
+  
+  ```javascript
+  > Boolean(0)
+  false
+  > Boolean(false)
+  false
+  > Boolean('')
+  false
+  > Boolean(null)
+  false
+  > Boolean(undefined)
+  false
+  > Boolean(NaN)
+  false
+  > Boolean('0')
+  true
+  > Boolean("''")
+  true
+  > Boolean([])
+  true
+  > Boolean({})
+  true
+  > Boolean('false')
+  true
+  > Boolean(function () {})
+  true
+  > Boolean(new Boolean(false))
+  true
+  > Boolean(new Number(0))
+  true
+  > Boolean(new String(''))
+  true
+  ```
+
 | 值                        | 字符串         | 数字 | 布尔值 | 对象                  |
 | ------------------------- | -------------- | ---- | ------ | --------------------- |
 | undefined                 | "undefined"    | NaN  | false  | throws TypeError      |
