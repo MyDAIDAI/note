@@ -262,8 +262,11 @@ console.log(t) // undefined
   - `NaN` -> `'NaN'`
   - `0` -> `'0'`
 - 对象类型值转换
-  - `{}` -> `'[object Object]'`
+  - `{}` -> `'[object Object]'`, 如果对象有自定义的`toString()`方法，那么字符串串化时就会调用该方法(对象，数组，函数同样)
   - `[1, 2]` -> `'1, 2'`
+  - `function () {}` -> `'function () {}'`
+- 其它值
+  - `Infinity` -> `'Infinity'`
   
   ```javascript
   > String(undefined)
@@ -286,6 +289,28 @@ console.log(t) // undefined
   '1,' // TODO: 为什么没有 'undefined' 值
   > String([1, NaN])
   '1,NaN'
+   // 在对象上自定义 toString 方法，字符串串化时会调用该方法
+  > var a = {b: 'a'}
+  > a
+  { b: 'a' }
+  > a.toString =  function () {return 'ccccc'}
+  [Function]
+  > String(a)
+  'ccccc'
+  > var b = ['a', 'b', 'c']
+  > String(b)
+  'a,b,c'
+  > b.toString = function () {return 'ddd'}
+  [Function]
+  > String(b)
+  'ddd'
+  > var fn = function () {return 'sfsdf'}
+  > String(fn)
+  'function () {return \'sfsdf\'}'
+  > fn.toString = function () {return 'adfadfadf'}
+  [Function]
+  > String(fn)
+  'adfadfadf'
   ```
 
 - `JSON`
