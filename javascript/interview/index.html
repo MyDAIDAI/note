@@ -2,9 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>画箭头</title>
 </head>
 <body>
-$END$
+<!--    块格式上下文包含创建它的元素内部的所有内容-->
+<!-- float 会自动变为内联元素-->
+<!--    <div class="box">-->
+<!--        <div class="float">this is a float box-->
+<!--        </div>-->
+<!--        <p>i am content inside the container</p>-->
+<!--    </div>-->
+<!--    <div class="container">-->
+<!--        <p>Sibling 1</p>-->
+<!--        <div class="bfc-container">-->
+<!--            <p>Sibling 2</p>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="outer">
+        <div class="float">i am a float element</div>
+        <div class="text">i am a text</div>
+    </div>
 </body>
 </html>
+<style>
+    .container {
+        background-color: red;
+        overflow: hidden;
+    }
+    p {
+        background-color: lightgreen;
+        margin: 10px 0;
+    }
+    .bfc-container {
+        overflow: hidden;
+    }
+    .box {
+        background: rgb(224, 206, 247);
+        border: 5px solid rebeccapurple;
+        overflow: auto;
+        /*display: inline-block;*/
+        /*float: left;*/
+    }
+    .float {
+        float: left;
+        width: 40px;
+        height: 200px;
+        background: aliceblue;
+        border: 1px solid black;
+        margin-right: 20px;
+    }
+    .outer {
+        background-color: #ccc;
+        /*overflow: auto;*/
+        display: flow-root;
+    }
+    .text {
+        background-color: red;
+        border: 1px solid green;
+        overflow: hidden;
+    }
+</style>
