@@ -648,6 +648,168 @@ function onlyOne () {
 13
 ```
 
+### 宽松相等与严格相等
+
+- 宽松相等（`==`）: 在比较的时候会进行类型转换
+- 严格相等(`===`): 在比较的时候不会进行类型转换
+
+#### 抽象相等
+
+- 两个值类型相同，就仅比较是否相等
+  - 注意：`NaN != NaN`, `+0 == -0`
+  
+  ```javascript
+  > NaN == NaN // false
+  > +0 == -0 //true
+  ```
+
+- 两个对象判断时不发生强制类型转换，指向同一个值时，即视为相等
+
+  ```javascript
+  > var a = {a: '12313'}
+  > var b = {b: '123123'}
+  > a == a  // true
+  > a == b // false
+  > [] == [] // false: 两个不同的数组
+  > {} == {} // false: 两个不同的对象
+  ```
+
+- 字符串与数字之间的相等比较
+  - 转换规则：将字符串转换为数字进行比较
+  
+  ```javascript
+  > '123' == 123 // true
+  > 'aa' == 123 //false: 'aa' 将转换为数字，转换为数字则为NaN, 所以为 false
+  ```
+
+- 其他类型和布尔值之间的相等比较
+  - 转换规则：将布尔值转换为数字进行比较，如果两边值得类型仍然不同，则进行进一步的转换
+  - 注意：布尔值的相等比较与值是否是真值无关，一个值是真值，但不一定 == true
+  
+  ```javascript
+  > '42' == true // false: 布尔值 true 被转换为了数字1，然后进行 '42' == 1的比较，两边的类型值仍然不同，又将'42'转换为数字42, 42 == 1进行比较，类型相同但值不同，返回 false
+  ```
+
+- `null`和`undefined`之间的相等比较
+  - `null == undefined` 
+  - 在 `==` 中`null`和`undefined`相等（它们与自身也相等），除此之外其他任何值都不相等
+  
+  ```javascript
+  > null == undefined
+  true
+  > null == null
+  true
+  > null == ''
+  false
+  > null == 0
+  false
+  > null == false
+  false
+  > undefined == undefined
+  true
+  > undefined == ''
+  false
+  > undefined == 0
+  false
+  > undefined == false
+  false
+  ```
+
+- 对象与非对象之间的相等比较
+  - 转换规则：将对象经过`ToPrimitive`转换为基本类型值进行比较
+  - 封装对象中的类型值拆分
+
+  ```javascript
+  > ['42'] == 42 // true: ['42']经过 ToPrimitive 转换为 '42', 然后 '42' == 42 进行比较，'42' 转换为 数字 42
+  // 封装对象: 经过封装对象包装的对象会被拆分为基本类型值, null ,undefined没有封装对象，不能被封装，会返回一个常规对象
+  > var a = '42'
+  > var b = Object(a)
+  > b // [String: '42']
+  > a == b // true
+
+  > var c = null
+  > var d = undefined
+  > Object(c) // {}
+  > Object(d) // {}
+  > c == Object(c) // false
+  > d == Object(d) //false
+  // NaN 可以被封装为数字对象，但 NaN != NaN, 所以返回 false
+  > Object(NaN)
+  [Number: NaN]
+  > NaN == Object(NaN)
+  false
+  ```
+
+- 假值的相等比较
+  
+  ```javascript
+  > null == false
+  false
+  > undefined == false
+  false
+  > "0" == null
+  false
+  > "0" == undefined
+  false
+  > "0" == ""
+  false
+  > "0" == false // false 转换为数字 0, "0" 转换为数字 0, 返回 true
+  true
+  > "0" == NaN
+  false
+  > "0" == 0
+  true
+  > "0" == ""
+  false
+
+  > false == null
+  false
+  > false == undefined
+  false
+  > false == NaN
+  false
+  > false == 0 // false -> 0
+  true
+  > false == "" // false -> 0, '' -> 0
+  true
+  > false == [] // false -> 0, [] -> 0
+  true
+  > false == {}
+  false
+
+  > '' == null
+  false
+  > '' == undefined
+  false
+  > '' == NaN
+  false
+  > '' == 0 // '' -> 0
+  true
+  > '' == [] // [] -> 0, '' -> 0
+  true
+  > '' == {}
+  false
+
+  > 0 == null
+  false
+  > 0 == undefined
+  false
+  > 0 == NaN
+  false
+  > 0 == '' // '' -> 0
+  true
+  > 0 == []
+  true
+  > 0 == {}
+  false
+  ```
+
+- 极端情况
+  - `[] == ![] // true: ![] -> false => [] == false => [] -> 0, false -> 0 => [] == ![]`
+- 抽象关系比较
+  - 比较双方都是字符串，按照字母顺序进行比较
+  - 其他情况，将其转换为字符串或者数字进行比较
+
 | 值                        | 字符串         | 数字 | 布尔值 | 对象                  |
 | ------------------------- | -------------- | ---- | ------ | --------------------- |
 | undefined                 | "undefined"    | NaN  | false  | throws TypeError      |
