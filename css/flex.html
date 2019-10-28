@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>flex布局深入学习</title>
+</head>
+<body>
+    <div class="flex-container">
+        <div class="item item1">item1</div>
+        <div class="item">item2</div>
+    </div>
+</body>
+</html>
+<style>
+  .flex-container {
+    height: 500px;
+    display: flex;
+    /* flex-direction: row; */
+    /* flex-wrap: wrap; */
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid red;
+  }
+  .item {
+    width: 200px;
+    border: 1px solid green;
+    height: 200px;
+    /* 设置不按照宽度缩小，则自动添加滚动条 */
+    /* flex-shrink: 0; */
+    /* flex-grow: 1; */
+    flex: 1;
+  }
+  .item1 {
+    /* 覆盖了前面的 width 属性的值 */
+    /* flex-basis: 1100px; */
+    /* flex-shrink: 0; */
+    /* flex-grow: 1; */
+    flex: 2;
+  }
+</style>
