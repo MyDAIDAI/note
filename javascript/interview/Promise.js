@@ -372,3 +372,74 @@ Promise.race([pro, timeoutPromise(3000)])
     console.log('catch error', e)
   })
 
+// Promise 链式流
+var p3 = Promise.resolve(4)
+var p4 = p3.then(function (value) {
+  console.log('p3 value', value)
+  return value * 2
+})
+var p5 = p4.then(function (value) {
+  console.log('p4 value', value)
+})
+p5.then(function (value) {
+  console.log('p4 p4', p4, p5, p4 == p5) // false: 每次调用then都会返回新的Promise
+})
+
+// 链式调用中后一个的状态由前一个返回的Promise所决定
+// 前一个使用Promise.reject函数或者 throw new Error或者遇到代码错误，则状态为rejected
+// 注意，在onrejected函数中返回值，状态仍为 onfulfilled
+var p6 = Promise.reject(10)
+var p7 = p6.then(function () {
+}, function (err) { // p6的状态为 reject, 则进入 onrejected 函数
+  console.log('p6 err', err)
+  throw new Error(err * 2)
+})
+var p8 = p7.then(function () {
+}, function (err) {  // p7 抛出错误，进入 onrejected 函数
+  console.log('p7 err', err)
+  return new Error(err)
+})
+p8.then(function (value) {
+  console.log('p7 p8', p7, p8)  // p8 的 onrejected 函数中没有抛出错误(return value/return new Error)，则进入 onfulfilled 函数
+  console.log('p8 fulfilled', value)
+}, function (err) {
+  console.log('p7 p8', p7, p8)
+  console.log('p8 rejected', err)
+})
+
+// 链式调用中发生错误，如果没有被捕获（没有错误处理函数），会依次传递，直到被捕获
+var p9 = Promise.reject(10)
+var p10 = p9.then(function () {
+})
+var p11 = p10.then(function () {
+})
+var p12 = p11.then(function (value) {
+  console.log('p11 fulfilled', value)
+}, function (err) {
+  console.log('p11 reject', err)
+  throw new Error('p12 rejected')
+})
+var p13 = p12.catch(function (err) {
+  console.log('p12 catch', err)
+  throw new Error('p12 catch')
+})
+var p14 = p13.catch(function (err) {
+  console.log('p13 catch', err)
+  throw new Error('p13 catch')
+})
+p14.catch(function () {
+  console.log('p13 p14', p13, p14)
+})
+
+// 成功时如果没有函数处理，也会依次传递，直到被处理
+var p15 = Promise.resolve(123123)
+var p16 = p15.then(null, function (err) {
+  console.log('p15 reject', err)
+})
+var p17 = p16.then(null, function (err) {
+  console.log('p16 reject', err)
+})
+p17.then(function (val) {
+  console.log('p17 fulfill', val)
+})
+
