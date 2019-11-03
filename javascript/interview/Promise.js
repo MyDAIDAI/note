@@ -443,3 +443,50 @@ p17.then(function (val) {
   console.log('p17 fulfill', val)
 })
 
+// TODO: catch 之后的错误处理
+
+// Promise.all 可以传入任何值，值会被 Promise.resolve过滤
+// 有一个被拒绝，则Promise.all立即被拒绝
+Promise.all([12, Promise.resolve('resolve'), Promise.reject('reject')])
+  .then(function (values) {
+    console.log('promise all then values', values)
+  }).catch(function (err) {
+    console.log('promise all catch err', err)
+  })
+
+// Promise.race有任何一个决议为完成，则Promise.race就会完成
+// Promise.race有任何一个决议为拒绝，则Promise.race就会拒绝
+Promise.race([Promise.resolve('111'), Promise.resolve('222')])
+  .then(function (values) {
+    console.log('promise race values', values) // promise race values 111
+  }).catch(function (err) {
+    console.log('promise race catch', err)
+  })
+
+Promise.race([Promise.reject('111'), Promise.resolve('222')])
+  .then(function (values) {
+    console.log('promise race 2 values', values) // promise race values 111
+  }).catch(function (err) {
+  console.log('promise race 2 catch', err)
+})
+
+// Promise.all([])与Promise.race([])的变体
+// Promise.none()
+// Promise.any()
+// Promise.first()
+Promise.first = function (prs) {
+  return new Promise(function (resolve, reject) {
+    prs.forEach(function (pr) {
+      Promise.resolve(pr).then(resolve)
+    })
+  })
+}
+// Promise.last()
+// 并发迭代
+Promise.map = function (vals, cb) {
+  return Promise.all(vals.map(function (val) {
+    return new Promise(function (resolve) {
+      cb(val, resolve)
+    })
+  }))
+}
