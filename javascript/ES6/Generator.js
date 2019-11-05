@@ -145,3 +145,63 @@ for (var data of some) {
     // break
   }
 }
+// 异步迭代生成器
+function foo3(cb) {
+  // cb 异步之后的回调函数
+  setTimeout(cb, 2000)
+}
+
+// 采用回调函数的方式调用，可能陷入回调陷阱
+foo3(function () {
+  console.log('foo3 callback')
+})
+
+// 将异步与生成器结合
+function foo4() {
+  setTimeout(function () {
+    console.log('foo4 callback')
+    maIt.next('enter foo4 callback') // 成功时候将值传入next
+  }, 2000)
+}
+function* main() {
+  try {
+    let text = yield foo4() // 传入next的值会被赋值给text变量，生成器内部代码看似完全同步
+    console.log('main text', text)
+  } catch (e) {
+    console.log('main catch', e)
+  }
+}
+var maIt = main()
+maIt.next() // 启动生成器
+
+// 同步错误处理
+function* main1() {
+  let x = yield 'hello world';
+  yield x.toLowerCase()
+}
+var it2 = main1()
+it2.next().value
+try {
+  it2.next(42) // 生成器函数中国抛出错误
+} catch (e) {
+  console.log('it2 catch', e)
+}
+
+function* main2() {
+  try {
+    let x = yield 'hello world'
+    console.log('main2 x', x)
+  } catch (e) {
+    // main2 catch it3 throw error: throw抛出的错误被内部捕获
+    console.log('main2 catch', e)
+  }
+}
+var it3 = main2()
+it3.next()
+try {
+  // 向 *main2()抛出一个错误，如果 *main2()内部没有进行错误捕获，则会向上
+  it3.throw('it3 throw error')
+} catch (e) {
+  // *main2函数中的没有捕获错误，则被上层捕获
+  console.log('it3 catch', e)
+}
