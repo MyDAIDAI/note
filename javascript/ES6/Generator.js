@@ -205,3 +205,99 @@ try {
   // *main2函数中的没有捕获错误，则被上层捕获
   console.log('it3 catch', e)
 }
+
+// Promise与生成器
+function foo5() {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
+      resolve('foo5 promise resolve')
+    })
+  })
+}
+function foo6() {
+  return new Promise(function (resolve) {
+    setTimeout(function () {
+      resolve('foo6 promise resolve')
+    })
+  })
+}
+function* main5() {
+  try {
+    let result1 = yield foo5()
+    let result2 = yield foo6()
+    return [result1, result2]
+    console.log('main5 result', result1, result2) // main5 result foo5 promise resolve
+  } catch (e) {
+    console.log('main5 catch', e)
+  }
+}
+// var it4 = main5()
+// var nextValue = it4.next().value
+// console.log('nextValue', nextValue)
+// var p = nextValue.then(function (value) {
+//   it4.next(value) // 将异步执行结果传入main5函数中并赋值给变量
+// })
+
+function run (gen) {
+  var args = [].slice.call(this, 1), it;
+  it = gen.apply(this, args)
+
+  return Promise.resolve()
+    .then(function handleNext(value) {
+      var next = it.next(value)
+      return (function handleResult(next) {
+        if (next.done) {
+          return next.value
+        } else {
+          return Promise.resolve(next.value)
+            .then(handleNext, function handleErr(err) {
+              return Promise.resolve(it.throw(err))
+                .then(handleResult)
+            })
+        }
+      })(next)
+    })
+}
+
+// var runResult = run(main5)
+// async 函数的实现
+async function fn(args) {
+  //
+}
+// 上面的async函数等同于下面
+function fn(args) {
+  return spawn(function* () {
+    //...
+  })
+}
+// spawn函数的具体实现
+function spawn(genF) {
+  return new Promise(function (resolve, reject) {
+    var it = genF()
+    function step(nextF) {
+      try {
+        var next = nextF()
+      } catch (e) {
+        return reject(e)
+      }
+      if (next.done) {
+        return resolve(next.value)
+      }
+      Promise.resolve(next.value).then(function (value) {
+        step(function () {
+          return it.next(value)
+        })
+      }, function (e) {
+        step(function () {
+          it.throw(e)
+        })
+      })
+    }
+    step(function () {
+      return it.next()
+    })
+  })
+}
+spawn(main5).then(value => {
+  console.log('spawn', value)
+})
