@@ -301,3 +301,77 @@ function spawn(genF) {
 spawn(main5).then(value => {
   console.log('spawn', value)
 })
+// 生成器委托
+// *bar()把迭代控制委托给了*foo7()
+// 一旦迭代器消耗掉了整个 *foo7() 迭代器，就会自动转会控制 *bar()
+function *foo7() {
+  console.log('*foo7 start')
+  yield 3
+  yield 4
+  console.log('*foo7 end')
+}
+function* bar() {
+  yield 1
+  yield 2
+  yield *foo7()
+  yield 5
+  yield 6
+}
+for (let value of bar()) {
+  console.log('bar value', value)
+}
+
+// 消息委托
+function *foo8() {
+  console.log('inside *foo8():', yield 'B')
+  console.log('inside *foo8()', yield 'C')
+  return 'D'
+}
+function *bar1() {
+  console.log('inside *bar1()', yield 'A')
+  console.log('inside *bar1()', yield *foo8())
+  console.log('inside *bar1()', yield 'E')
+  return 'F'
+}
+var it4 = bar1()
+console.log('outside', it4.next().value)
+// outside A
+console.log('outside', it4.next(1).value)
+// inside *bar1() 1
+// outside B
+console.log('outside', it4.next(2).value)
+// inside *foo8() 2
+// outside C
+console.log('outside', it4.next(3).value)
+// inside *foo8() 3
+// inside *bar1() D
+// outside E
+console.log('outside', it4.next(4).value)
+// inside *bar1() 4
+// outside F
+
+// yield委托甚至不要求必须转到另一个生成器
+function *bar2() {
+  console.log('inside *bar2()', yield 'A')
+  console.log('inside *bar2()', yield *['B', 'C', 'D'])
+  console.log('inside *bar2()', yield 'E')
+  return 'F'
+}
+// 默认的数组迭代器不关心通过 next()调用发送的消息
+var it4 = bar2()
+console.log('outside', it4.next().value)
+// outside 'A'
+console.log('outside', it4.next(1).value)
+// inside *bar2() 1
+// outside B
+console.log('outside', it4.next(2).value)
+// outside C
+console.log('outside', it4.next(3).value)
+// outside D
+console.log('outside', it4.next(4).value)
+// inside *bar2() undefined ->  yield *表达式的值与传入的 next()的值无关, 只与返回值有关
+// outside E
+console.log('outside', it4.next(5).value)
+// inside *bar2() 5
+// outside F
+
