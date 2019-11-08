@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>grid布局深入学习</title>
+</head>
+<body>
+<div class="grid-container">
+<!--    项目只能使容器的顶层元素，不包含项目的子元素，grid布局只对项目生效-->
+    <div class="item item1">
+        <p>1</p>
+    </div>
+    <div class="item">
+        <p>2</p>
+    </div>
+    <div class="item">
+        <p>3</p>
+    </div>
+    <div class="item">
+        <p>4</p>
+    </div>
+    <div class="item item5">
+        <p>5</p>
+    </div>
+    <div class="item">
+        <p>6</p>
+    </div>
+    <div class="item item7">
+        <p>7</p>
+    </div>
+    <div class="item item8">
+        <p>8</p>
+    </div>
+</div>
+</body>
+</html>
+<style>
+    .grid-container {
+        width: 100%;
+        height: 600px;
+        display: grid;
+        /*指定行高和列宽，生成 3 * 3 的网格*/
+        /*指定网格的大小，不是内部项目的大小, 一个项目可以占据多个网格*/
+        grid-template-columns: repeat(3, 200px);
+        grid-template-rows: 100px repeat(2, 200px);
+        /*指定区域*/
+        grid-template-areas: 'a a c'
+                             'd d f'
+                             'g h i';
+        /*指定行与列之间的间隔*/
+        /*grid-row-gap: 20px;*/
+        /*grid-column-gap: 10px;*/
+        grid-gap: 20px 10px;
+        /*grid-template-areas: ;*/
+        border: 1px solid saddlebrown;
+        /*当指定的所有行高与列宽不能堆满容器时的排列方式*/
+        justify-content: center;
+        align-content: end;
+        grid-auto-flow: row;
+        /*所有项目的对齐方式*/
+        /*justify-items: center;*/
+        /*align-items: center;*/
+        place-items: start center;
+        grid-auto-columns: 100px;
+    }
+    .item {
+        border: 1px solid gray;
+        font-size: 18px;
+        text-align: center;
+        width: 50px;
+        height: 60px;
+    }
+    .item1 {
+        /*grid-area: d;*/
+        justify-self: end;
+    }
+    .item8 {
+        /*直接指定某个项目的网格位置*/
+        grid-area: a;
+    }
+    .item5 {
+        /*指定某个元素所占据网格的行列初始与结束位置*/
+        /*grid-column-start: 2;*/
+        /*grid-column-end: 4;*/
+        /*grid-row-start: 2;*/
+        /*grid-row-end: 4;*/
+    }
+    .item7 {
+        grid-column-start: 4;
+        grid-column-end: 5;
+        grid-row-start: 4;
+        grid-row-end: 5;
+    }
+</style>
