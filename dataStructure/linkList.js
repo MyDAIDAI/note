@@ -42,3 +42,45 @@ function singleLinkListReverse () {
 }
 var reverseSingleLinkList = singleLinkListReverse()
 console.log('singleLinkListReverse', JSON.stringify(reverseSingleLinkList))
+
+function generateCircleSingelLinkList () {
+  let head = new SingleLinkNode(0)
+  let pre = head
+  let penultimateNode = null
+  let lastNode = null
+  for (let i = 1; i < 6; i++) {
+    let currentNode = new SingleLinkNode(i)
+    pre.next = currentNode
+    pre = currentNode
+    if (i === 4) {
+      penultimateNode = currentNode
+    }
+    if (i === 5) {
+      lastNode = currentNode
+      currentNode.next = penultimateNode
+    }
+  }
+  return head
+}
+let circleSingleLinkList = generateCircleSingelLinkList()
+console.log('generateCircleSingelLinkList', circleSingleLinkList)
+// 链表中环的检测
+// 1. 可以向链表中的节点添加是否访问字段 visited , 为1则存在环
+// 2. 使用一个数组来保存已经遍历了的节点，如果下次访问该节点存在，则存在环
+// 3. 使用快慢指针
+function isCheckCircle (linkList) {
+  let singeLink = linkList
+  let fast = singeLink.next
+  let slow = singeLink
+  while (fast !== null && fast.next !== null) {
+    fast = fast.next.next
+    slow = slow.next
+    if (fast === slow) {
+      return true
+    }
+  }
+  return false
+}
+
+console.log('isCheckCircle', isCheckCircle(generateSingleLinkList().head)) // false
+console.log('isCheckCircle', isCheckCircle(circleSingleLinkList)) // true
