@@ -42,7 +42,8 @@ function bubbleSort(arr) {
 }
 console.log('bubbleSort', bubbleSort(arr)) // bubbleSort [ 1, 2, 3, 4, 5, 6 ]
 
-// 插入排序：将数组分为已排序区间以及未排序区间
+// 插入排序：将数组分为已排序区间以及未排序区间， 依次将未排序区间中的值按照顺序插入到已排序区间中
+// 时间复杂度 O(n^2)
 function insertSort (arr = [4, 6, 5, 3, 1, 2]) {
   let len = arr.length
   // 初始化已排序区间为 arr[0]
@@ -70,3 +71,30 @@ function insertSort (arr = [4, 6, 5, 3, 1, 2]) {
   return arr
 }
 console.log('insertSort', insertSort()) // insertSort [ 1, 2, 3, 4, 5, 6 ]
+
+// 选择排序：将数组分为已排序区间以及未排序区间，每次从未排序区间中选取最小的放入已排序区间的最后
+// 时间复杂度 O(n^2)
+function selectSort(arr = [4, 5, 6, 2, 1, 3]) {
+  let len = arr.length
+  for (let i = 0; i < len; i++) {
+    let minVal = arr[i]
+    let j = i + 1
+    let minIndex = i
+    for (; j < len; j++) {
+      if (arr[j] < minVal) {
+        minVal = arr[j]
+        minIndex = j
+      }
+    }
+    arr[minIndex] = arr[i]
+    arr[i] = minVal
+    // selectSort [1,5,6,2,4,3]
+    // selectSort [1,2,6,5,4,3]
+    // selectSort [1,2,3,5,4,6]
+    // selectSort [1,2,3,4,5,6]
+    // selectSort [1,2,3,4,5,6]
+    // selectSort [1,2,3,4,5,6]
+    console.log('selectSort', JSON.stringify(arr))
+  }
+}
+selectSort()
