@@ -41,3 +41,32 @@ function bubbleSort(arr) {
   return arr
 }
 console.log('bubbleSort', bubbleSort(arr)) // bubbleSort [ 1, 2, 3, 4, 5, 6 ]
+
+// 插入排序：将数组分为已排序区间以及未排序区间
+function insertSort (arr = [4, 6, 5, 3, 1, 2]) {
+  let len = arr.length
+  // 初始化已排序区间为 arr[0]
+  for (let i = 1; i < len; i++) {
+    // 需要插入到已排序区间中的值
+    let value = arr[i]
+    let j = i - 1
+    // 遍历已排序区间，比较值的大小
+    for (; j >= 0; j--) {
+      // 需要插入值则向后移动
+      if (value < arr[j]) {
+        arr[j + 1] = arr[j]
+      } else {
+        break
+      }
+    }
+    arr[j + 1] =  value
+    // insertSorting [4,6,5,3,1,2]
+    // insertSorting [4,5,6,3,1,2]
+    // insertSorting [3,4,5,6,1,2]
+    // insertSorting [1,3,4,5,6,2]
+    // insertSorting [1,2,3,4,5,6]
+    console.log('insertSorting', JSON.stringify(arr))
+  }
+  return arr
+}
+console.log('insertSort', insertSort()) // insertSort [ 1, 2, 3, 4, 5, 6 ]
