@@ -98,3 +98,28 @@ function selectSort(arr = [4, 5, 6, 2, 1, 3]) {
   }
 }
 selectSort()
+
+function mergeSort(array = [4, 5, 6, 2, 3, 1]) {
+  if (array.length === 1) {
+    return array
+  }
+  let middle = Math.floor(array.length / 2)
+  let left = array.slice(0, middle)
+  let right = array.slice(middle)
+  // let splitLeft = mergeSort(left)
+  // let splitRight = mergeSort(right)
+  return merge(mergeSort(left), mergeSort(right))
+}
+function merge(left, right) {
+  let result = []
+  while (left && left.length > 0 && right && right.length > 0) {
+    if (left[0] < right[0]) {
+      result.push(left.shift())
+    } else {
+      result.push(right.shift())
+    }
+  }
+  // 将数组中剩余部分拼接到result后
+  return result.concat(left).concat(right)
+}
+mergeSort()
