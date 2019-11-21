@@ -99,6 +99,7 @@ function selectSort(arr = [4, 5, 6, 2, 1, 3]) {
 }
 selectSort()
 
+// 归并排序：利用分治思想，把数组逐渐分解为最小单位然后进行排序合并，最后依次合并为一个大数组
 function mergeSort(array = [4, 5, 6, 2, 3, 1]) {
   if (array.length === 1) {
     return array
@@ -123,3 +124,28 @@ function merge(left, right) {
   return result.concat(left).concat(right)
 }
 mergeSort()
+
+// 快速排序：在数组中随便取一个基准值，将小于的值放在左边，将大于的值放在右边，依次递归完成排序
+function quickSort(arr) {
+  if (arr.length <= 1) {
+    return arr
+  }
+  let pivotIndex = Math.floor(arr.length / 2)
+  let pivot = arr.splice(pivotIndex, 1)[0]
+  let left = []
+  let right = []
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i])
+    } else {
+      right.push(arr[i])
+    }
+  }
+  // left: 2,6,5,0,1, right: , pivot: 9
+  // left: 2,0,1, right: 6, pivot: 5
+  // left: , right: 2,1, pivot: 0
+  // left: , right: 2, pivot: 1
+  console.log(`left: ${left}, right: ${right}, pivot: ${pivot}`)
+  return quickSort(left).concat([pivot], quickSort(right))
+}
+console.log(quickSort([2, 6, 5, 9, 0, 1]))
