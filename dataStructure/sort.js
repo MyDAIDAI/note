@@ -149,3 +149,62 @@ function quickSort(arr) {
   return quickSort(left).concat([pivot], quickSort(right))
 }
 console.log(quickSort([2, 6, 5, 9, 0, 1]))
+
+function bucketQuickSort(arr) {
+  if (arr.length <= 1) {
+    return arr
+  }
+  let pivotIndex = Math.floor(arr.length / 2)
+  let pivot = arr.splice(pivotIndex, 1)[0]
+  let left = []
+  let right = []
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i])
+    } else {
+      right.push(arr[i])
+    }
+  }
+  return bucketQuickSort(left).concat([pivot], bucketQuickSort(right))
+}
+
+// 桶排序
+// 适用在外部排序找那个
+// 外部排序就是数据存储在外部磁盘且数据量大，但内存有限，无法将整个数据全部加载到内存中进行排序
+// 对0 ~ 40 之间的数据 进行排序
+// data: 3, 1, 6, 0, 8, 30, 39, 20, 25, 18, 17, 32, 18, 14
+function bucketSort(arr) {
+  let bucketArr = []
+  // 分桶
+  for (let i = 0; i < arr.length; i++) {
+    let value = Math.floor(arr[i] / 8)
+    if (!bucketArr[value]) {
+      bucketArr[value] = [arr[i]]
+    } else {
+      bucketArr[value].push(arr[i])
+    }
+  }
+  // 对每个桶进行排序
+  for (let j = 0; j < bucketArr.length; j++) {
+    let sortedItem = bucketQuickSort(bucketArr[j])
+    bucketArr[j] = sortedItem
+  }
+  // 逐个拿出桶内的数据
+  let retData = []
+  bucketArr.forEach(ele => {
+    retData.push(...ele)
+  })
+  return retData
+}
+// bucketSort [ [ 3, 1, 6, 0 ],
+//   [ 8, 15, 14 ],
+//   [ 20, 18, 17 ],
+//   [ 30, 25 ],
+//   [ 39, 32 ] ]
+
+//bucketSort [ [ 0, 1, 3, 6 ],
+//   [ 8, 14, 15 ],
+//   [ 17, 18, 20 ],
+//   [ 25, 30 ],
+//   [ 32, 39 ] ]
+console.log('bucketSort', bucketSort([3, 1, 6, 0, 8, 30, 39, 20, 25, 18, 17, 32, 15, 14]))
