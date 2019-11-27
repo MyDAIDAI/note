@@ -15,6 +15,7 @@
 // 3. 0 <= A[i] <= 1000
 
 /**
+ * 执行用时：168ms
  * 使用桶排序
  * @param {number[]} A
  * @return {number[]}
@@ -40,5 +41,30 @@ var sortArrayByParityII = function(A) {
   }
   return resultArr
 };
-
 console.log(sortArrayByParityII([4,2,5,7]))
+
+/**
+ * 执行用时：100ms
+ * 使用选择排序
+ * i 为偶数位置
+ * j 为奇数位置
+ * 如果 A[i] 为奇数，则找到 A[j] 为偶数的互换位置
+ * @param {number[]} A
+ * @return {number[]}
+ */
+var sortArrayByParityII1 = function (A) {
+  let len = A.length
+  let i = 0
+  let j = 1
+  for (; i < len; i += 2) {
+    if (A[i] % 2 === 0) {
+      continue
+    }
+    while (A[j] % 2 === 1) {
+      j += 2
+    }
+    [A[i], A[j]] = [A[j], A[i]]
+  }
+  return A
+}
+console.log(sortArrayByParityII1([4,2,5,7]))
