@@ -208,3 +208,31 @@ function bucketSort(arr) {
 //   [ 25, 30 ],
 //   [ 32, 39 ] ]
 console.log('bucketSort', bucketSort([3, 1, 6, 0, 8, 30, 39, 20, 25, 18, 17, 32, 15, 14]))
+
+function countSort(arr) {
+  const countArr = []
+  const sumCountArr = []
+  const resultArr = []
+  // 遍历数组，对存在的数据进行计数
+  for (let i = 0; i < arr.length; i++) {
+    if (!countArr[arr[i]]) {
+      countArr[arr[i]] = 1
+    } else {
+      countArr[arr[i]]++
+    }
+  }
+  let currentVal = countArr[0]
+  sumCountArr[0] = currentVal
+  for (let j = 1; j < countArr.length; j++) {
+    let val = countArr[j] == undefined ? 0 : countArr[j]
+    currentVal += val
+    sumCountArr[j] = currentVal
+  }
+  for (let i = arr.length - 1; i >= 0; i--) {
+    let count = sumCountArr[arr[i]] - 1
+    resultArr[count] = arr[i]
+    sumCountArr[arr[i]]--
+  }
+  console.log('count sort', countArr, sumCountArr, resultArr)
+}
+countSort([3, 1, 6, 0, 8, 30, 39, 20, 25, 18, 17, 32, 15, 14])
