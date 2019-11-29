@@ -41,3 +41,88 @@ function bSearchRecursion(arr, low, high, value) {
 console.log('bsearch', bSearch(arr, 98))
 console.log('bSearchRecursion', bSearchRecursion(arr, 0, arr.length - 1, 98))
 
+// 二分查找变形问题
+// 1. 查找第一个值等于给定值的元素
+// 2. 查找最后一个值等于给定值的元素
+// 3. 查找第一个大于等于给定值的元素
+// 4. 查找最后一个小于等于给定值的元素
+
+// 查找第一个值等于给定值的元素
+function findFirstBSearch(arr, value) {
+  let low = 0
+  let high = arr.length - 1
+  while (low <= high) {
+    let mid = parseInt((low + high) / 2)
+    if (arr[mid] > value) {
+      high = mid - 1
+    } else if (arr[mid] < value) {
+      low = mid + 1
+    } else {
+      if (mid === 0 || arr[mid - 1] !== value) {
+        return mid
+      } else {
+        high = mid - 1
+      }
+    }
+  }
+}
+console.log('查找第一个值等于给定值的元素', findFirstBSearch([1, 2, 3, 4, 4, 5, 5, 9], 5))
+
+// 查找最后一个值等于给定值的元素
+function findLastBSearch(arr, value) {
+  let low = 0
+  let high = arr.length - 1
+  while (low <= high) {
+    let mid = parseInt((low + high) / 2)
+    if (arr[mid] > value) {
+      high = mid - 1
+    } else if (arr[mid] < value) {
+      low = mid + 1
+    } else {
+      if (mid === (arr.length - 1) || arr[mid + 1] !== value) {
+        return mid
+      } else {
+        low = mid + 1
+      }
+    }
+  }
+}
+console.log('查找最后一个值等于给定值的元素', findLastBSearch([1, 2, 3, 4, 4, 5, 5, 9], 5))
+
+// 查找第一个大于等于给定值的元素
+function findFirstGreaterThanBSearch(arr, value) {
+  let low = 0
+  let high = arr.length - 1
+  while (low <= high) {
+    let mid = parseInt((low + high) / 2)
+    if (arr[mid] >= value) {
+      if (mid === 0 || arr[mid - 1] < value) {
+        return mid
+      } else {
+        high = mid - 1
+      }
+    } else {
+      low = mid + 1
+    }
+  }
+}
+console.log('查找第一个大于等于给定值的元素', findFirstGreaterThanBSearch([1, 5, 5, 7, 9], 8))
+
+// 查找最后一个小于等于给定值的元素
+function findLastLessThanBSearch(arr, value) {
+  let low = 0
+  let high = arr.length
+  while (low <= high) {
+    let mid = parseInt((low + high) / 2)
+    if (arr[mid] > value) {
+      high = mid - 1
+    } else {
+      if (mid === arr.length - 1 || arr[mid + 1] > value) {
+        return mid
+      } else {
+        low = mid + 1
+      }
+    }
+  }
+}
+console.log('查找最后一个小于等于给定值的元素', findLastLessThanBSearch([1, 5, 5, 7, 9], 6))
