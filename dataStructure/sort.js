@@ -66,7 +66,6 @@ function insertSort (arr = [4, 6, 5, 3, 1, 2]) {
     // insertSorting [3,4,5,6,1,2]
     // insertSorting [1,3,4,5,6,2]
     // insertSorting [1,2,3,4,5,6]
-    console.log('insertSorting', JSON.stringify(arr))
   }
   return arr
 }
@@ -94,7 +93,6 @@ function selectSort(arr = [4, 5, 6, 2, 1, 3]) {
     // selectSort [1,2,3,4,5,6]
     // selectSort [1,2,3,4,5,6]
     // selectSort [1,2,3,4,5,6]
-    console.log('selectSort', JSON.stringify(arr))
   }
 }
 selectSort()
@@ -145,13 +143,39 @@ function quickSort(arr) {
   // left: 2,0,1, right: 6, pivot: 5
   // left: , right: 2,1, pivot: 0
   // left: , right: 2, pivot: 1
-  console.log(`left: ${left}, right: ${right}, pivot: ${pivot}`)
   return quickSort(left).concat([pivot], quickSort(right))
 }
 console.log(quickSort([2, 6, 5, 9, 0, 1]))
 
+// 原地排序的快速排序
+const swap = (arr, i, j) => {
+  const tmp = arr[i]
+  arr[i] = arr[j]
+  arr[j] = tmp
+}
+function partition (arr, pivot, left, right) {
+  const pivotVal = arr[pivot]
+  let startIndex = left
+  for (let i = left; i < right; i++) {
+    if (arr[i] < pivotVal) {
+      swap(arr, i, startIndex)
+      startIndex++
+    }
+  }
+  swap(arr, startIndex, pivot)
+  return startIndex
+}
+const quickSort1 = (arr, left, right) => {
+  if (left < right) {
+    let pivot = right
+    let partitionIndex = partition(arr, pivot, left. right)
+    quickSort1(arr, left, partitionIndex - 1 < left ? left : right)
+    quickSort1(arr, partitionIndex + 1 > right ? right : left, right)
+  }
+}
+
 function bucketQuickSort(arr) {
-  if (arr.length <= 1) {
+  if (arr && arr.length <= 1) {
     return arr
   }
   let pivotIndex = Math.floor(arr.length / 2)
@@ -209,6 +233,7 @@ function bucketSort(arr) {
 //   [ 32, 39 ] ]
 console.log('bucketSort', bucketSort([3, 1, 6, 0, 8, 30, 39, 20, 25, 18, 17, 32, 15, 14]))
 
+// 计数排序
 function countSort(arr) {
   const countArr = []
   const sumCountArr = []
@@ -236,3 +261,46 @@ function countSort(arr) {
   console.log('count sort', countArr, sumCountArr, resultArr)
 }
 countSort([3, 1, 6, 0, 8, 30, 39, 20, 25, 18, 17, 32, 15, 14])
+
+function generateRandom(min, max) {
+  let arr = []
+  for (let i = 0; i < max; i++) {
+    arr.push(Math.round(Math.random() * (max - min)) + min)
+  }
+  return arr
+}
+// 十万数据量排序时间比较
+// bubble: 58989.055ms
+// insert: 3052.756ms
+// select: 6594.701ms
+// merge: 165.832ms
+// quick: 55.696ms
+//
+// let randomArr = generateRandom(0, 100000)
+// console.time('bubble')
+// bubbleSort(JSON.parse(JSON.stringify(randomArr)))
+// console.timeEnd('bubble')
+//
+// console.time('insert')
+// insertSort(JSON.parse(JSON.stringify(randomArr)))
+// console.timeEnd('insert')
+//
+// console.time('select')
+// selectSort(JSON.parse(JSON.stringify(randomArr)))
+// console.timeEnd('select')
+//
+// console.time('merge')
+// mergeSort(JSON.parse(JSON.stringify(randomArr)))
+// console.timeEnd('merge')
+//
+// console.time('quick')
+// quickSort(JSON.parse(JSON.stringify(randomArr)))
+// console.timeEnd('quick')
+//
+// console.time('bucket')
+// bucketSort(JSON.parse(JSON.stringify(randomArr)))
+// console.timeEnd('bucket')
+//
+// console.time('count')
+// countSort(JSON.parse(JSON.stringify(randomArr)))
+// console.timeEnd('count')
