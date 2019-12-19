@@ -84,3 +84,14 @@ function isCheckCircle (linkList) {
 
 console.log('isCheckCircle', isCheckCircle(generateSingleLinkList().head)) // false
 console.log('isCheckCircle', isCheckCircle(circleSingleLinkList)) // true
+
+// 两个有序的链表合并
+function mergeLinkList(l1, l2) {
+  let mergedLinkList = new SingleLinkNode()
+  let POINTER1 = l1
+  let POINTER2 = l2
+  let POINTER = mergedLinkList
+  while (POINTER1.next && POINTER2.next) {
+    // let node =
+  }
+}

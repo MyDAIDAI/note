@@ -192,3 +192,8 @@ Content-Type: text/html; charset=iso-8859-1
   - `503 Service Unavailable`
   - `504 Gateway Timeout`
   - `505 HTTP Version Not Supported`
+  
+   ## `HTTP`知识
+   
+   - `HTTP/1.1`是无状态的协议，但为了实现期望的保持状态功能，于是引入了`Cookie`技术，有了`cookie`之后再用`HTTP`协议进行通信，就可以管理状态了
+   - `cookie`会根据从服务器端发送的响应报文内的一个叫做`Set-Cookie`的首部字段信息，通知客户端保存`Cookie`，当下次客户端再往服务器发送请求时，客户端会自动在请求报文中加入`Cookie`的值后发送

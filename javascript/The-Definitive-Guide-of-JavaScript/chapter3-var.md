@@ -329,10 +329,10 @@ console.log(t) // undefined
   '42'
   > JSON.stringify('42')
   '"42"'
-  > JSON.stringify([])
+  > JSON.stringify([]) // String([]) -> '' : JSON字符串串化与String转化为字符串的不同
   '[]'
   // 数组中使用 null 对其 undefined 以及 function () {} 等值进行占位
-  > JSON.stringify([1, undefined])
+  > JSON.stringify([1, undefined]) // String([1, undefined]) -> '1,'
   '[1,null]'
   > JSON.stringify([1, null])
   '[1,null]'

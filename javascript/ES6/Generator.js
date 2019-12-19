@@ -375,3 +375,18 @@ console.log('outside', it4.next(5).value)
 // inside *bar2() 5
 // outside F
 
+// 递归委托
+function *foo9(val) {
+  if (val > 1) {
+    val = yield *foo9(val - 1)
+  }
+  return yield val
+}
+function *bar3() {
+  let r1 = yield *foo9(3)
+  console.log('bar3 r1', r1)
+}
+var it5 = bar3()
+for (let item of it5) {
+  console.log('it5', item)
+}

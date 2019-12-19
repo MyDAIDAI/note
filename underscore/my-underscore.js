@@ -253,6 +253,10 @@
     return false
   }
 
+  _.contains = function (obj, value) {
+
+  }
+
   // Object
   // 判断传入参数是否为对象
   _.isObject = function (obj) {
