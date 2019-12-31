@@ -201,4 +201,89 @@ watcher(() => {
 })
 ```
 
-上面就是响应式的基本原理，基本的了解之后，再去看源码中对特殊数据类型的处理，比如属性值为对象或者数组时的情况
+## 值为对象时的处理
+
+上面就是响应式的基本原理，现在`data`中的值都为基本的类型值，很容易处理，如果其属性值仍然为对象呢？
+
+值仍然为对象时，那么需要进行递归监听，将`Object.defineProperty`的监听操作进行相应的封装，使用`observe`函数进行值额类型判断
+如果其值为对象，则对其中的每个属性设置`getter`与`setter`, 并且在设置`getter`与`setter`之前判断其值的类型，值为对象则继续添加`getter`与`setter`
+
+```javascript
+let data = {
+  // price: 5,
+  // quantity: 10,
+  obj: {
+    a: 1,
+    b: 2,
+    c: {
+      d: 3
+    }
+  }
+}
+function isObject(val) {
+  return Object.prototype.toString.call(val) === '[object Object]'
+}
+function observe(val) {
+  if (isObject(val)) {
+    const keys = Object.keys(val)
+    keys.forEach(key => {
+      defineProperty(val, key)
+    })
+  }
+}
+function defineProperty(obj, key) {
+  const dep = new Dep()
+  let internalVal = obj[key]
+  observe(internalVal)
+  Object.defineProperty(obj, key, {
+    get: function () {
+      dep.depend()
+      // target 函数为 target = () => { console.log('render obj', data.obj, data.obj.a, data.obj.b, data.obj.c, data.obj.c.d) }
+      // obj 被访问5次，向其中添加了5次 watcher 中的 target 函数
+      // obj 中的 c 属性，被访问两次，则其对应的 subs 中有两个 watcher 中的 target 函数
+      // 为了避免向 subs 中添加重复的 target 函数，需要判断是否存在 this.subs.includes(target)
+      console.log(`get key: ${key} dep: ${dep} subs: ${dep.subs}`)
+      return internalVal
+    },
+    set: function(val) {
+      internalVal = val
+      dep.notify()
+    }
+  })
+}
+observe(data)
+function watcher(myFun) {
+  target = myFun
+  target()
+  target = null
+}
+watcher(() => {
+  total = data.obj.a + data.obj.b + data.obj.c.d
+  // console.log('render obj', data.obj, data.obj.a, data.obj.b, data.obj.c, data.obj.c.d)
+})
+// 修改其中的每一个属性的值，total 的值
+total // 6
+data.obj.a = 2
+total // 7
+data.obj.b = 3
+total // 8
+data.obj.c.d = 4
+total // 9
+```
+
+上面对值为对象时进行了循环递归添加，那么当值为数组时怎么处理呢？
+
+## 值为数组时的处理
+
+```javaScript
+function observer(val) {
+  if (isObject(val)) {
+    const keys = Object.keys(val)
+    keys.forEach(key => defineProperty(val, key))
+  } else if(Array.isArray(val)) {
+    val.forEach(ele => defineProperty(val, ele))
+  }
+}
+```
+
+## `Vue`中的响应式

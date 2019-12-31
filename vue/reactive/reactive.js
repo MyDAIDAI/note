@@ -122,7 +122,7 @@ class Dep {
     this.subs = []
   }
   depend() {
-    if (target && !this.subs.includes(target)) {
+    if (target) {
       this.subs.push(target)
     }
   }
@@ -139,39 +139,66 @@ let salePrice = 0
 // const dep = new Dep()
 let target = null
 let data = {
-  price: 5,
-  quantity: 10,
-  arr: [1, 2, 3, 5]
+  // price: 5,
+  // quantity: 10,
+  // obj: {
+  //   a: 1,
+  //   b: 2,
+  //   c: {
+  //     d: 3
+  //   }
+  // }
+  arr: [1, 2, 3, {a: 4}, [5, 6]]
 }
-Object.keys(data).forEach(ele => {
+function isObject(val) {
+  return Object.prototype.toString.call(val) === '[object Object]'
+}
+function observe(val) {
+  if (isObject(val)) {
+    const keys = Object.keys(val)
+    keys.forEach(key => {
+      defineProperty(val, key)
+    })
+  } else if(Array.isArray(val)) {
+    val.forEach((ele, index) => {
+      defineProperty(val, index)
+    })
+  }
+}
+function defineProperty(obj, key) {
   const dep = new Dep()
-  let interVal = data[ele]
-  Object.defineProperty(data, ele, {
-    get: () => {
+  let internalVal = obj[key]
+  observe(internalVal)
+  Object.defineProperty(obj, key, {
+    get: function () {
       dep.depend()
-      console.log(ele, dep.subs)
-      return interVal
+      // obj 被访问5次，向其中添加了5次 watcher 中的 target 函数
+      // obj 中的 c 属性，被访问两次，则其对应的 subs 中有两个 watcher 中的 target 函数
+      // 为了避免向 subs 中添加重复的 target 函数，需要判断是否存在
+      console.log(`get key: ${key} dep: ${dep} subs: ${dep.subs}`)
+      return internalVal
     },
-    set: (val) => {
-      interVal = val
+    set: function(val) {
+      internalVal = val
       dep.notify()
     }
   })
-})
+}
+observe(data)
 function watcher(myFun) {
   target = myFun
   target()
   target = null
 }
 watcher(() => {
-  total = data.price * data.quantity
+  total = data.arr[0] + data.arr[1] + data.arr[2] + data.arr[3].a + data.arr[4][0] + data.arr[4][0]
 })
-watcher(() => {
-  sum = data.price + data.quantity
-})
-watcher(() => {
-  salePrice = data.price * 0.7
-})
+// watcher(() => {
+//   sum = data.price + data.quantity
+// })
+// watcher(() => {
+//   salePrice = data.price * 0.7
+// })
 console.log(total, sum, salePrice)
 // target = () => {
 //   total = price * quantity
