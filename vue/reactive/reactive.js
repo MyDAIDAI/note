@@ -122,7 +122,7 @@ class Dep {
     this.subs = []
   }
   depend() {
-    if (target) {
+    if (target && !this.subs.includes(target)) {
       this.subs.push(target)
     }
   }
@@ -148,28 +148,68 @@ let data = {
   //     d: 3
   //   }
   // }
-  arr: [1, 2, 3, [4, 5], {a:  7}]
+  arr: [1, 2, 3]
 }
 function isObject(val) {
   return Object.prototype.toString.call(val) === '[object Object]'
 }
 function observe(val) {
   if (isObject(val) || Array.isArray(val)) {
-    addObserver(val)
+    return addObserver(val)
   }
 }
+const arrayProto = Array.prototype
+const arrayMethods = Object.create(arrayProto)
+// 需要进行重写的方法
+const methodsToPatch = [
+  'push',
+  'pop',
+  'shift',
+  'unshift',
+  'splice',
+  'sort',
+  'reverse'
+]
+methodsToPatch.forEach(ele => {
+  const original = arrayProto[ele]
+  Object.defineProperty(arrayMethods, ele, {
+    value: function(...args) {
+      const result = original.apply(this, args)
+      const dep = this.__dep__
+      console.log(`调用 ${ele} 方法`)
+      dep.notify()
+      return result
+    },
+    enumerable: false,
+    writable: true,
+    configurable: true
+  })
+})
+function protoAugment(target, proto) {
+  target.__proto__ = proto
+}
+
 function addObserver(val) {
+  const dep = new Dep()
+  Object.defineProperty(val, '__dep__', {
+    value: dep,
+    enumerable: false,
+    writable: true,
+    configurable: true
+  })
   if (isObject(val)) {
     const keys = Object.keys(val)
     keys.forEach(key => defineProperty(val, key))
   } else if(Array.isArray(val)) {
+    protoAugment(val, arrayMethods)
     val.forEach(ele => observe(ele))
   }
+  return val
 }
 function defineProperty(obj, key) {
   const dep = new Dep()
   let internalVal = obj[key]
-  observe(internalVal)
+  const childOb = observe(internalVal)
   Object.defineProperty(obj, key, {
     get: function () {
       dep.depend()
@@ -177,6 +217,9 @@ function defineProperty(obj, key) {
       // obj 中的 c 属性，被访问两次，则其对应的 subs 中有两个 watcher 中的 target 函数
       // 为了避免向 subs 中添加重复的 target 函数，需要判断是否存在
       console.log(`get key: ${key} dep: ${dep} subs: ${dep.subs}`)
+      if (childOb) {
+        childOb.__dep__.depend()
+      }
       return internalVal
     },
     set: function(val) {
@@ -192,7 +235,10 @@ function watcher(myFun) {
   target = null
 }
 watcher(() => {
-  total = data.arr[0] + data.arr[1] + data.arr[2] + data.arr[3][0] + data.arr[3][1] + data.arr[4].a
+  total = 0
+  data.arr.forEach(ele => {
+    total += ele
+  })
 })
 // watcher(() => {
 //   sum = data.price + data.quantity

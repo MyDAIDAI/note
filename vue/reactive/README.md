@@ -332,5 +332,111 @@ total // 25 更新
 
 ## 对数组中的方法进行处理
 
+```javaScript
+// 用Array原型中的方法创建一个新对象
+const arrayProto = Array.prototype
+const arrayMethods = Object.create(arrayProto)
+// 需要进行重写的方法
+const methodsToPatch = [
+  'push',
+  'pop',
+  'shift',
+  'unshift',
+  'splice',
+  'sort',
+  'reverse'
+]
+methodsToPatch.forEach(ele => {
+  const original = arrayProto[ele]
+  Object.defineProperty(arrayMethods, ele, {
+    value: function(...args) {
+      const result = original.apply(this, args)
+      console.log(`调用 ${ele} 方法`)
+      return result
+    },
+    enumerable: false,
+    writable: true,
+    configurable: true
+  })
+})
+function protoAugment(target, proto) {
+  targte.__proto__ = proto
+}
+function addObserver(val) {
+  if (isObject(val)) {
+    const keys = Object.keys(val)
+    keys.forEach(key => defineProperty(val, key))
+  } else if(Array.isArray(val)) {
+    protoAugment(val, arrayMethods)
+    val.forEach(ele => observe(ele))
+  }
+}
+```
+
+上面的代码执行后，调用`data.arr`数组的`push`, `pop`, `shift`, `unshift`, `splice`, `sort`, `reverse`都会打印出对应的提示，这样在调用相应的方法时都可以进行依赖分发。那么，问题又来了，怎么可以拿到依赖的`dep`呢？当我们调用这些方法时，是通过`data.arr.push(3)`这样的方式进行调用的，那么在`push`方法内部就可以通过`this`拿到`data.arr`这个数组，所以我们可以在这个数组中保存所需要的依赖`dep`，然后进行分发即可
+
+```javaScript
+let data = {
+  arr: [1, 2, 3]
+}
+function observe(val) {
+  if (isObject(val) || Array.isArray(val)) {
+    return addObserver(val)
+  }
+}
+function addObserver(val) {
+  const dep = new Dep()
+  Object.defineProperty(val, '__dep__', {
+    value: dep,
+    enumerable: false,
+    writable: true,
+    configurable: true
+  })
+  if (isObject(val)) {
+    const keys = Object.keys(val)
+    keys.forEach(key => defineProperty(val, key))
+  } else if(Array.isArray(val)) {
+    val.forEach(ele => observe(ele))
+  }
+  return val
+}
+function defineProperty(val, key) {
+  const dep = new Dep()
+  const internalVal = val[key]
+  const childOb = observe(internalVal) // 获取到值为引用类型的 __dep__
+  Object.defineProperty(val, key, {
+    get: function() {
+      dep.depend()
+      if (childOb) {
+        childOb.__dep__.depend() // 添加依赖，当调用 push 等方法时进行依赖分发
+      }
+    },
+    set: function(newVal) {
+      internalVal = newVal
+      dep.notify()
+    }
+  })
+}
+methodsToPatch.forEach(ele => {
+  const original = arrayProto[ele]
+  Object.defineProperty(arrayMethods, ele, {
+    value: function(...args) {
+      const result = original.apply(this, args)
+      const dep = this.__dep__
+      console.log(`调用 ${ele} 方法`)
+      dep.notity()
+      return result
+    },
+    enumerable: false,
+    writable: true,
+    configurable: true
+  })
+})
+total // 6
+data.arr.push(4)
+total // 10 值进行了更新
+```
+
+## 使用`Proxy`进行代理
 
 ## `Vue`中的响应式
