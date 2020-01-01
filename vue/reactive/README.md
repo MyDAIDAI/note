@@ -237,6 +237,7 @@ function defineProperty(obj, key) {
   observe(internalVal)
   Object.defineProperty(obj, key, {
     get: function () {
+      // TODO 外层对象改变，内部对象也应该更新依赖
       dep.depend()
       // target 函数为 target = () => { console.log('render obj', data.obj, data.obj.a, data.obj.b, data.obj.c, data.obj.c.d) }
       // obj 被访问5次，向其中添加了5次 watcher 中的 target 函数
@@ -276,14 +277,60 @@ total // 9
 ## 值为数组时的处理
 
 ```javaScript
+let data = {
+  arr: [1, 2, 3, {a: 4}, [5, 6]]
+}
 function observer(val) {
   if (isObject(val)) {
     const keys = Object.keys(val)
     keys.forEach(key => defineProperty(val, key))
   } else if(Array.isArray(val)) {
-    val.forEach(ele => defineProperty(val, ele))
+    // 对数组中的每一项绑定
+    val.forEach(ele => defineProperty(val,))
   }
 }
 ```
+
+上面的代码中对数组中的每一项都会进行监听，然后在数组的每一项改变的时候都会进行依赖更新，由于数组的数据量可能会很大，这样会比较影响性能（我暂时是这么认为的）
+
+将上面的代码优化一下，当数组的中的值是基本类型时，不进行监听，引用类型是再进行监听
+
+```javaScript
+let data = {
+  arr: [1, 2, 3, [4, 5], {a:  7}
+}
+function observer(val) {
+  if (isObject(val) || Array.isArray(val)) {
+    addObserver(val)
+  }
+}
+function addObserver(val) {
+  if(isObject(val)) {
+    const keys = Object.keys(val)
+    keys.forEach(key => defineProperty(val, key))
+  } else if(Array.isArray(val)) {
+    val.forEach(ele => {
+      observer(ele)
+    })
+  }
+}
+watcher(() => {
+  total = data.arr[0] + data.arr[1] + data.arr[2] + data.arr[3][0] + data.arr[3][1] + data.arr[4].a
+})
+total // 22
+data.arr[0] = 2 // 修改其中某个依赖的值
+total // 22 未更新
+data.arr[3][0] = 5 // 修改数组中的数组中的值
+total // 22 未更新
+data.arr[4].a = 8 // 修改数组中的对象的某个属性值
+total // 25 更新
+```
+
+上面的方法没有监听数组中值为基本类型的值，但出现了一个问题，数组内嵌套数组不会被监听到，这也就是在`vue`中直接修改数组内的值或者数组中嵌套的数组中的值不会触发视图更新的原因，但是`vue`给我们提供了一些改变数组值的方法可以触发更新或者`$set`方法
+
+那么`vue`中是怎么做到可以使用数组的方法修改数组以此来触发视图更新的呢？
+
+## 对数组中的方法进行处理
+
 
 ## `Vue`中的响应式

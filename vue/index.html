@@ -4,18 +4,39 @@
     <meta charset="UTF-8">
     <title>vue 解析</title>
     <!-- <script src="./intercept.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="./vue.js"></script>
 </head>
 <body>
     <div id="app">
-        {{ message }}
+        <!-- <h1>{{ message1 }}</h1> -->
+        <!-- <h2>{{ message2 }}</h2> -->
+        <!-- <h3>{{total}}</h3> -->
+        <!-- <h4>{{arrData[0]}}</h4> -->
+        <h5 v-for="(item, index) in arrData" :key=index>{{item}}</h5>
       </div>
       <script>
         var app = new Vue({
           el: '#app',
           data: {
-            message: 'hello vue!'
+            // message1: 'hello vue!',
+            // message2: 'message2',
+            arrData: [[2, 3, 4]]
+            // total: {
+            //   a: 1,
+            //   b: 2,
+            //   c: {
+            //     d: 3
+            //   }
+            // }
           }
+          // created() {
+          //   this.formateString()
+          // },
+          // methods: {
+          //   formateString() {
+          //     this.total = this.message1 + this.message2
+          //   }
+          // },
         })
         
       </script>

@@ -148,21 +148,22 @@ let data = {
   //     d: 3
   //   }
   // }
-  arr: [1, 2, 3, {a: 4}, [5, 6]]
+  arr: [1, 2, 3, [4, 5], {a:  7}]
 }
 function isObject(val) {
   return Object.prototype.toString.call(val) === '[object Object]'
 }
 function observe(val) {
+  if (isObject(val) || Array.isArray(val)) {
+    addObserver(val)
+  }
+}
+function addObserver(val) {
   if (isObject(val)) {
     const keys = Object.keys(val)
-    keys.forEach(key => {
-      defineProperty(val, key)
-    })
+    keys.forEach(key => defineProperty(val, key))
   } else if(Array.isArray(val)) {
-    val.forEach((ele, index) => {
-      defineProperty(val, index)
-    })
+    val.forEach(ele => observe(ele))
   }
 }
 function defineProperty(obj, key) {
@@ -191,7 +192,7 @@ function watcher(myFun) {
   target = null
 }
 watcher(() => {
-  total = data.arr[0] + data.arr[1] + data.arr[2] + data.arr[3].a + data.arr[4][0] + data.arr[4][0]
+  total = data.arr[0] + data.arr[1] + data.arr[2] + data.arr[3][0] + data.arr[3][1] + data.arr[4].a
 })
 // watcher(() => {
 //   sum = data.price + data.quantity
