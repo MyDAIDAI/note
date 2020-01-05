@@ -436,7 +436,302 @@ total // 6
 data.arr.push(4)
 total // 10 值进行了更新
 ```
+## `vue2`中的响应式
+我将`vue2`中对响应式的处理画了一个简单的数据流图，不全面，但可以简单了解下处理过程
+![`vue`中响应式数据处理过程](./vue-reactive.jpg)
 
-## 使用`Proxy`进行代理
+从上面图中可以大概了解到：
+- 在`vue`的生命周期中实例了三种`Watcher`， 分别是`computed`, `watch`, 以及`render`
+- 对数据响应式的处理都会进行`observe`函数，在该函数中，只有`Array/Object`类型的数据才会进行`new Observer()`
+- 在`get`函数中会对对象的属性值进行进一步的`observe`, 如果值为`Array/Object`类型，会向其中添加当前的依赖，当内层的值修改，便可以触发外层的依赖进行更新
 
-## `Vue`中的响应式
+## 仿照`vue2`的简单响应式
+
+```javaScript
+let target = null
+/**
+ * 依赖类，对依赖的收集以及执行
+ */
+class Dep {
+  constructor() {
+    this.subs = []
+  }
+  depend() {
+    if (target && !this.subs.includes(target)) {
+      this.subs.push(target)
+    }
+  }
+  notify() {
+    this.subs.forEach(run => run())
+  }
+}
+function watcher(fn) {
+  target = fn
+  target() // 执行该函数时，会获取 data 中的相应数据，触发 get 监听，向其中添加依赖
+  target = null
+}
+/**
+ * 向对象中添加相应的属性值, 该属性不可遍历
+ * @param {*} obj 
+ * @param {*} key 
+ * @param {*} val 
+ */
+function def(obj, key, val) {
+  Object.defineProperty(obj, key, {
+    value: val,
+    enumerable: false,
+    writable: false,
+    configurable: true
+  })
+}
+/**
+ * 观察类，添加了观察类的值是可以被观察到的，也就是响应式的
+ * 在该类中对数组以及对象做不同的处理
+ */
+class Observer {
+  constructor(val) {
+    this.val = val
+    def(val, '__ob__', this)
+    this.dep = new Dep()
+    if (Array.isArray(this.val)) {
+      // TODO: 1. 对数组原型方法的处理
+      this.observerArray(val)
+    } else {
+      this.walk(val)
+    }
+  }
+  observerArray(value) {
+    for(let i = 0; i < value.length; i++) {
+      observer(value[i])
+    }
+  }
+  walk(value) {
+    let keys = Object.keys(value)
+    keys.forEach(key => {
+      let internalVal = value[key]
+      let dep = new Dep()
+      let childOb = observer(internalVal)
+      Object.defineProperty(value, key, {
+        enumerable: true,
+        configurable: true,
+        get: function() {
+          dep.depend()
+          if (childOb) {
+            childOb.dep.depend()
+            // TODO:2. 对值为数组的处理，遍历数组，递归添加依赖，以便后续使用 push, pop等方法可以进行更新
+          }
+          return internalVal
+        },
+        set: function(newVal) {
+          internalVal = newVal
+          childOb = observer(newVal) // 为刚设置的值添加监听
+          dep.notify()
+        }
+      })
+    })
+  }
+}
+function isPlainObject(obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]'
+}
+function observer(value) {
+  let ob
+  if (Array.isArray(value) || isPlainObject(value)) {
+    ob = new Observer(value)
+  }
+  return ob
+}
+let data = {
+  arr: [1, 2, [3, 4, 5]],
+  obj: {
+    a: 'a',
+    b: 'b',
+    c: {
+     d: 'd',
+     e: {
+       h: 'h'
+     } 
+    }
+  }
+}
+observer(data)
+let totalArr = 0
+let totalObj = ''
+watcher(() => {
+  totalArr = 0
+  function sum(arrdata) {
+    arrdata.forEach(ele => {
+      if (Array.isArray(ele)) {
+        sum(ele)
+      } else {
+        totalArr += ele
+      }
+    })
+  }
+  sum(data.arr)
+  console.log('totalArr notify', totalArr)
+})
+watcher(() => {
+  totalObj = ''
+  function sum(objData) {
+    const keys = Object.keys(objData)
+    keys.forEach(key => {
+      let val = objData[key]
+      if (isPlainObject(val)) {
+        sum(val)
+      } else {
+        totalObj += val
+      }
+    })
+  }
+  sum(data.obj)
+  console.log('totalObj notify', totalObj)
+})
+
+// totalArr notify 15
+// totalObj notify abdh
+// data.obj.a = 'b' 修改对象中的属性值，触发监听 notify
+// totalObj notify bbdh
+// "b"
+// data.arr[0] = 1 修改数组中某个值为基本类型值的索引值，不触发监听
+// 1
+// data.arr[2] = [1, 2, 3]
+// Array(3) [1, 2, 3]
+// data.arr = [4, 5, 6] 将整个数组修改为其他值，触发监听
+// totalArr notify 15
+// Array(3) [4, 5, 6]
+// data.obj.c.e.h = 'g': 
+// totalObj notify bbdg
+// data.arr = [4, 5, [6, 7, 8]]
+// totalArr notify 30
+// Array(3) [4, 5, Array(3)]
+// data.arr[2] = [9, 10, 11] 直接使用索引修改数组中某一项的值，不会触发更新
+// Array(3) [9, 10, 11]
+```
+- `resolve TODO 1`
+```javaScript
+// 将数组的实例原型指向数组方法代理对象，调用代理对象中的方法，触发更新
+let arrayProto = Array.prototype
+let arrayMethods = Object.create(arrayProto)
+let methodsToPatch = [
+  'push',
+  'pop'
+  'slice'
+  // ...
+]
+methodsToPatch.forEach(function (method) {
+  let original = arrayProto[method]
+  def(arrayMethods, method, function(...args) {
+    let result = original.apply(this, args)
+    this.__ob__ && this.__ob__.dep.notify()
+    return result
+  })
+})
+class Observer {
+  constructor(val) {
+    this.val = val
+    def(val, '__ob__', this)
+    this.dep = new Dep()
+    if (Array.isArray(this.val)) {
+      // 将数组实例的原型设置为代理对象
+      val.__proto__ = arrayMethods
+      this.observerArray(val)
+    } else {
+      this.walk(val)
+    }
+  }
+}
+// data.arr[0] = 2 : 直接根据索引值修改值不会触发更新
+// data.arr.push(7) : 使用 push 方法向 arr 方法添加值，触发更新
+// totalArr notify 22 
+// data.arr[2].push(8) : 未触发更新
+// data.arr[2].push(6): 调用实例中的代理方法可以触发更新
+// totalArr notify 21
+```
+在上面中对`data.arr`使用`push`方法触发了更新，而对`data.arr[2]`中的数组使用`push`方法没有触发更新，这是为什么呢？我们打印`arr`的值看看
+```javaScript
+// arr:Array(3)
+//   __ob__:Observer {val: Array(3), dep: Dep}
+//     dep:Dep {subs: Array(1)} 有依赖
+//     val:Array(3) [1, 2, Array(3)]
+//     __proto__:Object {constructor: , observerArray: , walk: }
+//   length:3
+//   __proto__:Array(0) [, …]
+//   0:1
+//   1:2
+//   2:Array(3) [3, 4, 5]
+//     __ob__:Observer {val: Array(3), dep: Dep}
+//       dep:Dep {subs: Array(0)} 数组中的数组没有添加上依赖
+//       val:Array(3) [3, 4, 5]
+//       __proto__:Object {constructor: , observerArray: , walk: }
+//     length:3
+//     __proto__:Array(0) [, …]
+//     0:3
+//     1:4
+//     2:5
+```
+从上面打印的结果可以看出，`data.arr`中的`__ob__`中的`dep`包含依赖，而`data.arr[2]`的数组上的`__ob__`的`dep`中没有依赖项，所以没有依赖可以更新，为了解决这个问题，就需要在添加依赖时，判断值如果为数组，则进行遍历递归添加依赖，如下
+
+- `resolve TODO 2`
+在值为数组时依次遍历，向其中添加依赖
+```javascript
+Object.defineProperty(value, key, {
+  enumerable: true,
+  configurable: true,
+  get: function() {
+    dep.depend()
+    if (childOb) {
+      childOb.dep.depend()
+      // 对数组内的值进行遍历添加依赖，内层的值更新
+      if (Array.isArray(internalVal)) {
+        dependArray(internalVal)
+      }
+    }
+    return internalVal
+  },
+  set: function(newVal) {
+    internalVal = newVal
+    childOb = observer(newVal) // 为刚设置的值添加监听
+    dep.notify() // 该方法不能触发数组内某一项值的改变的监听
+  }
+})
+function dependArray(arr) {
+  for(let i = 0; i < arr.length; i++) {
+    let e = arr[i]
+    e && e.__ob__ && e.__ob__.dep.depend()
+    if (Array.isArray(e)) {
+      dependArray(e)
+    }
+  }
+}
+// arr:Array(3)
+//   __ob__:Observer {val: Array(3), dep: Dep}
+//   length:3
+//   __proto__:Array(0) [, …]
+//   0:1
+//   1:2
+//   2:Array(3) [3, 4, 5]
+//     __ob__:Observer {val: Array(3), dep: Dep}
+//     dep:Dep {subs: Array(1)}
+//       subs:Array(1) [] : 遍历数组中的每一项的值，如果值存在 __ob__，就向 __ob__ 的dep中添加依赖，以便后面调用数组方法时可以进行依赖更新
+//       __proto__:Object {constructor: , depend: , notify: }
+//       val:Array(3) [3, 4, 5]
+//     __proto__:Object {constructor: , observerArray: , walk: }
+//     length:3
+//     __proto__:Array(0) [, …]
+//     0:3
+//     1:4
+//     2:5
+
+// data.arr.push(4)
+// totalArr notify 19 触发更新
+// data.arr[2].push(6)
+// totalArr notify 25 触发更新
+```
+
+// TODO: vue3 中的响应式
+
+以上内容为本人理解，如有不对处，请指正
+
+参考：
+- [Build a Reactivity System - Advanced Components | Vue Mastery](https://www.vuemastery.com/courses/advanced-components/build-a-reactivity-system/)

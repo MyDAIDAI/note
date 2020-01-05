@@ -116,137 +116,137 @@
 //   storage.forEach(run => run())
 // }
 // target()
-// 新建一个 Dep 类来保存 target, 对 record 以及 replay 进行封装
-class Dep {
-  constructor() {
-    this.subs = []
-  }
-  depend() {
-    if (target && !this.subs.includes(target)) {
-      this.subs.push(target)
-    }
-  }
-  notify() {
-    this.subs.forEach(run => run())
-  }
-}
+// // 新建一个 Dep 类来保存 target, 对 record 以及 replay 进行封装
+// class Dep {
+//   constructor() {
+//     this.subs = []
+//   }
+//   depend() {
+//     if (target && !this.subs.includes(target)) {
+//       this.subs.push(target)
+//     }
+//   }
+//   notify() {
+//     this.subs.forEach(run => run())
+//   }
+// }
 
-let price = 5
-let quantity = 10
-let sum = 10
-let total = 0
-let salePrice = 0
-// const dep = new Dep()
-let target = null
-let data = {
-  // price: 5,
-  // quantity: 10,
-  // obj: {
-  //   a: 1,
-  //   b: 2,
-  //   c: {
-  //     d: 3
-  //   }
-  // }
-  arr: [1, 2, 3]
-}
-function isObject(val) {
-  return Object.prototype.toString.call(val) === '[object Object]'
-}
-function observe(val) {
-  if (isObject(val) || Array.isArray(val)) {
-    return addObserver(val)
-  }
-}
-const arrayProto = Array.prototype
-const arrayMethods = Object.create(arrayProto)
-// 需要进行重写的方法
-const methodsToPatch = [
-  'push',
-  'pop',
-  'shift',
-  'unshift',
-  'splice',
-  'sort',
-  'reverse'
-]
-methodsToPatch.forEach(ele => {
-  const original = arrayProto[ele]
-  Object.defineProperty(arrayMethods, ele, {
-    value: function(...args) {
-      const result = original.apply(this, args)
-      const dep = this.__dep__
-      console.log(`调用 ${ele} 方法`)
-      dep.notify()
-      return result
-    },
-    enumerable: false,
-    writable: true,
-    configurable: true
-  })
-})
-function protoAugment(target, proto) {
-  target.__proto__ = proto
-}
+// let price = 5
+// let quantity = 10
+// let sum = 10
+// let total = 0
+// let salePrice = 0
+// // const dep = new Dep()
+// let target = null
+// let data = {
+//   // price: 5,
+//   // quantity: 10,
+//   // obj: {
+//   //   a: 1,
+//   //   b: 2,
+//   //   c: {
+//   //     d: 3
+//   //   }
+//   // }
+//   arr: [1, 2, 3]
+// }
+// function isObject(val) {
+//   return Object.prototype.toString.call(val) === '[object Object]'
+// }
+// function observe(val) {
+//   if (isObject(val) || Array.isArray(val)) {
+//     return addObserver(val)
+//   }
+// }
+// const arrayProto = Array.prototype
+// const arrayMethods = Object.create(arrayProto)
+// // 需要进行重写的方法
+// const methodsToPatch = [
+//   'push',
+//   'pop',
+//   'shift',
+//   'unshift',
+//   'splice',
+//   'sort',
+//   'reverse'
+// ]
+// methodsToPatch.forEach(ele => {
+//   const original = arrayProto[ele]
+//   Object.defineProperty(arrayMethods, ele, {
+//     value: function(...args) {
+//       const result = original.apply(this, args)
+//       const dep = this.__dep__
+//       console.log(`调用 ${ele} 方法`)
+//       dep.notify()
+//       return result
+//     },
+//     enumerable: false,
+//     writable: true,
+//     configurable: true
+//   })
+// })
+// function protoAugment(target, proto) {
+//   target.__proto__ = proto
+// }
 
-function addObserver(val) {
-  const dep = new Dep()
-  Object.defineProperty(val, '__dep__', {
-    value: dep,
-    enumerable: false,
-    writable: true,
-    configurable: true
-  })
-  if (isObject(val)) {
-    const keys = Object.keys(val)
-    keys.forEach(key => defineProperty(val, key))
-  } else if(Array.isArray(val)) {
-    protoAugment(val, arrayMethods)
-    val.forEach(ele => observe(ele))
-  }
-  return val
-}
-function defineProperty(obj, key) {
-  const dep = new Dep()
-  let internalVal = obj[key]
-  const childOb = observe(internalVal)
-  Object.defineProperty(obj, key, {
-    get: function () {
-      dep.depend()
-      // obj 被访问5次，向其中添加了5次 watcher 中的 target 函数
-      // obj 中的 c 属性，被访问两次，则其对应的 subs 中有两个 watcher 中的 target 函数
-      // 为了避免向 subs 中添加重复的 target 函数，需要判断是否存在
-      console.log(`get key: ${key} dep: ${dep} subs: ${dep.subs}`)
-      if (childOb) {
-        childOb.__dep__.depend()
-      }
-      return internalVal
-    },
-    set: function(val) {
-      internalVal = val
-      dep.notify()
-    }
-  })
-}
-observe(data)
-function watcher(myFun) {
-  target = myFun
-  target()
-  target = null
-}
-watcher(() => {
-  total = 0
-  data.arr.forEach(ele => {
-    total += ele
-  })
-})
+// function addObserver(val) {
+//   const dep = new Dep()
+//   Object.defineProperty(val, '__dep__', {
+//     value: dep,
+//     enumerable: false,
+//     writable: true,
+//     configurable: true
+//   })
+//   if (isObject(val)) {
+//     const keys = Object.keys(val)
+//     keys.forEach(key => defineProperty(val, key))
+//   } else if(Array.isArray(val)) {
+//     protoAugment(val, arrayMethods)
+//     val.forEach(ele => observe(ele))
+//   }
+//   return val
+// }
+// function defineProperty(obj, key) {
+//   const dep = new Dep()
+//   let internalVal = obj[key]
+//   const childOb = observe(internalVal)
+//   Object.defineProperty(obj, key, {
+//     get: function () {
+//       dep.depend()
+//       // obj 被访问5次，向其中添加了5次 watcher 中的 target 函数
+//       // obj 中的 c 属性，被访问两次，则其对应的 subs 中有两个 watcher 中的 target 函数
+//       // 为了避免向 subs 中添加重复的 target 函数，需要判断是否存在
+//       console.log(`get key: ${key} dep: ${dep} subs: ${dep.subs}`)
+//       if (childOb) {
+//         childOb.__dep__.depend()
+//       }
+//       return internalVal
+//     },
+//     set: function(val) {
+//       internalVal = val
+//       dep.notify()
+//     }
+//   })
+// }
+// observe(data)
+// function watcher(myFun) {
+//   target = myFun
+//   target()
+//   target = null
+// }
+// watcher(() => {
+//   total = 0
+//   data.arr.forEach(ele => {
+//     total += ele
+//   })
+// })
 // watcher(() => {
 //   sum = data.price + data.quantity
 // })
 // watcher(() => {
 //   salePrice = data.price * 0.7
 // })
-console.log(total, sum, salePrice)
+// console.log(total, sum, salePrice)
 // target = () => {
 //   total = price * quantity
 // }
@@ -304,3 +304,177 @@ console.log(total, sum, salePrice)
 //   saleTotal = data.price * 0.9
 // })
 // console.log('total', total)
+
+// 对Vue2中的响应式按照自己的理解进行重写
+let target = null
+/**
+ * 依赖类，对依赖的收集以及执行
+ */
+class Dep {
+  constructor() {
+    this.subs = []
+  }
+  depend() {
+    if (target && !this.subs.includes(target)) {
+      this.subs.push(target)
+    }
+  }
+  notify() {
+    this.subs.forEach(run => run())
+  }
+}
+function watcher(fn) {
+  target = fn
+  target() // 执行该函数时，会获取 data 中的相应数据，触发 get 监听，向其中添加依赖
+  target = null
+}
+/**
+ * 向对象中添加相应的属性值, 该属性不可遍历
+ * @param {*} obj 
+ * @param {*} key 
+ * @param {*} val 
+ */
+function def(obj, key, val) {
+  Object.defineProperty(obj, key, {
+    value: val,
+    enumerable: false,
+    writable: false,
+    configurable: true
+  })
+}
+
+let arrayProto = Array.prototype
+let arrayMethods = Object.create(arrayProto) // 使用数组的原型创建一个对象，并向该对象上添加代理数组方法，再该代理方法中可以进行依赖更新
+const methodsToPatch = [
+  'push',
+  'pop',
+  'shift',
+  'unshift'
+]
+methodsToPatch.forEach(function(method) {
+  let original = arrayProto[method]
+  def(arrayMethods, method, function(...args) {
+    // this 指向调用该方法的数组
+    let result = original.apply(this, args)
+    this.__ob__ && this.__ob__.dep.notify()
+    return result
+  })
+})
+/**
+ * 观察类，添加了观察类的值是可以被观察到的，也就是响应式的
+ * 在该类中对数组以及对象做不同的处理
+ */
+class Observer {
+  constructor(val) {
+    this.val = val
+    def(val, '__ob__', this)
+    this.dep = new Dep()
+    if (Array.isArray(this.val)) {
+      // 对数组原型方法的处理
+      val.__proto__ = arrayMethods
+      this.observerArray(val)
+    } else {
+      this.walk(val)
+    }
+  }
+  observerArray(value) {
+    for(let i = 0; i < value.length; i++) {
+      observer(value[i])
+    }
+  }
+  walk(value) {
+    let keys = Object.keys(value)
+    keys.forEach(key => {
+      let internalVal = value[key]
+      let dep = new Dep()
+      let childOb = observer(internalVal)
+      Object.defineProperty(value, key, {
+        enumerable: true,
+        configurable: true,
+        get: function() {
+          dep.depend()
+          if (childOb) {
+            childOb.dep.depend()
+            // 对数组内的值进行遍历添加依赖
+            if (Array.isArray(internalVal)) {
+              dependArray(internalVal)
+            }
+          }
+          return internalVal
+        },
+        set: function(newVal) {
+          internalVal = newVal
+          childOb = observer(newVal) // 为刚设置的值添加监听
+          dep.notify() // 该方法不能触发数组内某一项值的改变的监听
+        }
+      })
+    })
+  }
+}
+function dependArray(arr) {
+  for(let i = 0; i < arr.length; i++) {
+    let e = arr[i]
+    e && e.__ob__ && e.__ob__.dep.depend()
+    if (Array.isArray(e)) {
+      dependArray(e)
+    }
+  }
+}
+function isPlainObject(obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]'
+}
+function observer(value) {
+  let ob
+  if (Array.isArray(value) || isPlainObject(value)) {
+    ob = new Observer(value)
+  }
+  return ob
+}
+let data = {
+  arr: [1, 2, [3, 4, 5]],
+  obj: {
+    a: 'a',
+    b: 'b',
+    c: {
+     d: 'd',
+     e: {
+       h: 'h'
+     } 
+    }
+  }
+}
+observer(data)
+let totalArr = 0
+let totalObj = ''
+watcher(() => {
+  totalArr = 0
+  function sum(arrdata) {
+    arrdata.forEach(ele => {
+      if (Array.isArray(ele)) {
+        sum(ele)
+      } else {
+        totalArr += ele
+      }
+    })
+  }
+  sum(data.arr)
+  console.log('totalArr notify', totalArr)
+})
+watcher(() => {
+  totalObj = ''
+  function sum(objData) {
+    const keys = Object.keys(objData)
+    keys.forEach(key => {
+      let val = objData[key]
+      if (isPlainObject(val)) {
+        sum(val)
+      } else {
+        totalObj += val
+      }
+    })
+  }
+  sum(data.obj)
+  console.log('totalObj notify', totalObj)
+})
+
+console.log('total', totalArr)
