@@ -255,17 +255,17 @@ false
 
 `javaScript`中的原始值(`undefined`, `null`, 布尔值，字符串和数字)与对象（数组，函数）有着根本区别
 
-- 原始值是不可改变的，任何方法都无法更改一个原始值
+- 原始值是**不可改变**的，任何方法都无法更改一个原始值
 
   - 改变数字与布尔的值本身就说不通
 
   - 字符串看起来像是由字符组成的数组，我们期望可以通过指定索引来 修改字符串中的字符。但`javaScript`禁止这样做，字符串中所有的方法看上去返回了一个修改后的字符串，实际上返回的是一个新的字符串值
 
-  - ```javascript
-    var s = 'hello world'
-    s.toUppperCase() // HELLO WORLD
-    console.log(s) // hello world
-    ```
+  ```javascript
+  var s = 'hello world'
+  s.toUppperCase() // HELLO WORLD
+  console.log(s) // hello world
+  ```
 
 - 原始值的比较
 
@@ -301,7 +301,7 @@ false
     a === b // false: 两个单独的数组永不相等
     ```
 
-  - 通常将对象称为引用类型，以此来和`javaScript`的基本类型进行区分，根据术语的叫法，其对象值都是引用，对象的比较均是引用的比较，当且仅当它们引用同一个基对象时，它们才相等
+  - 通常将对象称为引用类型，以此来和`javaScript`的基本类型进行区分，根据术语的叫法，其对象值都是引用，对象的比较均是**引用的比较**，**当且仅当**它们引用**同一个对象**时，它们才相等
 
   - ```javascript
     var a = [] 	// 定义一个引用空数组的变量a
@@ -316,12 +316,12 @@ false
     ```javascript
     function equalArrays (a, b) {
     	if (a.length !== b.length) {return false} 	// 两个长度不同的数组不相等
-        for (var i = 0; i < a.length; i++) {		
-            if (a[i] !== b[i]) {					// 若有任意元素不相等，则数组不相等
-                return false
-            }
+      for (var i = 0; i < a.length; i++) {		
+        if (a[i] !== b[i]) {					// 若有任意元素不相等，则数组不相等
+          return false
+        }
     	}
-        return true
+      return true
     }
     ```
 
@@ -351,18 +351,18 @@ false
   'null'
   > String('')
   ''
-  > String({})
+  > String({}) // 调用内部或自定义 toString() 方法
   '[object Object]'
-  > String([])
+  > String([]) // 将数组中的值字符串串化
   ''
   > String([1, 2])
   '1,2'
   > String([1, 0])
   '1,0'
   > String([1, null])
-  '1,' // TODO: 为什么没有 'null' 值
+  '1,' // 为什么没有 'null' 值 ? null 表示为空，会将其忽略
   > String([1, undefined])
-  '1,' // TODO: 为什么没有 'undefined' 值
+  '1,' // 为什么没有 'undefined' 值 ？ undefined 表示未声明，会将其忽略
   > String([1, NaN])
   '1,NaN'
    // 在对象上自定义 toString 方法，字符串串化时会调用该方法
@@ -383,7 +383,7 @@ false
   > var fn = function () {return 'sfsdf'}
   > String(fn)
   'function () {return \'sfsdf\'}'
-  > fn.toString = function () {return 'adfadfadf'}
+  > fn.toString = function () {return 'adfadfadf'} // 一切皆对象，可以在对象上添加属性或方法
   [Function]
   > String(fn)
   'adfadfadf'
@@ -431,6 +431,8 @@ false
   // 在对象中直接忽略值为 undefined, function () 等的属性
   > JSON.stringify({a: 2, b: undefined, c: function () {}})
   '{"a":2}'
+  > JSON.stringify({a: 2, b: undefined, c: null, d: NaN, e: function() {}})
+  '{"a":2,"c":null,"d":null}'
   // 循环调用会报错
   > var o = {}
   undefined
@@ -456,7 +458,7 @@ false
   b 42
   c a.c
   d function () {}
-  '{"b":42,"c":"a.c"}
+  '{"b":42,"c":"a.c"} // replace 函数返回的第三个属性值为 function, 在串化时被忽略
   // 添加可选参数
   > JSON.stringify(a, null, 3)
   '{\n   "b": 42,\n   "c": "a.c"\n}'
@@ -470,12 +472,14 @@ false
   - `true` -> `1`
   - `false` -> `0`
   - `undefined` -> `NaN`
+  - `NaN` -> `NaN`
   - `null` -> `0`
 - 对象类型值转换
-  - 使用抽象操作`ToPrimitive`检查该值是否含有`valueOf`方法，如果有并且返回基本类型值，就是用该值进行类型转换
+  - 使用抽象操作`ToPrimitive`检查该值是否含有`valueOf`方法，如果有并且返回**基本类型值**，就是用该值进行类型转换
   - 如果上面没有`valueOf`方法，或者其没有返回基本类型的值，则调用`toString`方法将其强制转换为基本类型的值
   - 如果使用`valueOf`与`toString`均没有返回基本类型的值，会产生`TypeError`错误
-  - 根据上面的转换原理，使用`Object.create(null)`生成的对象，不能转换为数字以及字符串类型
+  - 根据上面的转换原理，使用`Object.create(null)`生成的对象，不能转换为数字以及字符串类型（没有`object`的原型，也就没有`valueOf`与`toString`方法）
+  **注意**：转换为数字与使用`parseInt/parseFloat`不同，转换为字符串与`JSON.stringify`不同
 
   ```javascript
   // 基本类型值转换
@@ -490,7 +494,7 @@ false
   > Number(NaN)
   NaN
   > var o = {}
-  > o.valueOf()
+  > o.valueOf() // 返回对象，不是基本类型值，调用toString()方法
   {}
   > o.toString()
   '[object Object]'
@@ -515,12 +519,12 @@ false
   NaN
   > a.toString = function () {return '123'} // 自定义 toString 方法
   [Function]
-  > Number(a)
+  > Number(a) // a.valueOf()返回{}，不是基本类型值，调用toString()方法
   123
   > a
   { toString: [Function] }
   > var otherObj = Object.create(null)
-  > Number(otherObj)  // 内部没有 valueOf 方法与 toString 方法
+  > Number(otherObj)  // 内部没有 valueOf 方法与 toString 方法， 报错
   TypeError: Cannot convert object to primitive value
       at Number (<anonymous>)
   ```
