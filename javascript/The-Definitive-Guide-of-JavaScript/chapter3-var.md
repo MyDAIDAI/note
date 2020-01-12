@@ -24,39 +24,43 @@
 
   ```javascript
   Math.pow(2, 23) // 2的23次幂
-  Math.round(.6) // 四舍五入
-  Math.ceil(.6)  // 向上求整
-  Math.floor(.6) // 向下求整
-  Math.abs(-5)   // 求绝对值
-  Math.max(2, 3) // 求最大值
-  Math.min(2, 3) // 求最小值
+  Math.pow(2, 3) // 8
+  Math.round(.6) // 1: 四舍五入
+  Math.round(.2) // 0
+  Math.ceil(.6)  // 1: 向上求整
+  Math.ceil(.3) // 1
+  Math.floor(.6) // 0: 向下求整
+  Math.floor(.9) // 0
+  Math.abs(-5)   // 5: 求绝对值
+  Math.max(2, 3) // 3: 求最大值
+  Math.min(2, 3) // 2: 求最小值
   Math.random    // 生成伪随机数
-  Math.PI        // 圆周率
-  Math.E         // 自然对数的底数
+  Math.PI        // 3.141592653589793: 圆周率
+  Math.E         // 2.718281828459045: 自然对数的底数
   ...
   ```
 
 - 溢出、下溢或被零整除时不会报错
 
   - 溢出
-    - 超出上限，用`Infinity`表示
-    - 超出下限，用`-Infinity`表示
+    - 超出上限，用`Infinity`表示 `Math.pow(2, 100000) -> Infinity`
+    - 超出下限，用`-Infinity`表示 `-(Math.pow(2, 100000)) -> -Infinity`
   - 下溢
     - 运算结果无限接近于零并比`JavaScript`能表示的最小值还小的时候
     - 返回`0`
   - 被零整除
-    - 返回无穷大`Infinity`或负无穷大`-Infinity`
+    - 返回无穷大`Infinity`或负无穷大`-Infinity`, `123123123/0 -> Infinity`, `-123123123/0 -> -Infinity`
     - `0/0`返回`NaN`
 
 - `NaN`
 
-  - 与任何值都不相等，包括自身
+  - 与任何值都不相等，包括自身 `NaN == NaN -> false`，`NaN != NaN -> true`
   - 使用`x != x`，当且仅当`x`为`NaN`的时候，表达式才为`true`
 
 
 ### 二进制浮点数和四舍五入错误
 
-在`javaScript`中使用实数，常常只是真实值的一个近似表示，`js`所采用的`IEEE-754`浮点表示法，是一种二进制表示法，可以精确的表示分数`1/2 1/8和 1/ 1024`，但我们常用的分数都是十进制分数`1/10 1/ 1000`，二进制浮点数表示法并不能精确表示类似`0.1`这样简单的数字
+在`javaScript`中使用实数，常常只是真实值的一个近似表示，`js`所采用的`IEEE-754`浮点表示法，是一种**二进制表示法**，可以精确的表示分数`1/2 1/8和 1/ 1024`，但我们常用的分数都是十进制分数`1/10 1/ 1000`，二进制浮点数表示法并不能精确表示类似`0.1`这样简单的数字
 
 ```
 var x = 0.3 - 0.2
@@ -66,7 +70,7 @@ x // 0.09999999999999998
 y // 0.1
 ```
 
-为了避免上述错误，更愿意使用大整数进行重要的金融计算，例如，要使用整数“分”而不要使用小数“元”进行基于货币的运算
+为了避免上述错误，更愿意使用大整数进行重要的金融计算，例如，要使用整数“分”而不要使用小数“元”进行基于货币的运算, 也就是尽量使用整数计算而非小数
 
 ### 日期和时间
 
@@ -95,20 +99,61 @@ y // 0.1
 | \uXXXX   | 由4位十六进制数XXXX指定的Unicode字符 |
 
 ### 字符串的使用
-
 - `+`连接字符串
 - `length`确定字符串长度
 - 其他方法 
   - `charAt`
   - `substring`
   - `slice`
-  - `indexof`
-  - `lastIndexof`
+  - `indexOf`
+  - `lastIndexOf`
   - `split`
   - `replace`
   - `toUpperCase`
 - 注意：在`javaScript`字符串是固定不变的，类似`replace()`和`toUpperCase()`的方法都是返回新字符串，原字符串本身并没有发生改变
 
+```javaScript
+var str = 'abcsdf'
+str = str + 'sdfsdfsdf' // 使用 + 进行字符链接
+// 获取某个索引位置的字符
+> str.charAt()
+'a'
+> str.charAt(4)
+'d'
+// 字符串截取
+> str.substring(1) // 返回截取后的字符串
+'bcsdfsdfsdfsdf'
+> str
+'abcsdfsdfsdfsdf'  // 原字符串本身没有发生改变
+> str.slice(0, 4)
+'abcs'
+> str
+'abcsdfsdfsdfsdf'
+// 获取字符索引
+> str.indexOf('d')
+4
+> str.lastIndexOf('d')
+13
+// 字符串分割
+> str.split('')
+[ 'a', 'b', 'c', 's', 'd', 'f', 's', 'd', 'f', 's', 'd', 'f', 's', 'd', 'f' ]
+> str.split(',')
+[ 'abcsdfsdfsdfsdf' ]
+> str.split(' ')
+[ 'abcsdfsdfsdfsdf' ]
+> str
+'abcsdfsdfsdfsdf'
+// 字符串替换
+> str.replace('d', '23')
+'abcs23fsdfsdfsdf'
+> str
+'abcsdfsdfsdfsdf'   // 原字符串没有发生变化
+// 转换为大写
+> str.toUpperCase()
+'ABCSDFSDFSDFSDF'
+> str
+'abcsdfsdfsdfsdf' // 原字符串没有发生变化
+```
 ### 模式匹配
 
 使用`RegExp()`构造函数，用来创建表示文本匹配模式的对象，`String`和`RegExp`对象均定义了利用正则表达式进行模式匹配和查找与替换的函数
@@ -133,7 +178,7 @@ text.split(/D+/) // ["", "1", "2", "3"]
 - `-0`
 - `NaN`
 - `''`
-
+注意：`Boolean('')` -> `false`, `Boolean(' ')` -> `true`
 ## `null`和`undefined`
 
 - `type null ==> 'object'`
@@ -160,20 +205,51 @@ var s = 'hello world'
 var word = s.substring(s.indexOf(" ") + 1, s.length)
 ```
 
-字符串不是对象，但是`javaScript`会将字符串值通过调用`new String(s)`的方式转换为对象，这个对象继承了字符串的方法，并被用来处理属性的引用。一旦属性引用结束，这个新创建的对象就会被销毁，`Number（）`和`Boolean（）`同样，但是`null`和`undefined`没有包装对象，访问它们的属性会造成类型错误
+字符串不是对象，但是`javaScript`会将字符串值通过调用`new String(s)`的方式转换为对象，这个对象继承了字符串的方法，并被用来处理属性的引用。一旦属性引用结束，这个新创建的对象就会被销毁，`Number（）`和`Boolean（）`同样，但是`null`和`undefined`**没有包装对象**，访问它们的属性会造成类型错误
 
 ```javascript
 var s = "test"
-s.len = 4
+s.len = 4 // 创建临时包装对象
+s.len // undefined 包装对象被销毁，访问该属性不存在，返回 undefined
 var t = s.len
 console.log(t) // undefined
 ```
 
 `javaScript`在第二行创建一个临时字符串对象，并将其`len`属性赋值为4，随即就销毁这个对象。再次访问该属性，该属性不存在，所以为`undefined`
 
-存取字符串、数字或布尔值的属性时创建的临时对象被称做包装对象，它只是偶尔用来区分字符串值和字符串对象，数字和数值对象以及布尔值和布尔对象
+存取字符串、数字或布尔值的属性时创建的临时对象被称做包装对象，它只是偶尔用来区分字符串值和字符串对象，数字和数值对象以及布尔值
 
-需要注意的是，可通过`String()`，`Number()`, `Boolean()`构造函数类显式创建包装对象，但是会在必要的时候将包装对象转换为原始值，使用`===`和`typeof`可以检测出原始值与包装对象的不同
+需要注意的是，可通过`String()`，`Number()`, `Boolean()`构造函数类显式创建包装对象，但是会在必要的时候将包装对象转换为原始值, `==`运算符将原始值和其他包装对象视为相等，使用`===`和`typeof`可以检测出原始值与包装对象的不同
+```javaScript
+> var s = "test"
+> var n = 1
+> var b = true
+> typeof s
+'string'
+> typeof n
+'number'
+> typeof b
+'boolean'
+> var S = new String('test')
+> var N = new Number(1)
+> S
+[String: 'test']
+> N
+[Number: 1]
+> var B = new Boolean(true)
+> B
+[Boolean: true]
+> typeof S
+'object'
+> typeof N
+'object'
+> typeof B
+'object'
+> s == S // == 会将包装对象转换为原始值
+true
+> s === S
+false
+```
 
 ## 不可变的原始值和可变的对象引用
 
