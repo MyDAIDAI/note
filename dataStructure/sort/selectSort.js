@@ -21,3 +21,4 @@ console.time('selectSort')
 selectSort(arr)
 console.timeEnd('selectSort')
 console.log('arr', arr)
+module.exports = selectSort

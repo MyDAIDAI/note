@@ -3350,6 +3350,7 @@
     normalizationType,
     alwaysNormalize
   ) {
+    debugger
     if (Array.isArray(data) || isPrimitive(data)) {
       normalizationType = children;
       children = data;
@@ -3395,6 +3396,7 @@
         );
       }
     }
+    debugger
     // support single function children as default scoped slot
     if (Array.isArray(children) &&
       typeof children[0] === 'function'
@@ -3440,6 +3442,7 @@
       // direct component options / constructor
       vnode = createComponent(tag, data, context, children);
     }
+    debugger
     if (Array.isArray(vnode)) {
       return vnode
     } else if (isDef(vnode)) {
@@ -3549,7 +3552,9 @@
         // separately from one another. Nested component's render fns are called
         // when parent component is patched.
         currentRenderingInstance = vm;
+        debugger
         vnode = render.call(vm._renderProxy, vm.$createElement);
+        debugger
       } catch (e) {
         handleError(e, vm, "render");
         // return error render result,
@@ -3935,6 +3940,7 @@
 
   function lifecycleMixin (Vue) {
     Vue.prototype._update = function (vnode, hydrating) {
+      debugger
       var vm = this;
       var prevEl = vm.$el;
       var prevVnode = vm._vnode;
@@ -5921,7 +5927,7 @@
       if (createComponent(vnode, insertedVnodeQueue, parentElm, refElm)) {
         return
       }
-
+      debugger
       var data = vnode.data;
       var children = vnode.children;
       var tag = vnode.tag;
@@ -5939,7 +5945,7 @@
             );
           }
         }
-
+        debugger
         vnode.elm = vnode.ns
           ? nodeOps.createElementNS(vnode.ns, tag)
           : nodeOps.createElement(tag, vnode);
@@ -6043,7 +6049,7 @@
     function createChildren (vnode, children, insertedVnodeQueue) {
       if (Array.isArray(children)) {
         {
-          checkDuplicateKeys(children);
+          checkDuplicateKeys(children);  // 检查key值是否重复
         }
         for (var i = 0; i < children.length; ++i) {
           createElm(children[i], insertedVnodeQueue, vnode.elm, null, true, children, i);
@@ -6505,7 +6511,7 @@
           // replacing existing element
           var oldElm = oldVnode.elm;
           var parentElm = nodeOps.parentNode(oldElm);
-
+          debugger
           // create new node
           createElm(
             vnode,

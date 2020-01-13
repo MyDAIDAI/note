@@ -1,5 +1,5 @@
-// 排序算法所用工具库
 
+// 排序算法所用工具库
 module.exports = {
   /**
    * 判断a是否小于b
@@ -48,5 +48,17 @@ module.exports = {
       }
       return true
     }
+  },
+  /**
+   * 根据传入的最大最小值，生成一组随机数
+   * @param {number} min 最小值
+   * @param {number} max 最大值
+   */
+  generateRandom: function (min, max) {
+    let arr = []
+    for (let i = 0; i < max; i++) {
+      arr.push(Math.round(Math.random() * (max - min)) + min)
+    }
+    return arr
   }
 }
