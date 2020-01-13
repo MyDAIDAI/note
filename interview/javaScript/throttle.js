@@ -10,7 +10,7 @@
  * @param {number} wait 等待时间，毫秒级 
  */
 function throttle1(fn, wait) {
-  let previous = 0 // 第一次调用的时候 previous 为 0, current - previous 必然大于 wait, 所以进去会先直接执行依次
+  let previous = 0 // 第一次调用的时候 previous 为 0, current - previous 必然大于 wait, 所以进去会先直接执行一次, 可以实现第一次的直接调用
   return function(...args) {
     let current = +(new Date())
     if (current - previous >= wait) {
@@ -29,17 +29,57 @@ function throttle2(fn, wait) {
   let timer = null
   return function(...args) {
     if (!timer) {
-      timer = setTimeout(() => { // setTimeout立即执行，但会在 wait 之后才会第一次开始执行函数
+      timer = setTimeout(() => { // setTimeout立即执行，但会在 wait 之后才会第一次开始执行函数，可以实现最后的wait调用
         fn.apply(this, args)
         timer = null
       }, wait)
     }
   }
 }
-let index = 0
-const fn = () => {
-  console.log(`fn执行了 ${++index} 次`) 
+
+/**
+ * 可以控制第一次与最后一次函数调用的节流函数
+ * @param {function} fn 要执行的函数
+ * @param {number} wait 延迟时间
+ * @param {object} option 可选项 {leading: false} 立即执行不调用，{trailing: false} 最后一次延迟不调用, 默认leading: true, trailing： true
+ */
+function throttle(fn, wait, options) {
+  let result, timeout
+  let previous = 0
+  if (!options) options = {} // 未传入 options 参数，设置为空对象，取属性则为 undefined
+  // 满足执行立即调用第一次
+  return function(...args) {
+    // debugger
+    let current = +(new Date())
+    // 不执行第一次函数调用且为第一次执行则把 previous 置为当前值
+    if (!previous &&　options.leading === false) {
+      previous = current
+    }
+    let remaining = wait - (current - previous)
+    if (remaining <= 0) { // 时间到了，执行函数
+      if (timeout) {  // 清除计时器，同时只执行一种
+        clearTimeout(timeout)
+        timeout = null
+      }
+      previous = current
+      result = fn.apply(this, args)
+    } else if (!timeout && options.trailing !== false) {
+      timeout = setTimeout(() => {
+        result = fn.apply(this, args)
+        timeout = null
+      }, remaining) // 在最后一次调用的时间差之后去调用该函数
+    }
+    return result
+  }
 }
-setInterval(throttle1(fn, 2000), 10)
+
+// let index = 0
+// const fn = () => {
+//   console.log(`fn执行了 ${++index} 次`) 
+// }
+// setInterval(throttle1(fn, 3000), 10)
 // setInterval(throttle2(fn, 2000), 10)
+// setInterval(throttle(fn, 3000, {leading: false}), 10)
 // setInterval(fn, 10)
+
+

@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>函数节流</title>
   <script src="https://cdn.bootcss.com/underscore.js/1.9.1/underscore.js"></script>
+  <script src="./throttle.js"></script>
 </head>
 <body>
   <div id="app" style="width: 400px;height: 600px;background-color: #eeeeee;">
@@ -20,5 +21,5 @@
     console.error(`触发了 ${++fnIndex} 次函数`)
   }
   // 监听鼠标滑动事件
-  document.getElementById('app').addEventListener('mousemove', _.throttle(fn, 2000, {trailing: false}))
+  document.getElementById('app').addEventListener('mousemove', throttle(fn, 2000))
 </script>
