@@ -679,9 +679,26 @@ NaN
   - 如果某个操作数是字符串或者能够通过以下步骤转换为字符串的话，则进行拼接操作
   - `[1, 2, 3] + [4, 5] -> '1,2,34,5'`
   - `1 + {} -> 1[object Object]`
-  - `{} + [] -> '[object Object]' WHY?`
-  - `[] + {} -> 0 WHY?`
+  - `{} + [] -> 0 WHY`
+    - `{}`被作为一个代码块，上面的代码相当于
+    ```javaScript
+    {
+    //empty block here
+    }
+
+    +[] //0 等同于 Number([])
+    // 最后返回 0
+    ({} + []) // 作为一个表达式，返回'[object Object]'
+    ```
+  - `[] + {} -> [object Object] WHY?`
+    - `[]` => `''` 数组转换为空字符串
+    - `{}` => 由于`[]`转换为字符串，那么`+`后面的也转为字符串，即`[object Object]`
+    - 最后返回`[object Object]`
+
+  - 参考链接：[Why does {} + [] return 0 in Javascript? [duplicate]](https://stackoverflow.com/questions/11939044/why-does-return-0-in-javascript)
+   
   
+
 - 数字 -> 字符串
   - `number + ''`
     - 与 `String()`的区别
