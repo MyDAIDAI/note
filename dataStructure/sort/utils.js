@@ -53,10 +53,11 @@ module.exports = {
    * 根据传入的最大最小值，生成一组随机数
    * @param {number} min 最小值
    * @param {number} max 最大值
+   * @param {number} range 数据范围
    */
-  generateRandom: function (min, max) {
+  generateRandom: function (min, max, range) {
     let arr = []
-    for (let i = 0; i < max; i++) {
+    for (let i = 0; i < range; i++) {
       arr.push(Math.round(Math.random() * (max - min)) + min)
     }
     return arr

@@ -1178,12 +1178,12 @@ Object(3) // new Number(3)
 
   - `javaScript`是基于词法作用域的语言，也就是**静态作用域**，也就是变量定义时的作用域
 
-  - 当定义一个函数的时候，它实际上保存一个作用域链。当调用这个函数时，它创建一个新的对象来存储它的局部变量，并将这个对象添加至保存的那个作用域链上，同时创建一个新的更长的表示函数调用作用域的"链"
+  - 当定义一个函数的时候，它实际上保存一个作用域链。当调用这个函数时，它创建一个新的对象来存储**函数本身**的局部变量，并将这个对象添加至保存的那个作用域链上，同时创建一个新的更长的表示函数调用作用域的"链"
 
     ```javascript
     var scope = "global scope"
     function checkscope() {
-        var scope2 = "local scope"
+      var scope2 = "local scope"
     	return scope2
     }
     checkscope()
@@ -1278,7 +1278,7 @@ Object(3) // new Number(3)
 基本类型数据与引用类型数据
 
 - 复制变量值
-  - 基本数据类型：从一个变量向另一个变量复制基本类型的值，会在变量上创建一个新值，然后把值复制到为新变量分配的位置上
+  - 基本数据类型：从一个变量向另一个变量复制基本类型的值，会在变量上**创建**一个新值，然后把值复制到为新变量分配的位置上
   
   ![var-base](https://github.com/MyDAIDAI/The-Definitive-Guide-of-JavaScript/blob/master/var-base.png)
 

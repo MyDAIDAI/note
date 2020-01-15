@@ -1,4 +1,6 @@
 const SortUtil = require('./utils')
+const data = require('./data.json')
+const randomData = require('./randomData.json')
 // 插入排序
 // 将右侧无序数组中的值依次放到左侧有序数组中，左侧数据需要进行相应的移动
 // 与选择排序不同的是，插入排序所需的时间取决于输入中元素的初始顺序
@@ -13,10 +15,15 @@ function insertSort(arr) {
     }
   }
 }
-// insertSort: 74.795ms
-let arr = SortUtil.generateRandom(0, 10000)
-console.time('insertSort')
-insertSort(arr)
-console.timeEnd('insertSort')
-console.log('arr', arr)
+// 排序随机数
+// random: 6774.329ms
+console.time('random')
+insertSort(randomData)
+console.timeEnd('random')
+
+// 排序顺序数
+// sorted: 1.427ms
+console.time('sorted')
+insertSort(data)
+console.timeEnd('sorted')
 module.exports = insertSort
