@@ -65,6 +65,8 @@ function throttle(fn, wait, options) {
       result = fn.apply(this, args)
     } else if (!timeout && options.trailing !== false) {
       timeout = setTimeout(() => {
+        // 将闭包内保存的变量 previous 初始化，避免影响后续的调用
+        previous = options.leading === false ? 0 : +(new Date())
         result = fn.apply(this, args)
         timeout = null
       }, remaining) // 在最后一次调用的时间差之后去调用该函数
