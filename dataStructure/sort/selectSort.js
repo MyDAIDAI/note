@@ -1,4 +1,4 @@
-const SortUtil = require('./utils') 
+const SortUtil = require('./utils')
 const cliProgress = require('cli-progress')
 const data = require('./data.json')
 const randomData = require('./randomData.json')
