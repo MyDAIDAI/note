@@ -387,11 +387,13 @@ class Observer {
     keys.forEach(key => {
       let internalVal = value[key]
       let dep = new Dep()
+      // debugger
       let childOb = observer(internalVal)
       Object.defineProperty(value, key, {
         enumerable: true,
         configurable: true,
         get: function() {
+          console.log(`get  value: ${value}, key: ${key}`)
           dep.depend()
           if (childOb) {
             childOb.dep.depend()
@@ -431,50 +433,54 @@ function observer(value) {
   return ob
 }
 let data = {
-  arr: [1, 2, [3, 4, 5]],
-  obj: {
-    a: 'a',
-    b: 'b',
-    c: {
-     d: 'd',
-     e: {
-       h: 'h'
-     } 
-    }
-  }
+  // num: 1,
+  // arr: [1, 2, [3, 4, 5], {a: 'a', b: {c: 'c'}}],
+  arrObj: [{a: 'a', b: {c: 'c'}}]
+  // obj: {
+  //   a: 'a',
+  //   b: 'b',
+  //   c: {
+  //    d: 'd',
+  //    e: {
+  //      h: 'h'
+  //    } 
+  //   }
+  // }
 }
 observer(data)
 let totalArr = 0
 let totalObj = ''
+// watcher(() => {
+//   totalArr = 0
+//   function sum(arrdata) {
+//     arrdata.forEach(ele => {
+//       if (Array.isArray(ele)) {
+//         sum(ele)
+//       } else {
+//         totalArr += ele
+//       }
+//     })
+//   }
+//   sum(data.arr)
+//   console.log('totalArr notify', totalArr)
+// })
+// watcher(() => {
+//   totalObj = ''
+//   function sum(objData) {
+//     const keys = Object.keys(objData)
+//     keys.forEach(key => {
+//       let val = objData[key]
+//       if (isPlainObject(val)) {
+//         sum(val)
+//       } else {
+//         totalObj += val
+//       }
+//     })
+//   }
+//   sum(data.obj)
+//   console.log('totalObj notify', totalObj)
+// })
 watcher(() => {
-  totalArr = 0
-  function sum(arrdata) {
-    arrdata.forEach(ele => {
-      if (Array.isArray(ele)) {
-        sum(ele)
-      } else {
-        totalArr += ele
-      }
-    })
-  }
-  sum(data.arr)
-  console.log('totalArr notify', totalArr)
+  totalObj = data.arrObj[0].a + data.arrObj[0].b.c
 })
-watcher(() => {
-  totalObj = ''
-  function sum(objData) {
-    const keys = Object.keys(objData)
-    keys.forEach(key => {
-      let val = objData[key]
-      if (isPlainObject(val)) {
-        sum(val)
-      } else {
-        totalObj += val
-      }
-    })
-  }
-  sum(data.obj)
-  console.log('totalObj notify', totalObj)
-})
-
 console.log('total', totalArr)

@@ -8,15 +8,29 @@
 </head>
 <body>
     <div id="app">
+      <!-- <p>{{arr[0]}}</p>
+      <p>{{arr[1]}}</p>
+      <p>{{arr[2][0]}}</p> -->
+      <p>{{arr[0].a}}</p>
+      <p>{{arr[0].b.c}}</p>
     </div>
     <script>
       var app = new Vue({
         el: '#app',
         data: {
-          message: 'hello, vue'
-        },
-        render: function (createElement) {
-          return createElement('h1', this.message)
+          // message: 'hello, vue',
+          // num: 1,
+          arr: [{a: 'a', b: {c: 'c'}}],
+          obj: {
+            a: 'a',
+            b: 'b',
+            c: {
+            d: 'd',
+            e: {
+              h: 'h'
+            } 
+            }
+          }
         }
       })
     </script>

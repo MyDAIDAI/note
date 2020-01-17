@@ -234,7 +234,7 @@ function observe(val) {
 function defineProperty(obj, key) {
   const dep = new Dep()
   let internalVal = obj[key]
-  observe(internalVal)
+  observe(internalVal) // 对对象进行深度监听
   Object.defineProperty(obj, key, {
     get: function () {
       // TODO 外层对象改变，内部对象也应该更新依赖
@@ -291,7 +291,7 @@ function observer(val) {
 }
 ```
 
-上面的代码中对数组中的每一项都会进行监听，然后在数组的每一项改变的时候都会进行依赖更新，由于数组的数据量可能会很大，这样会比较影响性能（我暂时是这么认为的）
+上面的代码中对数组中的每一项都会进行监听，然后在数组的每一项改变的时候都会进行依赖更新，由于数组的数据量可能会很大，这样会比较影响性能（[记一次思否问答的问题思考：Vue为什么不能检测数组变动](https://segmentfault.com/a/1190000015783546#comment-area)）
 
 将上面的代码优化一下，当数组的中的值是基本类型时，不进行监听，引用类型是再进行监听
 
@@ -442,6 +442,7 @@ total // 10 值进行了更新
 
 从上面图中可以大概了解到：
 - 在`vue`的生命周期中实例了三种`Watcher`， 分别是`computed`, `watch`, 以及`render`
+- 执行`render watcher` 时会触发`Object.defineProperty`中的`get`方法，进行依赖收集
 - 对数据响应式的处理都会进行`observe`函数，在该函数中，只有`Array/Object`类型的数据才会进行`new Observer()`
 - 在`get`函数中会对对象的属性值进行进一步的`observe`, 如果值为`Array/Object`类型，会向其中添加当前的依赖，当内层的值修改，便可以触发外层的依赖进行更新
 
