@@ -46,16 +46,45 @@ function mergeSort(arr, lo, hi) {
   mergeSort(arr, mid + 1, hi)
   merge(arr, lo, mid, hi)
 }
-// 排序随机数
+
+/**
+ * 自底向上的归并排序
+ * 时间复杂度 NlgN
+ * 空间复杂度 N
+ * @param {array} arr 排序数组
+ * 自底向上的归并排序比较适合链表组织的数据
+ */
+function mergeSortBU(arr) {
+  let len = arr.length
+  let aux = []
+  for(let sz = 1; sz < len; sz = sz * 2) { // sz子数组的大小，依次加倍
+    for(let lo = 0; lo < len - sz; lo += sz * 2) { // 子数组索引
+      merge(arr, lo, lo + sz - 1, Math.min(lo + sz + sz + 1, len - 1))
+    }
+  }
+} 
+// 自顶向下的归并排序排序随机数
 // random: 327.208ms
 // 对于随机数，排序的时间提高了许多
 console.time('random')
 mergeSort(randomData, 0, randomData.length - 1)
 console.timeEnd('random')
 
-// 排序顺序数
+// 自顶向下的归并排序排序顺序数
 // sorted: 298.133ms
 console.time('sorted')
 mergeSort(data, 0, data.length - 1)
+console.timeEnd('sorted')
+
+// 自底向上的归并排序随机数
+// random: 314.682ms
+console.time('random')
+mergeSortBU(randomData, 0, randomData.length - 1)
+console.timeEnd('random')
+
+// 自底向上的归并排序顺序数
+// sorted: 314.735ms
+console.time('sorted')
+mergeSortBU(data, 0, data.length - 1)
 console.timeEnd('sorted')
 module.exports = mergeSort
