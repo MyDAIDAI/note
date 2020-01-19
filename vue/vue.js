@@ -920,7 +920,7 @@
    * collect dependencies and dispatch updates.
    */
   var Observer = function Observer (value) {
-    this.value = value;
+    // this.value = value;
     this.dep = new Dep();
     this.vmCount = 0;
     def(value, '__ob__', this);
@@ -1031,16 +1031,15 @@
     if ((!getter || setter) && arguments.length === 2) {
       val = obj[key];
     }
-
     var childOb = !shallow && observe(val);
     Object.defineProperty(obj, key, {
       enumerable: true,
       configurable: true,
       get: function reactiveGetter () {
+        debugger
         var value = getter ? getter.call(obj) : val;
         if (Dep.target) {
           dep.depend();
-          // TODO:向内层添加外层的依赖，当外层更新的时候内层进行更新？
           if (childOb) {
             childOb.dep.depend();
             if (Array.isArray(value)) {
@@ -2098,6 +2097,7 @@
 
     var getHandler = {
       get: function get (target, key) {
+        debugger
         if (typeof key === 'string' && !(key in target)) {
           if (key in target.$data) { warnReservedPrefix(target, key); }
           else { warnNonPresent(target, key); }
@@ -2110,6 +2110,7 @@
       if (hasProxy) {
         // determine which proxy handler to use
         var options = vm.$options;
+        debugger
         var handlers = options.render && options.render._withStripped
           ? getHandler
           : hasHandler;
@@ -3350,7 +3351,6 @@
     normalizationType,
     alwaysNormalize
   ) {
-    debugger
     if (Array.isArray(data) || isPrimitive(data)) {
       normalizationType = children;
       children = data;
@@ -3396,7 +3396,6 @@
         );
       }
     }
-    debugger
     // support single function children as default scoped slot
     if (Array.isArray(children) &&
       typeof children[0] === 'function'
@@ -3442,7 +3441,7 @@
       // direct component options / constructor
       vnode = createComponent(tag, data, context, children);
     }
-    debugger
+    
     if (Array.isArray(vnode)) {
       return vnode
     } else if (isDef(vnode)) {
@@ -3552,9 +3551,9 @@
         // separately from one another. Nested component's render fns are called
         // when parent component is patched.
         currentRenderingInstance = vm;
-        debugger
+        
         vnode = render.call(vm._renderProxy, vm.$createElement);
-        debugger
+        
       } catch (e) {
         handleError(e, vm, "render");
         // return error render result,
@@ -3940,7 +3939,7 @@
 
   function lifecycleMixin (Vue) {
     Vue.prototype._update = function (vnode, hydrating) {
-      debugger
+      
       var vm = this;
       var prevEl = vm.$el;
       var prevVnode = vm._vnode;
@@ -5927,7 +5926,7 @@
       if (createComponent(vnode, insertedVnodeQueue, parentElm, refElm)) {
         return
       }
-      debugger
+      
       var data = vnode.data;
       var children = vnode.children;
       var tag = vnode.tag;
@@ -5945,7 +5944,7 @@
             );
           }
         }
-        debugger
+        
         vnode.elm = vnode.ns
           ? nodeOps.createElementNS(vnode.ns, tag)
           : nodeOps.createElement(tag, vnode);
@@ -6511,7 +6510,7 @@
           // replacing existing element
           var oldElm = oldVnode.elm;
           var parentElm = nodeOps.parentNode(oldElm);
-          debugger
+          
           // create new node
           createElm(
             vnode,

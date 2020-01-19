@@ -645,7 +645,7 @@ class Observer {
 // data.arr[0] = 2 : 直接根据索引值修改值不会触发更新
 // data.arr.push(7) : 使用 push 方法向 arr 方法添加值，触发更新
 // totalArr notify 22 
-// data.arr[2].push(8) : 未触发更新
+// data.arr[2].push(8) : 未触发更
 // data.arr[2].push(6): 调用实例中的代理方法可以触发更新
 // totalArr notify 21
 ```

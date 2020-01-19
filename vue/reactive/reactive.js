@@ -367,6 +367,7 @@ methodsToPatch.forEach(function(method) {
 class Observer {
   constructor(val) {
     this.val = val
+    this.expression = target && target.toString()
     def(val, '__ob__', this)
     this.dep = new Dep()
     if (Array.isArray(this.val)) {
@@ -393,7 +394,6 @@ class Observer {
         enumerable: true,
         configurable: true,
         get: function() {
-          console.log(`get  value: ${value}, key: ${key}`)
           dep.depend()
           if (childOb) {
             childOb.dep.depend()
@@ -434,53 +434,54 @@ function observer(value) {
 }
 let data = {
   // num: 1,
-  // arr: [1, 2, [3, 4, 5], {a: 'a', b: {c: 'c'}}],
-  arrObj: [{a: 'a', b: {c: 'c'}}]
-  // obj: {
-  //   a: 'a',
-  //   b: 'b',
-  //   c: {
-  //    d: 'd',
-  //    e: {
-  //      h: 'h'
-  //    } 
-  //   }
-  // }
+  arr: [1, 2, [3, 4, 5], {a: 6, b: {c: 7}}],
+  // arrObj: [{a: 'a', b: {c: '}}]
+  obj: {
+    a: 'a',
+    b: 'b',
+    c: {
+     d: 'd',
+     e: {
+       h: 'h'
+     } 
+    }
+  }
 }
 observer(data)
 let totalArr = 0
 let totalObj = ''
-// watcher(() => {
-//   totalArr = 0
-//   function sum(arrdata) {
-//     arrdata.forEach(ele => {
-//       if (Array.isArray(ele)) {
-//         sum(ele)
-//       } else {
-//         totalArr += ele
-//       }
-//     })
-//   }
-//   sum(data.arr)
-//   console.log('totalArr notify', totalArr)
-// })
-// watcher(() => {
-//   totalObj = ''
-//   function sum(objData) {
-//     const keys = Object.keys(objData)
-//     keys.forEach(key => {
-//       let val = objData[key]
-//       if (isPlainObject(val)) {
-//         sum(val)
-//       } else {
-//         totalObj += val
-//       }
-//     })
-//   }
-//   sum(data.obj)
-//   console.log('totalObj notify', totalObj)
-// })
 watcher(() => {
-  totalObj = data.arrObj[0].a + data.arrObj[0].b.c
+  totalArr = 0
+  function sum(arrdata) {
+    arrdata.forEach(ele => {
+      if (Array.isArray(ele)) {
+        sum(ele)
+      } else if (typeof ele === 'number'){
+        totalArr += ele
+      }
+    })
+  }
+  sum(data.arr)
+  totalArr = totalArr + data.arr[3].a + data.arr[3].b.c
+  console.log('totalArr notify', totalArr)
 })
+watcher(() => {
+  totalObj = ''
+  function sum(objData) {
+    const keys = Object.keys(objData)
+    keys.forEach(key => {
+      let val = objData[key]
+      if (isPlainObject(val)) {
+        sum(val)
+      } else {
+        totalObj += val
+      }
+    })
+  }
+  sum(data.obj)
+  console.log('totalObj notify', totalObj)
+})
+// watcher(() => {
+//   totalObj = data.arrObj[0].a + data.arrObj[0].b.c
+// })
 console.log('total', totalArr)
