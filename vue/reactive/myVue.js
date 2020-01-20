@@ -3,23 +3,45 @@
 let target = null
 class MyVue {
   constructor(options) {
+    const vm = this
+    this.$options = options
     this.$data = options.data
-    // target = options.target
-    this.initData()
-    this.initTarget(options.target)
+    this.initData(vm)
+    this.initRender(vm)
   }
-  initData() {
-    observer(this.$data)
+  initData(vm) {
+    observer(vm.$data)
   }
-  initTarget(fn) {
-    watcher(fn)
+  initRender(vm) {
+    new Watcher(vm, this.$options.target)
   }
 }
-function watcher(fn) {
-  target = fn
-  target()
-  target = null
+/**
+ * 监听者，并保存 vm 对象以及内部的数据
+ */
+class Watcher {
+  constructor(vm, fn) {
+    this.vm = vm
+    this.getter = fn
+    Dep.target =  this
+    this.get()
+    Dep.target = null
+  }
+  get() {
+    return this.getter.call(this.vm)
+  }
+  addDep(dep) {
+    dep.addSub(this)
+  }
+  update() {
+    return this.get()
+  }
 }
+// function watcher(vm) {
+//   target = vm.$options.target
+//   target.call(vm, vm.$data)
+//   target = null
+// }
 function isPlainObject(val) {
   return Object.prototype.toString.call(val) === '[object Object]'
 }
@@ -64,13 +86,15 @@ class Observer{
       let ob = observer(internalVal)
       Object.defineProperty(val, key, {
         get: function() {
-          if (target) {
-            dep.depend()
-          }
+          console.log('get')
+          // 对于值为对象来说，完全是ok的，不需要再在 __ob__ 上添加依赖
+          dep.depend() // 只是在闭包中的 dep 变量上添加依赖，没有在 __ob__ 上添加依赖
           return internalVal
         },
         set: function(val) {
           internalVal = val
+          console.log('notify', dep)
+          dep.notify()
           return val
         }
       })
@@ -86,30 +110,40 @@ class Observer{
  * 依赖类
  * 依赖的收集以及分发
  */
-class Dep{
+class Dep {
   constructor() {
     this.subs = []
     this.express = target && target.toString()
   }
   depend() {
-    if(target && !this.subs.includes(target)) {
-      this.subs.push(target)
+    if (Dep.target) {
+      Dep.target.addDep(this)
     }
   }
+  addSub(watcher) {
+    this.subs.push(watcher)
+  }
   notify() {
-    this.subs.forEach(fn => {
-      fn()
+    this.subs.forEach(watcher => {
+      watcher.update()
     })
   }
 }
-let target = null
 // MyVue实例
 let myvue = new MyVue({
   data: {
-    arr: [1, 2, 3, [4, 5, [7]]]
+    // arr: [1, 2, 3, [4, 5, [7]]],
+    obj: {
+      a: 'a',
+      b: {
+        c: 'c'
+      }
+    }
   },
-  target: () => {
-    console.log(this.data.arr, this.data.arr[0])
+  target: function () {
+    let data = this.$data
+    console.log('this', this)
+    console.log(data.obj.a + data.obj.b.c)
   }
 })
 debugger
