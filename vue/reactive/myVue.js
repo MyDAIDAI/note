@@ -1,6 +1,29 @@
 
 
 let target = null
+
+// 对数组方法的处理
+let methodProto = Array.prototype
+let methodsPatch = [
+  'push',
+  'slice',
+  'pop',
+  'shift',
+  'unshift'
+]
+let methodObject = Object.create(methodProto)
+methodsPatch.forEach((method) => {
+  let original = methodProto[method]
+  Object.defineProperty(methodObject, method, {
+    enumerable: false,
+    value: function (...args) {
+      let result = original.apply(this, args)
+      console.log('array method', this)
+      this.__ob__ && this.__ob__.dep.notify()
+      return result
+    }
+  })
+})
 class MyVue {
   constructor(options) {
     const vm = this
@@ -74,6 +97,7 @@ class Observer{
     def(value, '__ob__', this)
     this.value = value
     if (Array.isArray(value)) {
+      value.__proto__ = methodObject
       this.observerArray(value)
     } else {
       this.walk(value)
@@ -83,12 +107,19 @@ class Observer{
     Object.keys(val).forEach(key => {
       let dep = new Dep()
       let internalVal = val[key]
-      let ob = observer(internalVal)
+      let childOb = observer(internalVal)
+      let that = this
       Object.defineProperty(val, key, {
         get: function() {
           console.log('get')
-          // 对于值为对象来说，完全是ok的，不需要再在 __ob__ 上添加依赖
+          // 对于值为对象来说，完全是ok的，不需要再在 __ob__ 上添加依赖, 直接修改 data 中的 arr 属性可以触发更新 myvue.$data.arr = [2, 3, 4, 5, [6, 7, [9]]]
           dep.depend() // 只是在闭包中的 dep 变量上添加依赖，没有在 __ob__ 上添加依赖
+          if (childOb) { // 对值为数组的处理，向 __ob__ 中添加依赖，使用 push，pop 等代理方法可以触发该依赖
+            childOb.dep.depend()
+            if (Array.isArray(internalVal)) { // 值为数组，则递归向数组的 __ob__ 对象上添加依赖, 调用数组的代理方法可以触发更新 myvue.$data.arr[3].push(1)/myvue.$data.arr[3][2].push(1)调用的代理方法，所以都会触发更新
+              that.dependArray(internalVal)
+            }
+          } 
           return internalVal
         },
         set: function(val) {
@@ -100,6 +131,15 @@ class Observer{
       })
     })
   }
+  dependArray(internalVal) {
+    for(let i = 0, len = internalVal.length; i < len; i++) {
+      let item = internalVal[i]
+      item && item.__ob__ && item.__ob__.dep.depend()
+      if (Array.isArray(item)) {
+        this.dependArray(item)
+      }
+    }
+  } 
   observerArray(val) {
     for(let i = 0, len = val.length; i < len; i++) {
       observer(val[i])
@@ -129,10 +169,11 @@ class Dep {
     })
   }
 }
+
 // MyVue实例
 let myvue = new MyVue({
   data: {
-    // arr: [1, 2, 3, [4, 5, [7]]],
+    arr: [1, 2, 3, [4, 5, [7]]],
     obj: {
       a: 'a',
       b: {
@@ -142,8 +183,18 @@ let myvue = new MyVue({
   },
   target: function () {
     let data = this.$data
-    console.log('this', this)
-    console.log(data.obj.a + data.obj.b.c)
+    let totalArr = 0
+    function sum(arrdata) {
+      arrdata.forEach(ele => {
+        if (Array.isArray(ele)) {
+          sum(ele)
+        } else if (typeof ele === 'number'){
+          totalArr += ele
+        }
+      })
+    }
+    sum(data.arr)
+    console.log('totalArr notify', totalArr)
   }
 })
 debugger
