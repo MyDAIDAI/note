@@ -65,3 +65,82 @@ p.d // 37: 当访问不存在的属性时，会根据原型链向上查找，查
 - `apply(target, object, args)`: 拦截`proxy`实例，并将其作为函数调用的操作，比如`proxy(...args)`、`proxy.call(object, ...args)`, `proxy.apply(object, args)`
 - `construct(target, args)`: 拦截`Proxy`实例作为构造函数调用的操作，比如`new Proxy(...args)`
 
+## `get`
+如果一个属性不可配置(configurable)或不可写(writable), 则该属性不能被代理，通过Proxy对象访问该属性会报错
+  ```javaScript
+  let targetObj = Object.defineProperties({}, {
+    foo: {
+      value: 123,
+      writable: false,
+      configurable: false
+    }
+  })
+  let targetProxy = new Proxy(targetObj, {
+    get: function() {
+      return 'abc'
+    }
+  })
+  // TypeError: 'get' on proxy: property 'foo' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '123' but got 'abc')
+  console.log('targetProxy', targetProxy.foo) // 只有配置writable为false以及configurable为false的属性不可以
+  console.log('targetProxy', targetProxy.fn) // 'abc'
+  ```
+
+## `has`
+
+拦HasProperty 操作，判断某个对象是否具有某个属性时进行拦截，比如 in 操作符
+- `has`方法拦截的是`HasProperty`操作，而不是`HasOwnProperty`操作，即`has`方法不判断一个属性是对象自身属性还是继承的属性
+- 如果原对象不可配置或禁止扩展，那么`has`拦截会报错
+- `has`拦截只对`in`操作有效，对`for/in`循环无效
+
+```javaScript
+// has: 
+let hasProxy = new Proxy({ _prop: 'prop', key: 'key', __proto__: {name: 'name'}}, {
+  has: function(target, key) {
+    if (key[0] === '_') {
+      return false
+    }
+    return key in target
+  }
+})
+console.log('has _prop', '_prop' in hasProxy) // false
+console.log('has key', 'key' in hasProxy) // true
+console.log('has name', 'name' in hasProxy) // true: 判断的是是否存在，无论是在自身上还是在原型上
+// 不会影响 for/in 操作
+for(let porp in hasProxy) {
+  // porp _prop prop
+  // porp key key   
+  // porp name name
+  console.log('porp', porp, hasProxy[porp])
+}
+```
+## construct
+用于拦截`new`命令，必须返回一个对象，否则会报错
+```javaScript
+let ConProxy = new Proxy(function() {}, {
+  construct: function(target, argumentsList) {
+    // TypeError: 'construct' on proxy: trap returned non-object ('false'): 必须返回一个对象
+    // return false
+    return {}
+  }
+})
+let conProxy = new ConProxy()
+```
+## deleteProperty
+```javaScript
+let deleteTarget = {_prop: '_prop', name: 'name'}
+let deleteProxy = new Proxy(deleteTarget, {
+  deleteProperty (target, key) {
+    console.log('deleteProperty key', key)
+    if (key[0] === '_') {
+      return false
+    }
+    // 必须在拦截器中使用 delete 操作符删除，否则不会有任何变化
+    delete target[key]
+    return true
+  }
+})
+delete deleteProxy.name
+// delete deleteProxy._prop
+// deleteProxy { _prop: '_prop' } { _prop: '_prop' }
+console.log('deleteProxy', deleteProxy, deleteTarget)
+```
