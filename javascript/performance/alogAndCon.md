@@ -62,6 +62,151 @@ console.timeEnd('optimizeCircle2')
 条件语句主要为`if-else`与`switch`，流行的方法是基于测试条件的数量来判断：条件数量越大，越倾向于使用`switch`而不是`if-else`.在大多数情况下`switch`比`if-else`运行的要快，但只有当条件数量很大时才明显。这两个语句的主要性能区别是：当条件增加的时候，`if-else`性能增加的程度比`switch`要多
 
 #### 优化`if-else`
+优化`if-else`的目标是：最小化到达正确分支前所需要的条件数量。主要有下面两种方法：
+- 最简单的优化方法是确保最可能出现的条件放在首位。
+- 使用**二分法**把值域分成一系列的区间，然后逐步缩小范围
+
+### 查找表
+`javaScript`可以使用数组和普通对象来构建查找表，通过查找表访问数据比用`if-else`或者`switch`要快很多，特别是在条件语句数量很大的时候
+
+
+测试：
+
+```javaScript
+function controlIfElse() {
+  for(let i = 0, len = randomData.length; i < len; i++) {
+    let item = randomData[i]
+    let number = parseInt(item % 10)
+    if (number === 0) {
+      return 0
+    } else if(number === 1) {
+      return 1
+    } else if(number === 2) {
+      return 2
+    } else if(number === 3) {
+      return 3
+    } else if(number === 4) {
+      return 4
+    } else if(number === 5) {
+      return 5
+    } else if(number === 6) {
+      return 6
+    } else if(number === 7) {
+      return 7
+    } else if(number === 8) {
+      return 8
+    } else if(number === 9) {
+      return 9
+    } else {
+      return 'other'
+    }
+  }
+}
+// 使用if-else
+// controlIfElse: 0.145ms
+console.time('controlIfElse')
+controlIfElse()
+console.timeEnd('controlIfElse')
+
+function optimizeIfElse() {
+  for(let i = 0, len = randomData.length; i < len; i++) {
+    let item = randomData[i]
+    let number = parseInt(item % 10)
+    if (number < 6) {
+      if (number < 3) {
+        if (number === 0) {
+          return 0
+        } else if(number === 1) {
+          return 1
+        } else {
+          return 2
+        }
+      } else {
+        if (number === 3) {
+          return 3
+        } else if(number === 4) {
+          return 4
+        } else {
+          return 5
+        }
+      }
+    } else {
+      if (number < 8) {
+        if (number === 6) {
+          return 6
+        } else {
+          return 7
+        }
+      } else {
+        if (number === 8) {
+          return 8
+        } else if (number === 9) {
+          return 9
+        } else {
+          return 'other'
+        }
+      }
+    }
+  }
+}
+// 使用优化后的if-else
+// optimizeIfElse: 0.054ms
+console.time('optimizeIfElse')
+optimizeIfElse()
+console.timeEnd('optimizeIfElse')
+
+function controlSwitch() {
+  for(let i = 0, len = randomData.length; i < len; i++) {
+    let item = randomData[i]
+    let number = parseInt(item % 10)
+    switch(number) {
+      case 0:
+        return 0;
+      case 1:
+        return 1;
+      case 2:
+        return 2;
+      case 3:
+        return 3;
+      case 4:
+        return 4;
+      case 5:
+        return 5;
+      case 6:
+        return 6;
+      case 7:
+        return 7;
+      case 8:
+        return 8;
+      case 9:
+        return 9;
+      default:
+        return 'other'
+    }
+  }
+}
+// 使用switch
+// controlSwitch: 0.046ms
+console.time('controlSwitch')
+controlSwitch()
+console.timeEnd('controlSwitch')
+
+function controlMap() {
+  let map = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'other']
+  for(let i = 0, len = randomData.length; i < len; i++) {
+    let item = randomData[i]
+    let number = parseInt(item % 10)
+    return map[number]
+  }
+}
+// 使用查找表
+// controlMap: 0.039ms
+console.time('controlMap')
+controlMap()
+console.timeEnd('controlMap')
+```
+从上面的测试可以大概的看出来，查找表的性能最高，依次是`switch`，优化后的`if-else`，最后才是普通的`if-else`语句
+
 ## 递归
 
 ## 小结

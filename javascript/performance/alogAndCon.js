@@ -54,6 +54,7 @@ function controlIfElse() {
     }
   }
 }
+// 使用if-else
 // controlIfElse: 0.145ms
 console.time('controlIfElse')
 controlIfElse()
@@ -100,6 +101,7 @@ function optimizeIfElse() {
     }
   }
 }
+// 使用优化后的if-else
 // optimizeIfElse: 0.054ms
 console.time('optimizeIfElse')
 optimizeIfElse()
@@ -135,6 +137,7 @@ function controlSwitch() {
     }
   }
 }
+// 使用switch
 // controlSwitch: 0.046ms
 console.time('controlSwitch')
 controlSwitch()
@@ -148,6 +151,7 @@ function controlMap() {
     return map[number]
   }
 }
+// 使用查找表
 // controlMap: 0.039ms
 console.time('controlMap')
 controlMap()
