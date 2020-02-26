@@ -208,5 +208,71 @@ console.timeEnd('controlMap')
 从上面的测试可以大概的看出来，查找表的性能最高，依次是`switch`，优化后的`if-else`，最后才是普通的`if-else`语句
 
 ## 递归
+使用递归算法可以把复杂的算法变得简单，但是递归有一个潜在的问题就是终止条件不明确或者缺少终止条件会导致函数长时间运行，并使得用户界面处于假死状态。而且，递归函数还可能遇到浏览器的”调用栈大小限制“，当使用了太多的递归，甚至超过最大调用栈容量时，浏览器就会报出错信息
+
+#### 递归模式
+当遇到调用栈大小限制时，第一步应该检查代码中的递归实例, 有两种递归模式需要注意。
+- 直接递归模式，即函数调用自身，这种方法发生错误时容易定位
+```javaScript
+function recurse() {
+  recurse()
+}
+recurse()
+```
+- ”隐伏模式“, 在这种模式中，两个函数相互调用，形成一个无限循环
+```javaScript
+function first() {
+  second()
+}
+function second() {
+  first()
+}
+first()
+```
+大多数的调用栈错误都与这两种模式有关。最常见的导致栈溢出的原型是不正确的终止条件。因此，定位模式错误的第一步是验证终止条件。如果终止条件没有问题，那么可能是算法中包含了太多层递归，导致了爆栈错误，需要改为迭代，`Memoization`，或者结合两者使用
+
+#### 迭代
+任何递归能实现的算法同样可以使用迭代来实现。
+// TODO: 递归转换为迭代的方法
+
+#### `Memoization`
+这是一种避免重复工作的方法，它会缓存前一个计算结果供后续计算所使用，避免了重复工作
+```javaScript
+function factorial(n) {
+  if (n === 0) {
+    return 1
+  } else {
+    return n * factorial(n - 1)
+  }
+}
+// factorial: 0.959ms
+console.time('factorial')
+factorial(10000)
+console.timeEnd('factorial')
+
+function memfactorial(n) {
+  if (!memfactorial.cache) {
+    memfactorial.cache = {
+      '0': 1,
+      '1': 1
+    }
+  }
+  if (!memfactorial.cache.hasOwnProperty(n)) {
+    memfactorial.cache[n] = n * memfactorial[n - 1]
+  }
+  return memfactorial.cache[n]
+}
+// memfactorial: 0.476ms
+console.time('memfactorial')
+memfactorial(10000)
+console.timeEnd('memfactorial')
+```
+可以看到使用缓存之后的递归比原始的递归所花费的时间少了一半
 
 ## 小结
+- `for`、`while`和`do-while`循环性能相当，并没有一种循环类型明显快与或慢于其他类型
+- 避免使用`for-in`循环，除非需要遍历一个属性数量未知的对象
+- 改善循环性能的最佳方式是减少每次迭代的运算量和减少循环迭代的次数
+- 通常来说，`switch`总是比`if-else`快，在判断条件较多时，使用查找表比`if-else`和`switch`快
+- 浏览器的调用栈大小限制了递归算法的应用，栈溢出错误会导致其他代码中断执行
+- 如果遇到栈溢出错误，可将方法改为迭代算法，或者使用缓存技术来避免重复计算
