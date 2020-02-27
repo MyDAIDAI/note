@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>scope 测试</title>
+</head>
+<body>
+  
+</body>
+</html>
+<!-- script分割的不同的代码块，按照执行顺序进行执行 -->
+<!-- 遇到报错，则停止该代码块的执行，顺序执行下一个代码块 -->
+<script>
+  console.log(fun)
+  var fun = 'fun'
+  console.log(person) // 没有声明，报错，不同的 script 不
+</script>
+
+<script>
+  console.log(person)
+
+  console.log(fun)
+
+  var person = "Eric";
+
+  console.log(person)
+
+  function fun() {
+      console.log(person)
+      var person = "Tom";
+      console.log(person)
+  }
+
+  fun()
+
+  console.log(person)
+</script>
