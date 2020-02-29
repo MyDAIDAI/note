@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title> Web API</title>
+</head>
+<body>
+  <div id="app">
+    <div id="list" style="cursor: pointer;" @click="clickHandler">
+      <div v-for="(item, index) in list" :key="index">{{item}}</div>
+    </div>
+    <!-- <div id="list"></div> -->
+  </div>
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<!-- <script src="./js/mutation.js"></script> -->
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    list: [1]
+  },
+  mounted() {
+    function callbackFn(mutationList, observer) {
+      mutationList.forEach(mutation => {
+        console.log(mutation.type, mutation)
+      })
+    }
+
+    let targetNode = document.querySelector('#list')
+    let observerOptions = {
+      childList: true,
+      attributes: true,
+      subtree: true
+    }
+    let observer = new MutationObserver(callbackFn)
+    observer.observe(targetNode, observerOptions)
+  },
+  methods: {
+    clickHandler() {
+      this.list.push(2)
+    }
+  }
+})
+</script>
