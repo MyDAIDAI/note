@@ -54,3 +54,149 @@
 - `align-self`
   - 允许单个项目与其他项目不一致的对齐方式，可覆盖`align-item`属性
   - 默认值为`auto`
+
+## `flex`布局最后一行左对齐
+使用`css`的`flex`进行布局的时候，如果使用`justify-content`来控制列表的水平对齐方式，如果值为`space-between`，那么可以对每一行进行两队对齐，但是，如果最后一行的元素不能充满整行，就会出现对齐问题
+```html
+ <div class="flex-container">
+      <div class="item item1">item1</div>
+      <div class="item">item2</div>
+      <div class="item">item</div>
+      <div class="item">item</div>
+      <div class="item">item</div>
+      <div class="item">item</div>
+      <div class="item">item</div>
+      <div class="item">item</div>
+      <div class="item">item</div>
+      <div class="item">item</div>
+      <div class="item">item</div>
+  </div>
+```
+```css
+.flex-container {
+  height: 500px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid red;
+}
+.item {
+  width: 24%; height: 100px;
+  background-color: skyblue;
+  margin-top: 15px;
+}
+```
+
+
+### 固定列数
+如果一行的列数是固定的，那么有以下的方法解决这个问题
+- 不使用`justify-content：space-between`这个属性，使用`margin`来进行模拟
+```css
+  .flex-container {
+    /* justify-content: spa; */
+  }
+  /* 设置margin-right的值，最右边的不设置 */
+  .item:not(:nth-child(4n)) {
+    margin-right: calc(4% / 3);
+  }
+```
+- 根据最后一行元素个数设置最后一个元素的`margin-right`值
+```css
+  .flex-container {
+    justify-content: space-between;
+  }
+  .item:last-child:nth-child(4n - 1) {
+    margin-right: calc(24% + 4% / 3);
+  }
+  .item:last-child:nth-child(4n - 2) {
+    margin-right: calc(48% + 8% / 3);
+  }
+```
+
+### 元素宽度不确定
+内容元素的宽度不确定，那么每一行的列数就不确定，所以不能使用上面对于固定列数的办法
+- 对最后一项设置`margin-right: auto`
+```html
+ <div class="flex-container">
+      <div class="item item1" style="width: 200px;">item1</div>
+      <div class="item" style="width: 300px;">item2</div>
+      <div class="item" style="width: 100px;">item</div>
+      <div class="item" style="width: 500px;">item</div>
+      <div class="item" style="width: 50px;">item</div>
+      <div class="item" style="width: 150px;">item</div>
+      <div class="item" style="width: 200px;">item</div>
+      <div class="item" style="width: 10px;">item</div>
+      <div class="item" style="width: 70px;">item</div>
+      <div class="item" style="width: 120px;">item</div>
+      <div class="item" style="width: 180px;">item</div>
+  </div>
+```
+```css
+.item {
+  height: 100px;
+  background-color: skyblue;
+  margin: 15px;
+}
+.item:last-child {
+  margin-right: auto;
+}
+```
+- 创建伪类元素并设置`flex: auto`或`flex: 1`，设置一个伪类填充容器剩余空间
+```css
+  .flex-container::after {
+    content: '';
+    flex: auto;
+  }
+```
+
+### 列数不固定
+列数不固定，使用足够的空白标签进行填充占位，具体的占位数量由最多列数的个数决定
+```html
+<div class="flex-container">
+    <div class="item item1">item1</div>
+    <div class="item"></div>
+    <div class="item">item</div>
+    <div class="item">item</div>
+    <div class="item">item</div>
+    <div class="item">item</div>
+    <div class="item">item</div>
+    <div class="item">item</div>
+    <div class="item">item</div>
+    <div class="item">item</div>
+    <div class="item">item</div>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+</div>
+```
+```css
+.flex-container > i {
+  width: 200px;
+  margin: 15px;
+}
+```
+
+### 不能调整HTML
+如果不能调整`html`，同时布局的列表个数又不固定，那个这个时候可以使用`grid`布局，缺点：会有兼容性问题
+```css
+.flex-container {
+  height: 500px;
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fill, 200px);
+  justify-content: space-between;
+  border: 1px solid red;
+}
+.item {
+  width: 200px;
+  height: 100px;
+  background-color: skyblue;
+}
+```
+
+参考：[让CSS flex布局最后一行列表左对齐的N种方法](https://www.zhangxinxu.com/wordpress/2019/08/css-flex-last-align/)
+
+

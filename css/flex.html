@@ -7,35 +7,71 @@
 <body>
     <div class="flex-container">
         <div class="item item1">item1</div>
-        <div class="item">item2</div>
+        <div class="item"></div>
+        <div class="item">item</div>
+        <div class="item">item</div>
+        <div class="item">item</div>
+        <div class="item">item</div>
+        <div class="item">item</div>
+        <div class="item">item</div>
+        <div class="item">item</div>
+        <div class="item">item</div>
+        <div class="item">item</div>
+        <!-- <i></i>
+        <i></i>
+        <i></i>
+        <i></i>
+        <i></i> -->
     </div>
 </body>
 </html>
 <style>
   .flex-container {
     height: 500px;
-    display: flex;
+    /* display: flex; */
+    display: grid;
     /* flex-direction: row; */
     /* flex-wrap: wrap; */
-    flex-flow: row nowrap;
+    /* flex-flow: row wrap; */
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, 200px);
     justify-content: space-between;
-    align-items: center;
+    /* align-items: center; */
     border: 1px solid red;
   }
   .item {
     width: 200px;
-    border: 1px solid green;
-    height: 200px;
-    /* 设置不按照宽度缩小，则自动添加滚动条 */
-    /* flex-shrink: 0; */
-    /* flex-grow: 1; */
-    flex: 1;
+    height: 100px;
+    background-color: skyblue;
+    /* margin: 15px; */
+    /* flex: 1; */
   }
+  /* .flex-container > i {
+    width: 200px;
+    margin: 15px;
+  } */
+  /* 设置一个伪类元素填充剩余空间
+  .flex-container::after {
+    content: '';
+    flex: auto;
+  } */
+  /* .item:last-child {
+    margin-right: auto;
+  } */
+  /* .item:not(:nth-child(4n)) {
+    margin-right: calc(4% / 3);
+  } */
+  /* .item:last-child:nth-child(4n - 1) {
+    margin-right: calc(24% + 4% / 3);
+  }
+  .item:last-child:nth-child(4n - 2) {
+    margin-right: calc(48% + 8% / 3);
+  } */
   .item1 {
     /* 覆盖了前面的 width 属性的值 */
     /* flex-basis: 1100px; */
     /* flex-shrink: 0; */
     /* flex-grow: 1; */
-    flex: 2;
+    /* flex: 2; */
   }
 </style>
