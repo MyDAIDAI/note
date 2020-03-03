@@ -69,3 +69,24 @@ function jsonpCallback(jsonString) {
 }
 ```
 上面的前端代码中，请求了`http://localhost:3000/jsonp?callback=jsonpCallback`这个接口，这个接口会返回一个`Content-Type: text/javascript; charset=utf-8`类型的`js`文件，该文件的内容为`/**/ typeof jsonpCallback === 'function' && jsonpCallback({"user":"tobi"});`, 在该文件中对，对传过去的`callback`参数函数进行了调用，并向其中传入所需要的函数，所以需要在前端代码中对传入后端的回调函数进行声明
+
+#### `Multipart XHR`
+`multipart XHR`运行客户端只用一个`HTTP`请求就可以从服务器端向客户端传送多个资源。它通过在服务器将资源(`CSS`文件, `HTML`片段, `JavaScript`代码或`base64`编码的图片)打包成一个由双方约定的字符串分割的长字符串并发送的客户端。然后用`JavaScript`代码处理这个长字符串，并根据其`mime-type`类型和传入的其他头信息解析出每个资源
+// TODO: 请求验证
+
+### 发送数据
+有时候并不需要接受数据，而只需要将数据发送给服务器。当数据只需要发送到服务器时，有两种广泛的技术：`XHR`和信标
+
+#### `XMLHttpRequest`
+与前文`XHR`大致相同，这种技术不仅可以获取后端发送的数据，还可以将数据发生会后端。当使用`XHR`发送数据到服务器时，`GET`方法会更快。这是因为对于少量数据而言，一个`GET`请求往服务器只发送一个数据包。而一个`POST`请求，至少要发送两个数据包，一个装载头信息，另一个装载`POST`正文。`POST`更适合发送大量数据到服务器，因为它不关心额外数据包的数量，另一个原因是`IE`对`URL`长度有限制，它不可能使用过长的`GET`请求
+
+#### `Beacons`
+这项技术有些类似`JSONP`，使用`js`创建一个新的`Image`对象，并把`src`属性设置为服务器上脚本的`URL`，该`URL`包含了要通过`GET`传回的键值对数据。注意，并不需要把创建的`img`元素插入`DOM`
+```javascript
+  let imgEle = document.createElement('img')
+  imgEle.src = 'http://localhost:3000/img?username=123&password=111'
+```
+这种方式的性能消耗很小，而且服务器的错误完全不会影响到客户端，但是也会有一些缺点
+- 无法发送`POST`数据，而`URL`的长度有限制
+- 对于服务器返回的数据能够接收的方式较少
+

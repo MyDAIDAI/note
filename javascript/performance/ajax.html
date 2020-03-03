@@ -12,11 +12,15 @@
 </html>
 <script>
   // jsonp
-  var scriptElement = document.createElement('script')
-  scriptElement.src = 'http://localhost:3000/jsonp?callback=jsonpCallback'
-  document.getElementsByTagName('head')[0].appendChild(scriptElement)
+  // var scriptElement = document.createElement('script')
+  // scriptElement.src = 'http://localhost:3000/jsonp?callback=jsonpCallback'
+  // document.getElementsByTagName('head')[0].appendChild(scriptElement)
 
-  function jsonpCallback(jsonString) {
-    console.log('jsonp callback string', jsonString)
-  }
+  // function jsonpCallback(jsonString) {
+  //   console.log('jsonp callback string', jsonString)
+  // }
+  
+  // let url = 
+  let imgEle = document.createElement('img')
+  imgEle.src = 'http://localhost:3000/img?username=123&password=111'
 </script>
