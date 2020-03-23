@@ -44,6 +44,67 @@ console.log(fooFn.next(12)) // z = 12 -> x + y + z -> 29
 
 // TODO: 如果想要第一次调用next方法就能够输入值，需要在Generator函数外面再包一层
 
+// 取出嵌套数组的所有成员
+const treeArr = ['a', ['b', 'c'], ['d', 'e']]
+function* iterTree(tree) {
+  if (Array.isArray(tree)) {
+    for(let i = 0; i < tree.length; i++) {
+      yield* iterTree(tree[i])
+    }
+  } else {
+    yield tree
+  }
+}
+for(let x of iterTree(treeArr)) {
+  console.log('tree', x)
+}
+
+// 二叉树构造函数
+function Tree(left, label, right) {
+  this.left = left
+  this.label = label
+  this.right = right
+}
+// 使用递归生成二叉树
+function make(array) {
+  // 判断是否为叶子节点
+  if (array.length === 1) return new Tree(null, array[0], null)
+  return new Tree(make(array[0]), array[1], make(array[2]))
+}
+// 中序遍历：左 根 右
+function* inorder(tree) {
+  if (tree) {
+    yield* inorder(tree.left)
+    yield tree.label
+    yield* inorder(tree.right)
+  }
+}
+// 前序遍历: 根 左 右
+function* preorder(tree) {
+  if (tree) {
+    yield tree.label
+    yield* preorder(tree.left)
+    yield* preorder(tree.right)
+  }
+}
+// 后序遍历：左 右 根
+function* postorder(tree) {
+  if (tree) {
+    yield* postorder(tree.left)
+    yield* postorder(tree.right)
+    yield tree.label
+  }
+}
+let newTree = make([[['a'], 'b', ['c']], 'd', [['e'], 'f', ['g']]])
+for(let key of inorder(newTree)) {
+  console.log('inorder', key)
+}
+for(let key of preorder(newTree)) {
+  console.log('preorder', key)
+}
+for(let key of postorder(newTree)) {
+  console.log('postorder', key)
+}
 // next()传入的参数会被作为被暂停的yield表达式的结果
 // 通过yield和next()建立的双向消息传递
 function* foo(x) {
