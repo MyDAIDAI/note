@@ -446,6 +446,367 @@ total // 10 值进行了更新
 - 对数据响应式的处理都会进行`observe`函数，在该函数中，只有`Array/Object`类型的数据才会进行`new Observer()`
 - 在`get`函数中会对对象的属性值进行进一步的`observe`, 如果值为`Array/Object`类型，会向其中添加当前的依赖，当内层的值修改，便可以触发外层的依赖进行更新
 
+### 具体实现分析
+
+当我们在执行`new Vue({...options})`时就是在创建`Vue`的实例，那么在创建实例的过程中会执行`this._init(options)`函数, 如下
+```javaScript
+function Vue(options) {
+  // some code...
+  this._init(options)
+}
+```
+在`_init`函数执行中，会对`vue`中的一些值以及生命周期进行初始化
+```js
+Vue.prototype._init = function (object) {
+  // some code...
+  // 初始化生命周期, 事件以及 render 函数
+  initLifeCycle(vm)
+  initEvents(vm)
+  initRender(vm)
+  // 调用 beforeCreate 生命周期钩子函数
+  callHook(vm, 'beforeCreate')
+  // 初始化 injections, state, provide
+  initInjections(vm)
+  initState(vm)
+  initProvide(vm)
+  // 调用 created 生命周期钩子函数
+  callHook(vm, 'created')
+
+  // 判断DOM是否存在，存在则进行挂载
+  if (vm.$options.$el) {
+    vm.$mount(vm.$options.el)
+  }
+}
+```
+在`initState`中对`props`, `methods`, `data`, `computed`, `watch`都进行了初始化，其中对`data`的初始化就是添加了响应式
+```js
+function initState(vm) {
+  // some code
+  const opts = vm.$options
+  if (opts.props) initProps(vm, opts.props)
+  if (opts.methods) initMethods(vm, opts.methods)
+  if (opts.data) initData(vm)
+  if (opts.computed) {
+    initComputed(vm, opts.computed)
+  }
+  if (opts.watch && opts.watch !== nativeWatch) {
+    initWatch(vm, opts.watch)
+  }
+}
+```
+对`computed`以及`watch`的处理后面再说，先说对`data`的响应式处理
+```js
+function initData (vm: Component) {
+  let data = vm.$options.data
+  data = vm._data = typeof data === 'function'
+    ? getData(data, vm)
+    : data || {}
+  // some code
+  // proxy data on instance
+  const keys = Object.keys(data)
+  const props = vm.$options.props
+  const methods = vm.$options.methods
+  let i = keys.length
+  while (i--) {
+    const key = keys[i]
+    // some code
+    if (!isReserved(key)) {
+      proxy(vm, `_data`, key) // 添加代理，将 _data 中的值代理到 this 上
+    }
+  }
+  // observe data
+  observe(data, true /* asRootData */)
+}
+```
+在`initData`这个函数中对里面的每一个属性都判断了是否在`props`以及`methods`中重名，重名则发出警告，然后进行了`observe`函数
+```js
+export function observe (value: any, asRootData: ?boolean): Observer | void {
+  // 值不是对象或者是一个 VNode 实例则返回
+  if (!isObject(value) || value instanceof VNode) {
+    return
+  }
+  let ob: Observer | void
+  if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
+    ob = value.__ob__
+  } else if (
+    shouldObserve &&
+    !isServerRendering() &&
+    (Array.isArray(value) || isPlainObject(value)) &&
+    Object.isExtensible(value) && // 对于可扩展的值才添加响应式，否则设置 getter 与 setter 会报错或无效
+    !value._isVue
+  ) {
+    ob = new Observer(value) // 对值添加实例
+  }
+  if (asRootData && ob) {
+    ob.vmCount++
+  }
+  return ob
+}
+```
+在 `observe` 函数中，主要是对传入值的一个处理，如果不是对象或者是一个 `VNODE` 实例则直接返回，如果已经存在 `__ob__`属性，则直接取上面的值。如果都不满足，则判断数据类型是不是数组或者对象并且需要该值可扩展。如果是，则进行实例，并将其生成的观察者实例返回
+
+```js
+export class Observer {
+  value: any;
+  dep: Dep;
+  vmCount: number; // number of vms that have this object as root $data
+
+  constructor (value: any) {
+    this.value = value
+    this.dep = new Dep()
+    this.vmCount = 0
+    // 向传入的值上添加 __ob__ 属性，属性值为该 Observer 实例
+    def(value, '__ob__', this)
+    // 根据不同的数据类型进行不同的处理
+    if (Array.isArray(value)) {
+      // 向数组上添加代理处理方法，以此来触发数组的响应式更新
+      if (hasProto) {
+        protoAugment(value, arrayMethods)
+      } else {
+        copyAugment(value, arrayMethods, arrayKeys)
+      }
+      this.observeArray(value)
+    } else {
+      this.walk(value)
+    }
+  }
+
+  /**
+   * Walk through all properties and convert them into
+   * getter/setters. This method should only be called when
+   * value type is Object.
+   */
+  walk (obj: Object) {
+    // 遍历对象，对里面的每一个属性添加响应式
+    const keys = Object.keys(obj)
+    for (let i = 0; i < keys.length; i++) {
+      defineReactive(obj, keys[i])
+    }
+  }
+
+  /**
+   * Observe a list of Array items.
+   */
+  observeArray (items: Array<any>) {
+    // 遍历数组里面的每一项，对每一项的数据调用 observe 函数，进行数据判断
+    // 如果数组项的值仍为数组或者对象，则继续添加响应式
+    for (let i = 0, l = items.length; i < l; i++) {
+      observe(items[i])
+    }
+  }
+}
+```
+在`Observer`的构造函数中可以看到，对数组以及对象做了不同的处理，那么我们先看对对象的处理.对于对象，遍历里面的每一个属性，向其中添加响应式，也就是执行`defineReactive`函数
+```js
+export function defineReactive (
+  obj: Object,
+  key: string,
+  val: any,
+  customSetter?: ?Function,
+  shallow?: boolean
+) {
+  const dep = new Dep()
+
+  // some code
+  Object.defineProperty(obj, key, {
+    enumerable: true,
+    configurable: true,
+    get: function reactiveGetter () {
+      const value = getter ? getter.call(obj) : val
+      if (Dep.target) {
+        // 当前属性的 dep 中添加依赖
+        dep.depend()
+        // some code
+      }
+      return value
+    },
+    set: function reactiveSetter (newVal) {
+      const value = getter ? getter.call(obj) : val
+      if (newVal === value || (newVal !== newVal && value !== value)) {
+        return
+      }
+      // some code
+      if (getter && !setter) return
+      if (setter) {
+        setter.call(obj, newVal)
+      } else {
+        val = newVal
+      }
+      childOb = !shallow && observe(newVal)
+      dep.notify()
+    }
+  })
+}
+```
+在`defineReactive`函数中为对象的每一个属性创建了一个`Dep`实例，并且使用`Object.defineProperty()`方法向其中添加了`getter`以及`setter`方法。在`getter`中，如果`Dep.target`存在，则调用`dep.depend()`函数向其中添加依赖。在`setter`中，对传入的新值进行了判断，如果与旧值相同，则直接返回，否则对新传入的值进行判断添加响应式，然后调用`dep.notify()`进行依赖的派发更新。
+
+对对象的响应式的分析大致完成了，那么现在有一个问题，我们可以知道，当设置一个对象的属性值是可以触发`setter`函数，当获取属性时可以触发`getter`函数，那么在`vue`内部什么时候，在什么地方会触发`getter`进行依赖收集呢？让我们回到`_init()`函数中，在该函数执行的最后，调用了`vm.$mount(vm.$options.el)`方法对`DOM`进行了挂载，那么看看`$mount`里面是什么吧
+```js
+Vue.prototype.$mount = function (
+  el,
+  hydrating
+) {
+  el = el && inBrowser ? query(el) : undefined;
+  return mountComponent(this, el, hydrating)
+};
+function mountComponent (
+  vm,
+  el,
+  hydrating
+) {
+  vm.$el = el;
+  // some code
+  callHook(vm, 'beforeMount');
+
+  var updateComponent;
+  /* istanbul ignore if */
+  if (config.performance && mark) {
+    // some code
+  } else {
+    updateComponent = function () {
+      vm._update(vm._render(), hydrating);
+    };
+  }
+
+  // we set this to vm._watcher inside the watcher's constructor
+  // since the watcher's initial patch may call $forceUpdate (e.g. inside child
+  // component's mounted hook), which relies on vm._watcher being already defined
+  new Watcher(vm, updateComponent, noop, {
+    before: function before () {
+      if (vm._isMounted && !vm._isDestroyed) {
+        callHook(vm, 'beforeUpdate');
+      }
+    }
+  }, true /* isRenderWatcher */);
+  hydrating = false;
+
+  // manually mounted instance, call mounted on self
+  // mounted is called for render-created child components in its inserted hook
+  if (vm.$vnode == null) {
+    vm._isMounted = true;
+    callHook(vm, 'mounted');
+  }
+  return vm
+}
+```
+可以看到，在上面的代码中，主要调用了`beforeMount`、`beforeUpdate`以及`mounted`钩子函数，除此之外最重要的就是对`Watcher`进行了实例，并向其中传入了`updateComponent`方法。那我们看看在实例`Watcher`过程中发生了什么吧
+```js
+export default class Watcher {
+  vm: Component;
+  expression: string;
+  cb: Function;
+  id: number;
+  deep: boolean;
+  user: boolean;
+  lazy: boolean;
+  sync: boolean;
+  dirty: boolean;
+  active: boolean;
+  deps: Array<Dep>;
+  newDeps: Array<Dep>;
+  depIds: SimpleSet;
+  newDepIds: SimpleSet;
+  before: ?Function;
+  getter: Function;
+  value: any;
+
+  constructor (
+    vm: Component,
+    expOrFn: string | Function,
+    cb: Function,
+    options?: ?Object,
+    isRenderWatcher?: boolean
+  ) {
+    this.vm = vm
+    if (isRenderWatcher) {
+      vm._watcher = this
+    }
+    vm._watchers.push(this)
+    // options
+    if (options) {
+      this.deep = !!options.deep
+      this.user = !!options.user
+      this.lazy = !!options.lazy
+      this.sync = !!options.sync
+      this.before = options.before
+    } else {
+      this.deep = this.user = this.lazy = this.sync = false
+    }
+    this.cb = cb
+    this.id = ++uid // uid for batching
+    this.active = true
+    this.dirty = this.lazy // for lazy watchers
+    this.deps = []
+    this.newDeps = []
+    this.depIds = new Set()
+    this.newDepIds = new Set()
+    this.expression = process.env.NODE_ENV !== 'production'
+      ? expOrFn.toString()
+      : ''
+    // parse expression for getter
+    if (typeof expOrFn === 'function') {
+      this.getter = expOrFn
+    } else {
+      this.getter = parsePath(expOrFn)
+      // some code
+    }
+    this.value = this.lazy
+      ? undefined
+      : this.get()
+  }
+
+  /**
+   * Evaluate the getter, and re-collect dependencies.
+   */
+  get () {
+    pushTarget(this)
+    let value
+    const vm = this.vm
+    try {
+      value = this.getter.call(vm, vm)
+    } catch (e) {
+      if (this.user) {
+        handleError(e, vm, `getter for watcher "${this.expression}"`)
+      } else {
+        throw e
+      }
+    } finally {
+      // "touch" every property so they are all tracked as
+      // dependencies for deep watching
+      if (this.deep) {
+        traverse(value)
+      }
+      popTarget()
+      this.cleanupDeps()
+    }
+    return value
+  }
+}
+Dep.target = null
+const targetStack = []
+
+export function pushTarget (target: ?Watcher) {
+  targetStack.push(target)
+  Dep.target = target
+}
+
+export function popTarget () {
+  targetStack.pop()
+  Dep.target = targetStack[targetStack.length - 1]
+```
+可以看到在实例`Watcher`时，会对传入的参数进行一系列的赋值，最后调用`get`方法，在`get`方法中执行了`pushTarget`函数.在`pushTarget`函数中将当前的`Watcher`实例赋值给了`Dep.target`静态属性。执行完`pushTarget`函数后接着执行了`value = this.getter.call(vm, vm)`这一句，也就是在实例`Watcher`时传入的`updateComponent`方法，那么该方法是什么呢？在上面的`mountComponent`函数中可以看到下面这段代码，这段代码就是创建`VNODE`并且进行渲染更新，在创建`vnode`的过程中，就会获取`data`中的属性值，继而触发属性中的`getter`方法进行依赖更新
+```js
+updateComponent = function () {
+  vm._update(vm._render(), hydrating);
+};
+```
+
+
+参考：
+- [Vue技术内幕](http://caibaojian.com/vue-design/art/7vue-reactive.html#definereactive-%E5%87%BD%E6%95%B0)
+- [Vue.js 技术揭秘](https://ustbhuangyi.github.io/vue-analysis/v2/prepare/)
+
+
 ## 仿照`vue2`的简单响应式
 
 ```javaScript
@@ -518,6 +879,7 @@ class Observer {
         get: function() {
           dep.depend()
           if (childOb) {
+            // TODO:3. 为 $set 使用，直接给对象添加属性可能不会触发响应式，使用 $set 可以为其添加依赖
             childOb.dep.depend()
             // TODO:2. 对值为数组的处理，遍历数组，递归添加依赖，以便后续使用 push, pop等方法可以进行更新
           }

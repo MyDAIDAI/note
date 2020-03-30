@@ -8,20 +8,29 @@
 </head>
 <body>
     <div id="app">
+      <!-- {{fullName}} -->
+      <!-- {{ a.b }} -->
       <!-- <p>{{arr[0]}}</p>
       <p>{{arr[1]}}</p>
       <p>{{arr[2][0]}}</p> -->
-      <p>{arr}</p>
+      <!-- <p>{arr}</p>
       <p>{{arr[0].a}}</p>
-      <p>{{arr[0].b.c}}</p>
+      <p>{{arr[0].b.c}}</p> -->
+      <!-- {{message}} -->
+      <!-- <h1>{{info}}</h1> -->
+      <!-- <button @click="changeHandler">更改</button> -->
     </div>
     <script>
       var app = new Vue({
         el: '#app',
         data: {
+          // a: {
+          //   b: 1
+          // }
           // message: 'hello, vue',
+          // info: 'this is a info'
           // num: 1,
-          arr: [{a: 'a', b: {c: 'c'}}],
+          // arr: [{a: 'a', b: {c: 'c'}}],
           // obj: {
           //   a: 'a',
           //   b: 'b',
@@ -32,6 +41,24 @@
           //   } 
           //   }
           // }
+          firstName: 'Foo',
+          lastName: 'Bar'
+        },
+        // computed: {
+        //   fullName: function () {
+        //     return this.firstName + ' ' + this.lastName
+        //   }
+        // },
+        methods: {
+          // changeHandler() {
+          //   this.message = 'change'
+          //   this.info = 'info'
+          // }
+        },
+        watch: {
+          firstName: function (newVal, oldVal) {
+            this.lastName = newVal
+          }
         }
       })
     </script>

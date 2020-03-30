@@ -1036,11 +1036,11 @@
       enumerable: true,
       configurable: true,
       get: function reactiveGetter () {
-        debugger
         var value = getter ? getter.call(obj) : val;
         if (Dep.target) {
           dep.depend();
           if (childOb) {
+            debugger
             childOb.dep.depend();
             if (Array.isArray(value)) {
               dependArray(value);
@@ -1911,6 +1911,7 @@
     pending = false;
     var copies = callbacks.slice(0);
     callbacks.length = 0;
+    debugger
     for (var i = 0; i < copies.length; i++) {
       copies[i]();
     }
@@ -1983,6 +1984,7 @@
 
   function nextTick (cb, ctx) {
     var _resolve;
+    debugger
     callbacks.push(function () {
       if (cb) {
         try {
@@ -1996,6 +1998,7 @@
     });
     if (!pending) {
       pending = true;
+      debugger
       timerFunc();
     }
     // $flow-disable-line
@@ -2097,7 +2100,6 @@
 
     var getHandler = {
       get: function get (target, key) {
-        debugger
         if (typeof key === 'string' && !(key in target)) {
           if (key in target.$data) { warnReservedPrefix(target, key); }
           else { warnNonPresent(target, key); }
@@ -2110,7 +2112,6 @@
       if (hasProxy) {
         // determine which proxy handler to use
         var options = vm.$options;
-        debugger
         var handlers = options.render && options.render._withStripped
           ? getHandler
           : hasHandler;
@@ -4385,7 +4386,8 @@
    */
   function queueWatcher (watcher) {
     var id = watcher.id;
-    if (has[id] == null) {
+    debugger
+    // if (has[id] == null) {
       has[id] = true;
       if (!flushing) {
         queue.push(watcher);
@@ -4400,6 +4402,7 @@
       }
       // queue the flush
       if (!waiting) {
+        debugger
         waiting = true;
 
         if (!config.async) {
@@ -4408,7 +4411,7 @@
         }
         nextTick(flushSchedulerQueue);
       }
-    }
+    // }
   }
 
   /*  */
@@ -4477,6 +4480,7 @@
    * Evaluate the getter, and re-collect dependencies.
    */
   Watcher.prototype.get = function get () {
+    debugger
     pushTarget(this);
     var value;
     var vm = this.vm;
@@ -4492,6 +4496,7 @@
       // "touch" every property so they are all tracked as
       // dependencies for deep watching
       if (this.deep) {
+        debugger
         traverse(value);
       }
       popTarget();
@@ -4542,8 +4547,10 @@
   Watcher.prototype.update = function update () {
     /* istanbul ignore else */
     if (this.lazy) {
+      debugger
       this.dirty = true;
     } else if (this.sync) {
+      debugger
       this.run();
     } else {
       queueWatcher(this);
@@ -4556,6 +4563,7 @@
    */
   Watcher.prototype.run = function run () {
     if (this.active) {
+      debugger
       var value = this.get();
       if (
         value !== this.value ||
@@ -4835,9 +4843,11 @@
       var watcher = this._computedWatchers && this._computedWatchers[key];
       if (watcher) {
         if (watcher.dirty) {
+          debugger
           watcher.evaluate();
         }
         if (Dep.target) {
+          debugger
           watcher.depend();
         }
         return watcher.value
