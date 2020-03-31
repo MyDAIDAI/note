@@ -518,6 +518,8 @@ function initData (vm: Component) {
   observe(data, true /* asRootData */)
 }
 ```
+在`vue`源码中对响应式的处理分为**依赖收集**以及依赖的**批量派发更新**。下面分情况进行讨论：
+#### 依赖收集
 在`initData`这个函数中对里面的每一个属性都判断了是否在`props`以及`methods`中重名，重名则发出警告，然后进行了`observe`函数
 ```js
 export function observe (value: any, asRootData: ?boolean): Observer | void {
@@ -547,7 +549,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
 
 在`vue`的源码中，对数组以及对象进行了不同的处理，下面我们分别进行分析
 
-#### 对对象的处理
+##### 对对象的处理
 
 ```js
 export class Observer {
@@ -623,26 +625,11 @@ export function defineReactive (
         // some code
       }
       return value
-    },
-    set: function reactiveSetter (newVal) {
-      const value = getter ? getter.call(obj) : val
-      if (newVal === value || (newVal !== newVal && value !== value)) {
-        return
-      }
-      // some code
-      if (getter && !setter) return
-      if (setter) {
-        setter.call(obj, newVal)
-      } else {
-        val = newVal
-      }
-      childOb = !shallow && observe(newVal)
-      dep.notify()
     }
   })
 }
 ```
-在`defineReactive`函数中为对象的每一个属性创建了一个`Dep`实例，并且使用`Object.defineProperty()`方法向其中添加了`getter`以及`setter`方法。在`getter`中，如果`Dep.target`存在，则调用`dep.depend()`函数向其中添加依赖。在`setter`中，对传入的新值进行了判断，如果与旧值相同，则直接返回，否则对新传入的值进行判断添加响应式，然后调用`dep.notify()`进行依赖的派发更新。
+在`defineReactive`函数中为对象的每一个属性创建了一个`Dep`实例，并且使用`Object.defineProperty()`方法向其中添加了`getter`。在`getter`中，如果`Dep.target`存在，则调用`dep.depend()`函数向其中添加依赖。
 
 对对象的响应式的分析大致完成了，那么现在有一个问题，我们可以知道，当设置一个对象的属性值是可以触发`setter`函数，当获取属性时可以触发`getter`函数，那么在`vue`内部什么时候，在什么地方会触发`getter`进行依赖收集呢？让我们回到`_init()`函数中，在该函数执行的最后，调用了`vm.$mount(vm.$options.el)`方法对`DOM`进行了挂载，那么看看`$mount`里面是什么吧
 ```js
@@ -805,7 +792,8 @@ updateComponent = function () {
 };
 ```
 // TODO: child.dep.depend()作用
-#### 对数组的处理
+
+##### 对数组的处理
 从上面代码中可以看到，在`Observer`构造函数对，对数组主要进行了两个不同的操作，第一个操作是将可以触发响应式的数组方法添加到数组原型上，第二个操作是对数组内的每一个元素进行递归执行`observe`函数，如果里面有嵌套的`Array`或者`Object`类型的数据，继续添加响应式处理
 
 1. 将触发响应式的数组方法添加到数组原型上
@@ -845,7 +833,7 @@ export class Observer {
   }
 }
 ```
-上面的代码可以看到，对值的类型进行了判断，如果值为数组，则判断是否有原型对象，如果有原型对象，则添加到原型对象上，否则直接复制到当前数组上.
+上面的代码可以看到，并没有直接对数组调用`Object.defineProperty()`来添加依赖，而是对数组做了两件事，第一件事是判断是否有原型对象，如果有原型对象，则将代理方法对象添加到原型对象上，否则直接复制到当前数组上.第二件事是对数组中的每一项的值调用`observe`函数，如果其中值为数组或者对象类型，则递归添加响应式
 ```js
 function protoAugment (target, src: Object) {
   /* eslint-disable no-proto */
@@ -912,6 +900,50 @@ export function def (obj: Object, key: string, val: any, enumerable?: boolean) {
 ```
 上面的代码是对数组的可响应的方法的处理过程，它首先拿到了`Array`原型对象，并且用该对象作为原型创建了一个新对象。然后对数组中的一个操作方法进行遍历，将每一个方法代理到新创建的对象中，并且对新加入的值添加响应式以及依赖更新
 
+上面的操作中对数组的处理并没有直接向数组添加响应式，而是使用了代理方法`push`等来触发依赖更新，那么依赖是什么时候添加进行的呢？这是一个很重要的问题！！！
+
+我们重新看看上面的代码，发现在上面的代码中有这么一行`ob.dep.notify()`，而`const ob = this.__ob__`，那么`this`是什么呢？了解`this`的用法会知道`this`指向当前的调用对象，也就是数组。那么这个数组的依赖时什么时候添加的呢？让我们在回头去看看在`Object.defineProperty`中的`getter`函数
+```js
+let childOb = !shallow && observe(val)
+Object.defineProperty(obj, key, {
+  enumerable: true,
+  configurable: true,
+  get: function reactiveGetter () {
+    const value = getter ? getter.call(obj) : val
+    if (Dep.target) {
+      dep.depend()
+      if (childOb) {
+        childOb.dep.depend()
+        if (Array.isArray(value)) {
+          dependArray(value)
+        }
+      }
+    }
+    return value
+  })
+```
+在上面的函数中可以看到在触发`getter`时，不仅向当前的`dep`实例中添加了依赖，还向`childOb`添加了依赖，而`childOb`是什么呢？`childOb`是执行`observe(val)`函数的返回值，也就是说如果当前属性的值是一个数组或者对象，就会在当前值上添加一个`__ob__`属性，值为`Observer`实例且将该实例返回，赋值给`childOb`。假设有如下对象：
+```js
+const data = {
+  a: [1, 2, 3]
+}
+```
+那么添加响应式后，该对象如下：
+```js
+const data = {
+  a: [
+    0: 1,
+    1: 2,
+    2: 3,
+    __ob__: {...}
+  ],
+  __ob__: {...}
+}
+```
+上面属性为`a`的数组中的`__ob__`属性就是在执行`Object.defineProperty(data, 'a')`的`getter`函数时，执行`let childOb = !shallow && observe(val)`时添加的，并且此时`childOb`就等于`data.a.__ob__`。然后执行`childOb.dep.depend()`方法。在`Observe`构造函数实例的时候，会对`Dep`进行实例，里面保存一个依赖对象，如果该数组的值为数组或者对象，则同时向其中添加依赖。
+
+也就是说依赖不仅添加到对象属性的`dep`实例这个“筐”中，如果该属性的值是数组或者对象值，那么还会同时加到其中的`__ob__`的`dep`实例这个“筐”中。这两个“筐”中的依赖的触发时机是不同的。第一个“筐”是在该属性的值被修改的时候触发，第二个“筐”里收集的依赖是在使用`$set`、`Vue.set`或者调用数组的`push`等方法时进行触发的。使用这种方式第一可以处理对数组修改的派发更新，第二可以处理对对象新添加属性的派发更新（也就是使用`$set`的情况）
+#### 依赖派发更新
 
 
 
