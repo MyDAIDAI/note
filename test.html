@@ -5,11 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
-  <script src="https://unpkg.com/loglevel/dist/loglevel.min.js"></script>
+  <!-- <script src="https://unpkg.com/loglevel/dist/loglevel.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.js"></script>
 </head>
 <body>
 </body>
 </html>
 <script>
-  log.warn("too easy");
+  var originalThenable = {
+    then: function (onFulfilled) {
+      setTimeout(function() { onFulfilled('original value'); }, 0);
+    }
+  };
+  var promise = new Promise(function(resolve) { resolve(originalThenable); });
+
+  promise.then(function(value) {
+    console.log(value, 'original value')
+    // assert.equal(value, 'original value');
+    // done();
+  });
 </script>

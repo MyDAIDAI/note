@@ -68,7 +68,7 @@
 //   if (_this.status === "rejected") {
 //     promise2 = new Promise(function (resolve, reject) {
 //       try {
-//         let x = onRejected(_this.reason)
+//         let x = onRejected(_this.reason) //catch 中没有报错，则传入 resolve中
 //         resolve(x)
 //       } catch (error) {
 //         reject(error)

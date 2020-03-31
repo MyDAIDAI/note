@@ -17,7 +17,7 @@ function shellSort(arr) {
       for(let j = i; j >= h && SortUtil.less(arr[j], arr[j - h]); j -= h) {
         SortUtil.exchange(arr, j, j - h)
       }
-    }
+    } 
     h = Math.floor(h / 3)
   }
 }

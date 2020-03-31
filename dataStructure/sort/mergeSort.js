@@ -10,6 +10,7 @@ const randomData = require('./randomData.json')
  * @param {number} hi 归并的最大索引
  */
 function merge(arr, lo, mid, hi) {
+  console.log('merge arr', lo, mid, hi)
   let i = lo, j = mid + 1
   let aux = []
   for(let k = lo; k <= hi; k++) {
@@ -38,15 +39,16 @@ function merge(arr, lo, mid, hi) {
  * @param {number} hi 索引最大值
  */
 function mergeSort(arr, lo, hi) {
+  console.log('mergeSort', lo, hi)
   if (hi <= lo) {
     return
   }
   let mid = Math.floor(lo + (hi - lo) / 2)
-  mergeSort(arr, lo, mid)
+  mergeSort(arr, lo, mid) // 将该部分执行完
   mergeSort(arr, mid + 1, hi)
   merge(arr, lo, mid, hi)
 }
-
+console.log('mergeSort', mergeSort([3, 4, 5, 2, 1, 0, 8], 0, 7))
 /**
  * 自底向上的归并排序
  * 时间复杂度 NlgN
@@ -66,25 +68,25 @@ function mergeSortBU(arr) {
 // 自顶向下的归并排序排序随机数
 // random: 327.208ms
 // 对于随机数，排序的时间提高了许多
-console.time('random')
-mergeSort(randomData, 0, randomData.length - 1)
-console.timeEnd('random')
+// console.time('random')
+// mergeSort(randomData, 0, randomData.length - 1)
+// console.timeEnd('random')
 
-// 自顶向下的归并排序排序顺序数
-// sorted: 298.133ms
-console.time('sorted')
-mergeSort(data, 0, data.length - 1)
-console.timeEnd('sorted')
+// // 自顶向下的归并排序排序顺序数
+// // sorted: 298.133ms
+// console.time('sorted')
+// mergeSort(data, 0, data.length - 1)
+// console.timeEnd('sorted')
 
-// 自底向上的归并排序随机数
-// random: 314.682ms
-console.time('random')
-mergeSortBU(randomData, 0, randomData.length - 1)
-console.timeEnd('random')
+// // 自底向上的归并排序随机数
+// // random: 314.682ms
+// console.time('random')
+// mergeSortBU(randomData, 0, randomData.length - 1)
+// console.timeEnd('random')
 
-// 自底向上的归并排序顺序数
-// sorted: 314.735ms
-console.time('sorted')
-mergeSortBU(data, 0, data.length - 1)
-console.timeEnd('sorted')
-module.exports = mergeSort
+// // 自底向上的归并排序顺序数
+// // sorted: 314.735ms
+// console.time('sorted')
+// mergeSortBU(data, 0, data.length - 1)
+// console.timeEnd('sorted')
+// module.exports = mergeSort
