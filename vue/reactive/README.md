@@ -545,6 +545,10 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
 ```
 在 `observe` 函数中，主要是对传入值的一个处理，如果不是对象或者是一个 `VNODE` 实例则直接返回，如果已经存在 `__ob__`属性，则直接取上面的值。如果都不满足，则判断数据类型是不是数组或者对象并且需要该值可扩展。如果是，则进行实例，并将其生成的观察者实例返回
 
+在`vue`的源码中，对数组以及对象进行了不同的处理，下面我们分别进行分析
+
+#### 对对象的处理
+
 ```js
 export class Observer {
   value: any;
@@ -800,6 +804,115 @@ updateComponent = function () {
   vm._update(vm._render(), hydrating);
 };
 ```
+// TODO: child.dep.depend()作用
+#### 对数组的处理
+从上面代码中可以看到，在`Observer`构造函数对，对数组主要进行了两个不同的操作，第一个操作是将可以触发响应式的数组方法添加到数组原型上，第二个操作是对数组内的每一个元素进行递归执行`observe`函数，如果里面有嵌套的`Array`或者`Object`类型的数据，继续添加响应式处理
+
+1. 将触发响应式的数组方法添加到数组原型上
+```js
+export class Observer {
+  value: any;
+  dep: Dep;
+  vmCount: number; // number of vms that have this object as root $data
+
+  constructor (value: any) {
+    this.value = value
+    this.dep = new Dep()
+    this.vmCount = 0
+    def(value, '__ob__', this)
+    if (Array.isArray(value)) {
+      if (hasProto) {
+        protoAugment(value, arrayMethods)
+      } else {
+        copyAugment(value, arrayMethods, arrayKeys)
+      }
+      this.observeArray(value)
+    } else {
+      this.walk(value)
+    }
+  }
+  walk (obj: Object) {
+    // some code
+  }
+
+  /**
+   * Observe a list of Array items.
+   */
+  observeArray (items: Array<any>) {
+    for (let i = 0, l = items.length; i < l; i++) {
+      observe(items[i])
+    }
+  }
+}
+```
+上面的代码可以看到，对值的类型进行了判断，如果值为数组，则判断是否有原型对象，如果有原型对象，则添加到原型对象上，否则直接复制到当前数组上.
+```js
+function protoAugment (target, src: Object) {
+  /* eslint-disable no-proto */
+  target.__proto__ = src
+  /* eslint-enable no-proto */
+}
+function copyAugment (target: Object, src: Object, keys: Array<string>) {
+  for (let i = 0, l = keys.length; i < l; i++) {
+    const key = keys[i]
+    def(target, key, src[key])
+  }
+}
+```
+在上面的代码中，也就是将一个`src`赋值给`target.__proto__`，或者遍历`src`中的`keys`，直接将属性添加到数组上。那么其中的`src`到底是什么呢？上面的代码展示看出来，`src`为`arrayMethods`，那么这个参数在哪里呢？在`core/instance/observer/array.js`中可以查看到具体内容
+```js
+const arrayProto = Array.prototype
+export const arrayMethods = Object.create(arrayProto)
+
+const methodsToPatch = [
+  'push',
+  'pop',
+  'shift',
+  'unshift',
+  'splice',
+  'sort',
+  'reverse'
+]
+
+/**
+ * Intercept mutating methods and emit events
+ */
+methodsToPatch.forEach(function (method) {
+  // 缓存原生数组方法
+  const original = arrayProto[method]
+  def(arrayMethods, method, function mutator (...args) {
+    // 使用原生数组方法执行
+    const result = original.apply(this, args)
+    const ob = this.__ob__
+    let inserted
+    switch (method) {
+      case 'push':
+      case 'unshift':
+        inserted = args
+        break
+      case 'splice':
+        inserted = args.slice(2)
+        break
+    }
+    // 如果是插入新元素，则对新添加的元素添加响应式
+    if (inserted) ob.observeArray(inserted)
+    // 触发更新
+    ob.dep.notify()
+    return result
+  })
+})
+export function def (obj: Object, key: string, val: any, enumerable?: boolean) {
+  Object.defineProperty(obj, key, {
+    value: val,
+    enumerable: !!enumerable,
+    writable: true,
+    configurable: true
+  })
+}
+```
+上面的代码是对数组的可响应的方法的处理过程，它首先拿到了`Array`原型对象，并且用该对象作为原型创建了一个新对象。然后对数组中的一个操作方法进行遍历，将每一个方法代理到新创建的对象中，并且对新加入的值添加响应式以及依赖更新
+
+
 
 
 参考：
