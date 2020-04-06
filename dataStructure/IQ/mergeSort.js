@@ -29,8 +29,44 @@ let arr = [1, 2, 5, 8, 9, 3, 6, 7, 10, 20]
 console.log(mergeWithSmallerAuxiliaryArray(arr, 0, arr.length - 1))
 
 // 2. Counting inversions. 
-// An inversion in an array a[\,]a[] is a pair of entries a[i]a[i] and a[j]a[j] such that i < ji<j but a[i] > a[j]a[i]>a[j]. 
+// An inversion in an array a[] is a pair of entries a[i] and a[j] such that i < j but a[i] > a[j]. 
 // Given an array, design a linearithmic algorithm to count the number of inversions.
+function sort(arr, lo, hi) {
+  if (hi <= lo) {
+    return 0
+  }
+  let count = 0
+  let mid = Math.floor((lo + hi) / 2)
+  count += sort(arr, lo, mid)
+  count += sort(arr, mid + 1, hi)
+  count += merge(arr, lo, mid, hi)
+  return count
+}
+let retArr = []
+function merge(arr, lo, mid, hi) {
+  let aux = []
+  for(let i = lo; i <= hi; i++) {
+    aux[i] = arr[i]
+  }
+  let i = lo
+  let j = mid + 1
+  let count = 0
+  for(let k = lo; k <= hi; k++) {
+    if (i > mid) {
+      arr[k] = aux[j++]
+    } else if (j > hi) {
+      arr[k] = aux[i++]
+    } else if (aux[i] < aux[j]) {
+      arr[k] = aux[i++]
+    } else {
+      count += (mid + 1) - i
+      retArr.push([aux[i], aux[j]])
+      arr[k] = aux[j++]
+    }
+  }
+  return count
+}
+console.log(sort([3,1,4,2], 0, 3), retArr)
 
 
 // 3. Shuffling a linked list.
