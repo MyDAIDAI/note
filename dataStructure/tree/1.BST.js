@@ -36,24 +36,88 @@ function put(node, val) {
     }
     return node;
 }
+
+/**
+ * 在二叉查找树种查找 val
+ * @param node
+ * @param val
+ * @returns {undefined|*}
+ */
 function get(node, val) {
     if (!node) {
         return;
     }
-    if (val < node.data) {
+    if (val < node.value) {
         return get(node.left, val)
-    } else if (val > node.data) {
+    } else if (val > node.value) {
         return get(node.right, val)
     }
     return node;
 }
-let arr = [7, 8, 0, 1, 2, 4, 5, 9];
+
+/**
+ * 从二叉查找树中删除值为val的节点
+ * @param node
+ * @param val
+ * @returns {*}
+ */
+function del(node, val) {
+    if (!node) return;
+    if (val < node.data) {
+        node.left = del(node.left, val)
+    } else if (val > node.data) {
+        node.right = del(node.right, val)
+    } else {
+        // value 等于 val，即查找到当前节点，删除
+        // 1. 要删除的节点有两个子节点, 在右子树中拿出最小的，或者在左子树中拿出最大的
+        if (node.left &&　node.right) {
+            let rightMinNode = findMin(node.right)
+            node.value = rightMinNode.value
+            node.right = del(node.right, rightMinNode.value)
+        }
+        // 2. 要删除的节点有一个子节点，左节点或者右节点
+        if (!node.left) {
+            node = node.right
+        }else if (!node.right) {
+            node = node.left
+        }
+    }
+    return node;
+}
+let arr = [7, 8, 0, 1, 2, 4, 5, 9, -1];
 let tree;
 for (let index = 0; index < arr.length; index++) {
     tree = put(tree, arr[index]);
 }
-for (let index = 0; index < arr.length; index++) {
-    tree = put(tree, arr[index]);
+
+/**
+ * 在二叉查找树种查找最小值
+ * @param tree
+ * @returns {*}
+ */
+function findMin(tree) {
+    if (!tree) {
+        return
+    }
+    let node = tree;
+    while (node && node.left) {
+        node = node.left;
+    }
+    return node;
+}
+
+/**
+ * 查找二叉查找树中的最大值
+ * @param tree
+ * @returns {*}
+ */
+function findMax(tree) {
+    if (!tree) return;
+    let node = tree;
+    while (node &&　node.right) {
+        node = node.right;
+    }
+    return node;
 }
 //function preTree(tree) {
 //    if (!tree) return;
@@ -62,4 +126,9 @@ for (let index = 0; index < arr.length; index++) {
 //    preTree(tree.right);
 //}
 //preTree(tree)
-console.log('tree', JSON.stringify(tree))
+// console.log('tree', JSON.stringify(tree), findMin(tree))
+// console.log('tree min', findMin(tree), findMax(tree))
+// console.log('get node 7', get(tree, 7))
+let originTree = JSON.parse(JSON.stringify(tree))
+let deletedTree = del(tree, 7)
+console.log('tree', JSON.stringify(tree), 'delete 7', del(tree, 7))
