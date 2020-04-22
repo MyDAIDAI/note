@@ -70,6 +70,6 @@ console.log(sort([3,1,4,2], 0, 3), retArr)
 
 
 // 3. Shuffling a linked list.
-//  Given a singly-linked list containing nn items, 
+//  Given a singly-linked list containing n items, 
 // rearrange the items uniformly at random. 
-// Your algorithm should consume a logarithmic (or constant) amount of extra memory and run in time proportional to n \log nnlogn in the worst case.
+// Your algorithm should consume a logarithmic (or constant) amount of extra memory and run in time proportional to nlogn in the worst case.

@@ -16,6 +16,7 @@ function merge(arr, lo, mid, hi) {
   for(let k = lo; k <= hi; k++) {
     aux[k] = arr[k] // 将arr中的数据复制到 aux 中
   }
+  console.log('arr', JSON.stringify(arr), lo, hi)
   // i, j 分别为两个已排序数组的游标，依次向右移动，比较两个数的大小
   for(let k = lo; k <= hi; k++) {
     if (i > mid) { // 左边游标的大于mid，则表示左边数据已经排列完毕，直接将右侧数据复制
@@ -28,6 +29,7 @@ function merge(arr, lo, mid, hi) {
       arr[k] =  aux[i++]
     }
   }
+  console.log('arr', JSON.stringify(arr))
 }
 
 /**
@@ -48,7 +50,7 @@ function mergeSort(arr, lo, hi) {
   mergeSort(arr, mid + 1, hi)
   merge(arr, lo, mid, hi)
 }
-console.log('mergeSort', mergeSort([3, 4, 5, 2, 1, 0, 8], 0, 7))
+console.log('mergeSort', mergeSort([9, 3, 5, 2, 1, 0, 8], 0, 6))
 /**
  * 自底向上的归并排序
  * 时间复杂度 NlgN

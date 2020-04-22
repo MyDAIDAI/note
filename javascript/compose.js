@@ -1,6 +1,7 @@
 function sum(a, b) {
   return a + b
 }
+
 function len(str){
   return str.length
 }
