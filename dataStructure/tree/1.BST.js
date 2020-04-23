@@ -130,5 +130,13 @@ function findMax(tree) {
 // console.log('tree min', findMin(tree), findMax(tree))
 // console.log('get node 7', get(tree, 7))
 let originTree = JSON.parse(JSON.stringify(tree))
+function max(a, b) {
+    return a > b ? a : b
+}
+function getHeight(node) {
+    if (!node) return 0
+    return max(getHeight(node.left), getHeight(node.right)) + 1
+}
 let deletedTree = del(tree, 7)
+let height = getHeight(deletedTree)
 console.log('tree', JSON.stringify(tree), 'delete 7', del(tree, 7))
