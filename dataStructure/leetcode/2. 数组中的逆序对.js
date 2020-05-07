@@ -13,10 +13,14 @@ function merge(arr, lo, mid, hi, data) {
   let p2 = mid + 1
   let i = 0
   while (p1 <= mid && p2 <= hi) {
-
-    data.push([arr[p1], arr[p2]])
-
-    help[i++] = arr[p1] < arr[p2] ? arr[p1++] : arr[p2++]
+    if(arr[p1] > arr[p2]) {
+      let index = p2
+      while(index <= hi) {
+        data.push([arr[p1], arr[index]])
+        index++
+      }
+    }
+    help[i++] = arr[p1] > arr[p2] ? arr[p1++] : arr[p2++]
   }
   while (p1 <= mid) {
     help[i++] = arr[p1++]
