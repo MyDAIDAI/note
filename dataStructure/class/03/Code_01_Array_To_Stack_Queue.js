@@ -3,7 +3,7 @@
 /**
  * 数组栈结构
  */
-class ArrayStack{
+export class ArrayStack{
   constructor(size) {
     if(size < 0) {
       throw new Error('Array Stack size not can be 0')
@@ -31,12 +31,21 @@ class ArrayStack{
     this.size--
     return this.arr[--this.index]
   }
+  isEmpty() {
+    return this.size === 0
+  }
+  isFull() {
+    return this.size === this.initialSize
+  }
+  getSize() {
+    return this.size
+  }
 }
 
 /**
  *  数组队列结构
  */
-class ArrayQueue {
+export class ArrayQueue {
   constructor(size) {
     if (size < 0) {
       throw new Error('Array Queue size not can be 0')
@@ -64,5 +73,14 @@ class ArrayQueue {
     let data = this.arr[this.start++]
     this.start = this.start === this.initialSize ? 0 : this.start
     return data
+  }
+  isEmpty() {
+    return this.size === 0
+  }
+  isFull() {
+    return this.size === this.initialSize
+  }
+  getSize() {
+    return this.size
   }
 }
