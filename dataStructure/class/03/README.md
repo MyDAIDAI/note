@@ -26,7 +26,7 @@
         3. 当向队列里面`end`元素的时候，判断队列是否满，然后将数据保存在`end`位置, `end++`, 判断当前`end`的值是否等于`size`, 等于则将该索引赋值为0
         4. 当从队列向外面`poll`元素的时候，取出`start`位置的值，并将`start++`，判断当前`end`的值是否等于`size`, 等于则赋值为`0`
     - 注意：头部索引`start`与尾部索引`end`不相互依赖，互相独立，根据`size`来进行相互制约（相当于`start`一直在追`end`）
-- code: [Code_01_Array_To_Stack_Queue.js](./Code_01_Array_To_Stack_Queue.js)
+- code: [Code_01_ArrayToStackQueue.js](Code_01_ArrayToStackQueue.js)
 ## 实现一个特殊的栈
 - 描述：在实现栈的基本功能的基础上，再实现返回栈中最小元素的操作。
 - 要求：
@@ -39,7 +39,7 @@
     4. 再次向`dataStack`里面`push`值的时候，拿出`minStack`顶部的值与要`push`的值比较，将其中较小的值推入
     5. 当`pop`数据的时候，`dataStack`与`minStack`同时`pop`
 - 注意：要保持`dataStack`与`minStack`的同步
-- code: [Code_02_Get_Min_Stack.js](Code_02_Get_Min_Stack.js)
+- code: [Code_02_GetMinStack.js](Code_02_GetMinStack.js)
 
 ## 如何仅用队列结构实现栈结构
 - 思路：使用两个队列？
@@ -56,7 +56,7 @@
     - 当`pop`栈不为空的时候不能向`pop`栈中添加数据
     - 每次从`push`栈向`pop`栈放数据的时候必须**全部**放完
 
-- code: [Code_03_Two_Queue_Stack.js](./Code_03_Two_Queue_Stack.js)
+- code: [Code_03_TwoQueueStack.js](Code_03_TwoQueueStack.js)
 ## 转圈打印矩阵
 - 题目：给定一个整型矩阵matrix，请按照转圈的方式打印它。
     ```
@@ -72,7 +72,7 @@
     - 当打印一行的时候，移动列坐标，当打印一列的时候，移动行坐标
     - 打印完成外圈矩阵之后，将`[row1, col1]`加1， 将`[row2, col2]`减1
     - 当`row1` > `row2`以及`col1` > `col2`时停止打印
-- code: [Code_04_Print_Matrix_Spiral_Order.js](./Code_04_Print_Matrix_Spiral_Order.js)
+- code: [Code_04_PrintMatrixSpiralOrder.js](Code_04_PrintMatrixSpiralOrder.js)
 
 ## 在行列都排好序的矩阵中找数
 - 题目：给定一个有N*M的整型矩阵matrix和一个整数K，
@@ -87,7 +87,7 @@
     - 基准值大于`num`，则`col--`
     - 基准值小于`num`, 则`row++`
     - 直到判断到`row === endRow`以及`col === 0`
-- code: [Code_05_Find_Num_In_Sorted_Matrix.js](./Code_05_Find_Num_In_Sorted_Matrix.js)
+- code: [Code_05_FindNumInSortedMatrix.js](Code_05_FindNumInSortedMatrix.js)
 
 ## 打印两个有序链表的公共部分
 - 题目：给定两个有序链表的头指针head1和head2，打印两个链表的公共部分
@@ -97,4 +97,23 @@
     - 比较当前两个指针所指向的节点的值，值较小的指针向后移动
     - 当两个指针所指向的节点值相同时，同时移动并打印
     - 当其中的某个链表遍历完成或者两个同时遍历完成结束
-- code: [Code_06_Print_Common_Part.js](Code_06_Print_Common_Part.js)
+- code: [Code_06_PrintCommonPart.js](Code_06_PrintCommonPart.js)
+
+## 判断一个链表是否是回文结构
+- 题目：给定一个链表的头节点head，请判断该链表是否为回文结构。 例如： 1->2->1，返回true。 1->2->2->1，返回true。15->6->15，返回true。 1->2->3，返回false。
+- 思路：
+    1. 方法1
+        - 遍历链表并且使用一个栈将数据存储起来（栈弹出顺序为倒序）
+        - 再次遍历链表，与栈中弹出的数据进行比较，如果都一样，则是回文结构
+        - 时间复杂度O(n), 空间复杂度O(n)
+    2. 方法2
+        - 使用一个快指针，一个慢指针来遍历链表，当快指针遍历完成的时候，慢指针指向链表中点的位置
+        - 将慢指针指向的位置继续遍历链表，并将数据放入栈中
+        - 从头遍历链表到中点位置，并与栈中弹出的数据进行比较
+        - 值都相等则为回文结构
+        - 时间复杂度O(n), 空间复杂度O(n/2)
+    3. **方法3**(空间复杂度最优解)
+        - 使用一个快指针，一个慢指针来遍历链表，当快指针遍历完成的时候，慢指针指向链表中点的位置
+        - 将中点位置之后的链表节点顺序颠倒，比如 3 -> 2 -> 1 转换为 null <- 3 <- 2 <- 1
+        - 从链表的头以及链表的尾节点开始分别遍历比较，如果都相等，则为回文结构
+        - 将中点位置之后的链表顺序设置为初始顺序 
