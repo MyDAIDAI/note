@@ -3,7 +3,7 @@
 /**
  * 数组栈结构
  */
-export class ArrayStack{
+class ArrayStack{
   constructor(size) {
     if(size < 0) {
       throw new Error('Array Stack size not can be 0')
@@ -45,7 +45,7 @@ export class ArrayStack{
 /**
  *  数组队列结构
  */
-export class ArrayQueue {
+class ArrayQueue {
   constructor(size) {
     if (size < 0) {
       throw new Error('Array Queue size not can be 0')
@@ -83,4 +83,8 @@ export class ArrayQueue {
   getSize() {
     return this.size
   }
+}
+module.exports = {
+  ArrayStack,
+  ArrayQueue
 }

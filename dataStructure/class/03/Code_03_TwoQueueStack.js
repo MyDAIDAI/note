@@ -1,5 +1,5 @@
 // 仅使用队列实现栈结构：使用两个队列
-import {ArrayQueue, ArrayStack} from './Code_01_Array_To_Stack_Queue'
+const {ArrayQueue, ArrayStack} = require('./Code_01_ArrayToStackQueue')
 class TwoQueueStack {
   constructor(size) {
     this.queue = new ArrayQueue(size)
