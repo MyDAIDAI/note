@@ -42,6 +42,8 @@ function listPartition2(head, pivot) {
   let moreHead = null
   let node = head
   while (node != null) {
+    next = node.next
+    node.next = null
     if(node.value < pivot) {
       if(less == null) {
         less = node
@@ -67,7 +69,7 @@ function listPartition2(head, pivot) {
         equal = equal.next
       }
     }
-    node = node.next
+    node = next
   }
   if(equal && equalHead) {
     less.next = equalHead
