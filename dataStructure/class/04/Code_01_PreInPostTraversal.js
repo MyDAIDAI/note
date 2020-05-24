@@ -75,7 +75,16 @@ function postOrderUnRecur(head) {
     }
   }
 }
-
+function shuffle(arr) {
+  let newArr = []
+  for (let i = 0, len = arr.length; i < len; i++) {
+    let j = Math.floor(Math.random() * (len - i))
+    newArr[i] = arr[j]
+    arr.splice(j, 1)
+    console.log('j', j, arr)
+  }
+  return newArr
+}
 function main() {
   let head = new Node(5);
   head.left = new Node(3);
@@ -105,5 +114,6 @@ function main() {
   postOrderUnRecur(head);
 //   posOrderUnRecur2(head);
 // head
+  console.log(shuffle([1, 2, 3, 4, 5]))
 }
 main()

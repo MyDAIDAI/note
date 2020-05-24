@@ -119,6 +119,9 @@ function findMax(tree) {
     }
     return node;
 }
+function pathSum (node, sum, ) {
+    if (!node) return
+}
 //function preTree(tree) {
 //    if (!tree) return;
 //    console.log('tree', tree.value);

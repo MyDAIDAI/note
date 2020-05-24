@@ -17,10 +17,10 @@ function bSearch(arr, value) {
       return mid
     } else if (arr[mid] > value){
       high = mid - 1
-      mid = Math.floor((low + high) / 2)
+      // mid = Math.floor((low + high) / 2)
     } else {
       low = mid + 1
-      mid = Math.floor((low + high / 2))
+      // mid = Math.floor((low + high / 2))
     }
   }
 }
