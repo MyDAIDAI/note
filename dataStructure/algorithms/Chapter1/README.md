@@ -59,6 +59,6 @@ code: [evaluate.js](evaluate.js)
 4. `Write a filter Program InfixToPostfix.java that converts an arithmetic expression from infix to postfix.`
 - [InfixToPostfix.js](InfixToPostfix.js)
 5. `Write a program EvaluatePostfix.java that that takes a postfix expression from standard input, evaluates it, and prints the value. `
-
+- [EvaluatePostfix.js](EvaluatePostfix.js)
 
 
