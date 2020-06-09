@@ -48,3 +48,17 @@ TODO: 队列的文件读取用例
 - 在遇到右括号时，弹出一个运算符，弹出所需数量的操作数，并将运算符和操作数的运算结果压入栈中
 
 code: [evaluate.js](evaluate.js)
+
+## `Exercises`
+1. 实现一个固定大小的栈 
+- [FixedCapacityStack.js](FixedCapacityStack.js)
+2. `Write a stack client Parentheses.java that reads in sequence of left and right parentheses, braces, and brackets from standard input and uses a stack to determine whether the sequence is properly balanced. For example, your program should print true for [()]{}{[()()]()} and false for [(]).`
+- [Parentheses.js](Parentheses.js)
+3. `What does the following code fragment print when n is 50? Give a high-level description of what it does when presented with a positive integer n`
+- [IntegerToBinary.js](IntegerToBinary.js)
+4. `Write a filter Program InfixToPostfix.java that converts an arithmetic expression from infix to postfix.`
+- [InfixToPostfix.js](InfixToPostfix.js)
+5. `Write a program EvaluatePostfix.java that that takes a postfix expression from standard input, evaluates it, and prints the value. `
+
+
+
