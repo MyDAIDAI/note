@@ -49,7 +49,7 @@ TODO: 队列的文件读取用例
 
 code: [evaluate.js](evaluate.js)
 
-## `Exercises`
+### `Exercises`
 1. 实现一个固定大小的栈 
 - [FixedCapacityStack.js](FixedCapacityStack.js)
 2. `Write a stack client Parentheses.java that reads in sequence of left and right parentheses, braces, and brackets from standard input and uses a stack to determine whether the sequence is properly balanced. For example, your program should print true for [()]{}{[()()]()} and false for [(]).`
@@ -60,5 +60,11 @@ code: [evaluate.js](evaluate.js)
 - [InfixToPostfix.js](InfixToPostfix.js)
 5. `Write a program EvaluatePostfix.java that that takes a postfix expression from standard input, evaluates it, and prints the value. `
 - [EvaluatePostfix.js](EvaluatePostfix.js)
+6. `Josephus problem`约瑟夫问题
+    - 题目描述：n个人（编号由 1,2, ..., n）围成一圈，由编号为1的人从1开始报数，报到k的退出自杀，剩下的人继续从1开始报数，直到圈内只剩余1人，求胜利者的编号。(n>0, k>0)
+   
+## 1.4 `Analysis of Algorithms`
 
-
+### `Exercises`
+- `Local minimum in an array`
+    - 题目描述：`Write a program that, given an array a[] of n distinct integers, finds a local minimum: an index i such that botha[i] < a[i-1] and a[i] < a[i+1] (assuming the neighboring entry is in bounds). Your program should use ~ 2 lg n compares in the worst case.` 
