@@ -65,6 +65,16 @@ code: [evaluate.js](evaluate.js)
    
 ## 1.4 `Analysis of Algorithms`
 
+### `threeSum`
+- 使用暴力法求解`threeSum`
+    - code: [ThreeSum.js](ThreeSum.js)
+
+### `twoSum`
+- 使用暴力法求解, 时间复杂度 `O(n ^ 2)`
+- 先排序，再使用二分查找，时间复杂度 `O(nlogn)`
+- 可以看到使用先排序再进行二分查找的效率更高，在数量大的时候表现的更加明显
+- code: [TwoSum.js](TwoSum.js)
+
 ### `Exercises`
 - `Local minimum in an array`
     - 题目描述：`Write a program that, given an array a[] of n distinct integers, finds a local minimum: an index i such that botha[i] < a[i-1] and a[i] < a[i+1] (assuming the neighboring entry is in bounds). Your program should use ~ 2 lg n compares in the worst case.` 
