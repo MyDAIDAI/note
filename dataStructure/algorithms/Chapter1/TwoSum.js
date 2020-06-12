@@ -31,6 +31,22 @@ function count2(arr) {
   }
   return count
 }
+// O(n)
+function TwoSumFast(arr) {
+  if(!arr || arr.length === 0) return
+  let map = {}
+  let len = arr.length
+  let count = 0
+  for (let i = 0; i < len; i++) {
+    let item = Number(arr[i])
+    if(map[-item] !== undefined && map[-item] !== i) {
+      count++
+    } else {
+      map[item] = i
+    }
+  }
+  return count
+}
 function binarySearch(arr, val) {
   let l = 0
   let r = arr.length - 1
@@ -70,14 +86,15 @@ function readFileData(filename) {
  * 32Kints: 77.672ms
  */
 function main() {
-  let txtName = ['1Kints', '2Kints', '4Kints', '8Kints', '16Kints', '32Kints']
+  let txtName = ['1Kints', '2Kints', '4Kints', '8Kints']
   // let txtName = ['1Kints', '2Kints']
   for (let i = 0, len = txtName.length; i < len; i++) {
     let itemName = txtName[i]
     let data = readFileData(itemName)
     console.time(`${itemName}`)
     // console.log(count1(data.split('\n')))
-    count2(data.split('\n'))
+    console.log(count1(data.split('\n')))
+    console.log(TwoSumFast(data.split('\n')))
     console.timeEnd(`${itemName}`)
   }
 }
