@@ -51,18 +51,25 @@ code: [evaluate.js](evaluate.js)
 
 ### `Exercises`
 - 1.3.1 实现一个固定大小的栈 
-    - [1.3.1%20FixedCapacityStack.js](1.3.1%20FixedCapacityStack.js)
+    - [1.3.1_FixedCapacityStack.js](1.3.1_FixedCapacityStack.js)
 - 1.3.4 `Write a stack client Parentheses.java that reads in sequence of left and right parentheses, braces, and brackets from standard input and uses a stack to determine whether the sequence is properly balanced. For example, your program should print true for [()]{}{[()()]()} and false for [(]).`
-    - [1.3.4%20Parentheses.js](1.3.4%20Parentheses.js)
+    - [1.3.4_Parentheses.js](1.3.4_Parentheses.js)
 - 1.3.5 打印N的二进制表示
-    - [1.3.5%20IntegerToBinary.js](1.3.5%20IntegerToBinary.js)
+    - [1.3.5_IntegerToBinary.js](1.3.5_IntegerToBinary.js)
 - 1.3.10 `Write a filter Program InfixToPostfix.java that converts an arithmetic expression from infix to postfix.`
-    - [1.3.10%20InfixToPostfix.js](1.3.10%20InfixToPostfix.js)
+    - [1.3.10_InfixToPostfix.js](1.3.10_InfixToPostfix.js)
 - 1.3.11 `Write a program EvaluatePostfix.java that that takes a postfix expression from standard input, evaluates it, and prints the value. `
-    - [1.3.11%20EvaluatePostfix.js](1.3.11%20EvaluatePostfix.js)
+    - [1.3.11_EvaluatePostfix.js](1.3.11_EvaluatePostfix.js)
+- 1.3.19 给出一段代码，删除链表的尾节点，其中链表的首节点为`first`
+    - [1.3.19_DeleteListTail.js](1.3.19_DeleteListTail.js)
+- 1.3.20 编写一个方法`delete()`，接收一个`int`参数`k`，删除链表的第`k`个元素（如果存在）
+    - [1.3.20_DeleteListsK.js](1.3.20_DeleteListsK.js)
+- 1.3.21 编写一个方法`find()`，接受一条链表和一个字符串`key`作为参数。如果链表中的某个节点的`item`域的值为`key`，则方法返回`true`，否则返回`false`
+    - [1.3.21_FindListKey.js](1.3.21_FindListKey.js)
+- 1.3.24 编写一个方法`removeAfter()`，接受一个链表结点作为参数并删除该节点的后续节点（如果参数结点或参数结点的后续结点为空则什么也不做）
 - 1.3.37 `Josephus problem`约瑟夫问题
     - 题目描述：n个人（编号由 1,2, ..., n）围成一圈，由编号为1的人从1开始报数，报到k的退出自杀，剩下的人继续从1开始报数，直到圈内只剩余1人，求胜利者的编号。(n>0, k>0)
-    - [1.3.37%20Josephus.js](1.3.37%20Josephus.js)
+    - [1.3.37_Josephus.js](1.3.37_Josephus.js)
    
 ## 1.4 `Analysis of Algorithms`
 
@@ -82,11 +89,11 @@ code: [evaluate.js](evaluate.js)
     - 思路
         - 当大于与小于传入值的时候，按照正常的二分查找进行比较
         - 当等于传入值的时候，判断当前索引是否为第一个，是，则直接返回，否则判断当前索引的前一个与传入值是否相等，相等，则为最小索引，否则，将上界向下移动
-    - code: [.4.10%20MinIndexOfBinSearch.js](1.4.10%20MinIndexOfBinSearch.js)
+    - code: [.4.10_MinIndexOfBinSearch.js](1.4.10_MinIndexOfBinSearch.js)
 - 1.4.12 编写一个程序，有序打印给定的两个有序数组中的所有公共元素，最坏情况下所需运行时间应该与N成正比
     - 暴力法：在第一个数组中拿去元素，然后遍历第二个数组，判断是否是公共元素
     - 指针法：给每个数组创建两个指针，同时指向第一个元素，判断两个值是否相等，相等，同时向后移动，不相等，则值小的向后移动
-    - code：[1.4.12%20CommonItemOfTwoArray.js](1.4.12%20CommonItemOfTwoArray.js)
+    - code：[1.4.12_CommonItemOfTwoArray.js](1.4.12_CommonItemOfTwoArray.js)
 - 1.4.16 最接近的一对(一维)：编写一个程序，给定含有N个double值的数组`a[]`,在其中找到一对最接近的值：两者之差（绝对值）最小的两个数。程序在最坏情况下所需的运行时间应该是**线性对数级别**的
     - 暴力法：拿到每一项的值，分别与其他项计算差值，将结果保存，比较大小，时间复杂度`O(n ^ 2)`
     - 分治法：题目提示了时间复杂度为`O(nlogn)`，那么就可以使用分治法进行求解，使用分治法将数组进行排序，然后
