@@ -50,18 +50,19 @@ TODO: 队列的文件读取用例
 code: [evaluate.js](evaluate.js)
 
 ### `Exercises`
-1. 实现一个固定大小的栈 
-- [FixedCapacityStack.js](FixedCapacityStack.js)
-2. `Write a stack client Parentheses.java that reads in sequence of left and right parentheses, braces, and brackets from standard input and uses a stack to determine whether the sequence is properly balanced. For example, your program should print true for [()]{}{[()()]()} and false for [(]).`
-- [Parentheses.js](Parentheses.js)
-3. `What does the following code fragment print when n is 50? Give a high-level description of what it does when presented with a positive integer n`
-- [IntegerToBinary.js](IntegerToBinary.js)
-4. `Write a filter Program InfixToPostfix.java that converts an arithmetic expression from infix to postfix.`
-- [InfixToPostfix.js](InfixToPostfix.js)
-5. `Write a program EvaluatePostfix.java that that takes a postfix expression from standard input, evaluates it, and prints the value. `
-- [EvaluatePostfix.js](EvaluatePostfix.js)
-6. `Josephus problem`约瑟夫问题
+- 1.3.1 实现一个固定大小的栈 
+    - [1.3.1%20FixedCapacityStack.js](1.3.1%20FixedCapacityStack.js)
+- 1.3.4 `Write a stack client Parentheses.java that reads in sequence of left and right parentheses, braces, and brackets from standard input and uses a stack to determine whether the sequence is properly balanced. For example, your program should print true for [()]{}{[()()]()} and false for [(]).`
+    - [1.3.4%20Parentheses.js](1.3.4%20Parentheses.js)
+- 1.3.5 打印N的二进制表示
+    - [1.3.5%20IntegerToBinary.js](1.3.5%20IntegerToBinary.js)
+- 1.3.10 `Write a filter Program InfixToPostfix.java that converts an arithmetic expression from infix to postfix.`
+    - [1.3.10%20InfixToPostfix.js](1.3.10%20InfixToPostfix.js)
+- 1.3.11 `Write a program EvaluatePostfix.java that that takes a postfix expression from standard input, evaluates it, and prints the value. `
+    - [1.3.11%20EvaluatePostfix.js](1.3.11%20EvaluatePostfix.js)
+- 1.3.37 `Josephus problem`约瑟夫问题
     - 题目描述：n个人（编号由 1,2, ..., n）围成一圈，由编号为1的人从1开始报数，报到k的退出自杀，剩下的人继续从1开始报数，直到圈内只剩余1人，求胜利者的编号。(n>0, k>0)
+    - [1.3.37%20Josephus.js](1.3.37%20Josephus.js)
    
 ## 1.4 `Analysis of Algorithms`
 
@@ -77,16 +78,18 @@ code: [evaluate.js](evaluate.js)
 - code: [TwoSum.js](TwoSum.js)
 
 ### `Exercises`
-- TODO: `Local minimum in an array`
-    - 题目描述：`Write a program that, given an array a[] of n distinct integers, finds a local minimum: an index i such that botha[i] < a[i-1] and a[i] < a[i+1] (assuming the neighboring entry is in bounds). Your program should use ~ 2 lg n compares in the worst case.` 
-- 修改二分查找算法，使之总是返回和被查找的键匹配的索引最小的元素（且仍然能够保证对数级别运行时间）
+- 1.4.10 修改二分查找算法，使之总是返回和被查找的键匹配的索引最小的元素（且仍然能够保证对数级别运行时间）
     - 思路
         - 当大于与小于传入值的时候，按照正常的二分查找进行比较
         - 当等于传入值的时候，判断当前索引是否为第一个，是，则直接返回，否则判断当前索引的前一个与传入值是否相等，相等，则为最小索引，否则，将上界向下移动
-    - code: [MinIndexOfBinSearch.js](MinIndexOfBinSearch.js)
-- 编写一个程序，有序打印给定的两个有序数组中的所有公共元素，最坏情况下所需运行时间应该与N成正比
+    - code: [.4.10%20MinIndexOfBinSearch.js](1.4.10%20MinIndexOfBinSearch.js)
+- 1.4.12 编写一个程序，有序打印给定的两个有序数组中的所有公共元素，最坏情况下所需运行时间应该与N成正比
     - 暴力法：在第一个数组中拿去元素，然后遍历第二个数组，判断是否是公共元素
     - 指针法：给每个数组创建两个指针，同时指向第一个元素，判断两个值是否相等，相等，同时向后移动，不相等，则值小的向后移动
-    - code：[CommonItemOfTwoArray.js](CommonItemOfTwoArray.js)
-
+    - code：[1.4.12%20CommonItemOfTwoArray.js](1.4.12%20CommonItemOfTwoArray.js)
+- 1.4.16 最接近的一对(一维)：编写一个程序，给定含有N个double值的数组`a[]`,在其中找到一对最接近的值：两者之差（绝对值）最小的两个数。程序在最坏情况下所需的运行时间应该是**线性对数级别**的
+    - 暴力法：拿到每一项的值，分别与其他项计算差值，将结果保存，比较大小，时间复杂度`O(n ^ 2)`
+    - 分治法：题目提示了时间复杂度为`O(nlogn)`，那么就可以使用分治法进行求解，使用分治法将数组进行排序，然后
+- 1.4.18 `Local minimum in an array`
+    - 题目描述：`Write a program that, given an array a[] of n distinct integers, finds a local minimum: an index i such that botha[i] < a[i-1] and a[i] < a[i+1] (assuming the neighboring entry is in bounds). Your program should use ~ 2 lg n compares in the worst case.` 
     
