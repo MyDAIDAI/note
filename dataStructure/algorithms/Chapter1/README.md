@@ -99,4 +99,10 @@ code: [evaluate.js](evaluate.js)
     - 分治法：题目提示了时间复杂度为`O(nlogn)`，那么就可以使用分治法进行求解，使用分治法将数组进行排序，然后
 - 1.4.18 `Local minimum in an array`
     - 题目描述：`Write a program that, given an array a[] of n distinct integers, finds a local minimum: an index i such that botha[i] < a[i-1] and a[i] < a[i+1] (assuming the neighboring entry is in bounds). Your program should use ~ 2 lg n compares in the worst case.` 
+
+
+## 参考
+   - [课后答案](https://www.zhihu.com/question/27876056)
+   - [书籍网页版](https://algs4.cs.princeton.edu/14analysis/)
+   - [Course课程](https://www.coursera.org/learn/algorithms-part1/supplement/icGHT/welcome-to-algorithms-part-i)
     
