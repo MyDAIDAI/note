@@ -67,9 +67,18 @@ code: [evaluate.js](evaluate.js)
 - 1.3.21 编写一个方法`find()`，接受一条链表和一个字符串`key`作为参数。如果链表中的某个节点的`item`域的值为`key`，则方法返回`true`，否则返回`false`
     - [1.3.21_FindListKey.js](1.3.21_FindListKey.js)
 - 1.3.24 编写一个方法`removeAfter()`，接受一个链表结点作为参数并删除该节点的后续节点（如果参数结点或参数结点的后续结点为空则什么也不做）
+    - [1.3.24_RemoveListAfter.js](1.3.24_RemoveListAfter.js)
+- 1.3.25 编写一个方法`insertAfter()`，接受两个链表结点作为参数，将第二个结点插入链表并使之成为第一个节点的后续节点（如果两个参数为空则什么也不做）
+    - [1.3.25_InsertListAfter.js](1.3.25_InsertListAfter.js)
+- 1.3.26 编写一个方法`remove()`, 接受一个链表和一个字符串`key`作为参数，删除链表中所有`item`域为`key`的结点
+    - [1.3.26_RemoveListByKey.js](1.3.26_RemoveListByKey.js)
+- 1.3.27 编写一个方法`max()`，接受一条链表的首节点作为参数，返回链表中键最大的节点的值。假设所有键均为正数，如果链表为空则返回0
+    - [1.3.27_GetListMax.js](1.3.27_GetListMax.js)
+- 1.3.28 用递归的方法解答上一道练习
+    - [1.3.27_GetListMax.js](1.3.27_GetListMax.js)
 - 1.3.37 `Josephus problem`约瑟夫问题
     - 题目描述：n个人（编号由 1,2, ..., n）围成一圈，由编号为1的人从1开始报数，报到k的退出自杀，剩下的人继续从1开始报数，直到圈内只剩余1人，求胜利者的编号。(n>0, k>0)
-    - [1.3.37_Josephus.js](1.3.37_Josephus.js)
+    - [1.3.37_Josephus.js](1.3.37_Josephus.js) 
    
 ## 1.4 `Analysis of Algorithms`
 
