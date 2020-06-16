@@ -76,6 +76,7 @@ code: [evaluate.js](evaluate.js)
     - [1.3.27_GetListMax.js](1.3.27_GetListMax.js)
 - 1.3.28 用递归的方法解答上一道练习
     - [1.3.27_GetListMax.js](1.3.27_GetListMax.js)
+- 1.3.29 用环形链表实现`Queue`。环形链表也是一条链表，只是没有任何结点的链接为空，且只要链表非空则`last.next`的值为`first`。只能使用一个`Node`类型的实例变量(`last`)
 - 1.3.37 `Josephus problem`约瑟夫问题
     - 题目描述：n个人（编号由 1,2, ..., n）围成一圈，由编号为1的人从1开始报数，报到k的退出自杀，剩下的人继续从1开始报数，直到圈内只剩余1人，求胜利者的编号。(n>0, k>0)
     - [1.3.37_Josephus.js](1.3.37_Josephus.js) 
@@ -109,6 +110,62 @@ code: [evaluate.js](evaluate.js)
 - 1.4.18 `Local minimum in an array`
     - 题目描述：`Write a program that, given an array a[] of n distinct integers, finds a local minimum: an index i such that botha[i] < a[i-1] and a[i] < a[i+1] (assuming the neighboring entry is in bounds). Your program should use ~ 2 lg n compares in the worst case.` 
 
+## `union-find`算法
+动态连通性问题：问题的输入是一列整数对，其中每个整数都表示一个某种类型的对象，一对整数`p`, `q`可以被理解为`p`和`q`是相连的。假设"相连"是一种等价关系，那么也就意味着它具有：
+    - 自反性：`p`和`q`是相连的
+    - 对称性：如果`p`和`q`是相连的，那么`q`和`p`也是相连的
+    - 传递性：如果`p`和`q`是相连的且`q`和`r`是相连的，那么`p`和`r`也是相连的 
+### `Union-Find API`
+下面是实现这个函数所需要的`API`
+```
+UnionFind
+void union(p, q) // 联合
+int find(p) // 查找，拿到当前值
+boolean connected(p, q) // 判断是否相连
+int count() //  连通数量
+```
+>  思路: 如果`id[p]`与`id[q]`相等，则`p`与`q`相连, 换句话说，一个连通集中的所有点一定是相同的值(为每一个连通集设置一个id, 其id值为最后一个加入的值，同一个连通集的值相同)
+```js
+class UnionFind {
+  constructor(size) {
+    this.count = size
+    this.ids = [] 
+    for (let i = 0; i < size; i++) {
+      this.ids[i] = i 
+    }
+  }
+  // 找到p的连通分量的值
+  find(p) {
+    return this.ids[p] 
+  }
+  union(p, q) {
+    let pId = this.find(p)
+    let qId = this.find(q)
+    if(pId === qId) return
+    for (let i = 0, len = this.ids.length; i < len; i++) {
+      if(this.ids[i] === pId) {
+        this.ids[i] = qId 
+      }
+    }
+  }
+  connected(p, q) {
+    return this.find(p) === this.find(q) 
+  }
+}
+```
+上面的代码在进行`union`的时候，时间复杂度是`O(N)`, 如果一共有`n`个数需要进行连通，那么总的时间复杂度就变成了`O(n ^ 2)`, 消耗的时间比较长，下面是分别使用`tinyUF`, `mediumUF`以及`largeUF`来进行计算的所花费的大致时间
+```js
+// tinyUF:0.621ms
+// mediumUF:1.128ms
+// largeUF:226.196ms
+```
+#### 优化
+上面的算法时间复杂度比较高，那么怎么进行优化呢？可以使用树来进行操作，树的时间复杂度一般为`logN`
+> 思路：连通集中每一个点上的值为父节点, 依次沿着父节点向上查找根节点（序号跟值相同），根节点相同，则在一个连通集中，联合操作时只需要将根节点联合即可
+
+在进行优化之后，速度有的有提升，有的提升并不明显，这是怎么回事呢？这种算法的时间复杂度会退回到`O(N ^ 2)`, 所以需要添加权重，让小树添加到大树上
+
+参考代码：[QuickFind.js](QuickFind.js)
 
 ## 参考
    - [课后答案](https://www.zhihu.com/question/27876056)
