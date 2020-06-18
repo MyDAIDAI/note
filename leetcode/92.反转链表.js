@@ -4,34 +4,50 @@ class Node {
     this.next = null
   }
 }
-function reverseBetween (head, m, n) {
-  let count = 0
-  let node1 = head
-  let node2 = null
-  let startNode = null
-  let startNextNode = null
-  let endNode = null
-  let endNextNode = null
-  while (node1 != null) {
-    count++
-    let tmp = node1.next
+/**
+ * @param {Node} head
+ * @param {number} m
+ * @param {number} n
+ * @return {ListNode}
+ */
+var reverseBetween = function(head, m, n) {
+  if(head == null) return null
+  if(m == undefined || n == undefined) return head
+  let first = head
+  let reverse = null
+  let start = null
+  let end = null
+  let endPre = null
+  let count = 1
+  let startNext = null
+  while(first != null) {
     if(count === m - 1) {
-      startNode = node1
-      startNextNode = node1.next
-      startNode.next = null
-    } else if(count === n) {
-      endNode = node1
-      endNextNode = node1.next
-    } else if(count >= m && count <= n) {
-      debugger
-      node1.next = node2
+      start = first
+      startNext = start.next
     }
-    node2 = node1
-    node1 = tmp
+    if(count === n + 1) {
+      end = first
+    }
+    if(count === n) {
+      endPre = first
+    }
+    let second = first.next
+    if(count >= m && count <= n) {
+      // 交换位置
+      first.next = reverse
+    }
+    reverse = first
+    first = second
+    count++
   }
-  startNextNode.next = endNextNode
-  startNode.next = endNode
-}
+  if(start) {
+    start.next = endPre
+  }
+  if(end) {
+    startNext.next = end
+  }
+  return head
+};
 function printLinkedList(list) {
   let node = list
   while (node != null) {
@@ -40,14 +56,11 @@ function printLinkedList(list) {
   }
 }
 function main() {
-  let head = new Node(1);
-  head.next = new Node(2);
-  head.next.next = new Node(3);
-  head.next.next.next = new Node(4);
-  head.next.next.next.next = new Node(5);
-  printLinkedList(head);
-  reverseBetween(head, 2, 4)
-  printLinkedList(head);
-  console.log("=========================");
+  let head = new Node(3);
+  head.next = new Node(5);
+  // head.next.next = new Node(3);
+  // head.next.next.next = new Node(4);
+  // head.next.next.next.next = new Node(5);
+  console.log(JSON.stringify(head), JSON.stringify(reverseBetween(head, 1)))
 }
 main()
