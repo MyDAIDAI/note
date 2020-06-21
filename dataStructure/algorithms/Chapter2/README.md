@@ -32,3 +32,50 @@ code: [Selection.js](Selection.js)
 - 用指针表示，每个结点需要三个指针来找到上下节点（父节点与两个子节点）
 - 用数组表示，将完全二叉树的节点按照层级顺序放入数组中，根节点在位置1，它的子节点在位置2和3，而子节点的子节点则分别在位置4，5，6，7，依次类推
     - 在一个堆中，位置`k`的结点的父结点的位置为`[k/2]`, 两个子节点的位置为`2k`和`2k+1`
+    - 大顶堆
+        - 定义：根节点为最大的结点，左右两个节点都小于父节点
+        - 插入：向大顶堆中插入元素
+            - 在树的最后插入元素
+            - 将树最后的元素依次上浮
+            ```js
+              function insert(val) {
+                if(val == undefined) return
+                qp[count++] = val
+                swim(count)
+              }
+              // 从位置k开始上浮
+              // 父节点位置为 k >> 1
+              function swim(k) {
+                while(k > 1 && pq[k] > pq[k >> 1]) {
+                  exchange(k, k >> 1)
+                  k = k >> 1
+                }   
+              }
+            ```
+        - 删除最大值：
+            - 最大值即为数组的第一个元素
+            - 将数组最后的元素放到第一个元素位置上
+            - 将第一个位置的元素依次下沉
+            ```js
+              function deleteMax() {
+                let max = pq[1]
+                exchange(1, count--)
+                pq[count + 1] = undefined
+                sink(1)
+              }
+              // 从k的位置开始下沉
+              function sink(k) {
+                while (k * 2 <= count) {
+                  let child = k * 2
+                  if(child < count && pq[child] < pq[child + 1]) {
+                    child++
+                  }
+                  if(pq[k] > pq[child]) {
+                    break
+                  }
+                  exchange(k, child)
+                  k = child
+                }
+              }
+            ```
+         - code: [MaxPriorQueue.js](MaxPriorQueue.js)
