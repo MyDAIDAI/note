@@ -79,3 +79,8 @@ code: [Selection.js](Selection.js)
               }
             ```
          - code: [MaxPriorQueue.js](MaxPriorQueue.js)
+    - 小顶堆：
+        - 定义：节点小于两个子节点，所以根节点为最小值
+        - code: [MinPriorQueue.js](MinPriorQueue.js)
+
+### 堆排序
