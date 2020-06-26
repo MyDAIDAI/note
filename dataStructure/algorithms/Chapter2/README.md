@@ -84,3 +84,8 @@ code: [Selection.js](Selection.js)
         - code: [MinPriorQueue.js](MinPriorQueue.js)
 
 ### 堆排序
+- 思路：
+    - 1. 先将原数组使用**下沉**的方式构造**大顶堆**
+    - 2. 依次将**第一个位置**与**最后一个位置--**进行交换，然后将**第一个位置**进行**下沉**，维持大顶堆
+    - 3. 直到交换到最后一个位置索引为1时停止
+- code: [HeapSort.js](HeapSort.js)
