@@ -7,7 +7,7 @@
 /**
  * 使用第一种方式的节流函数
  * @param {function} fn 要执行的函数
- * @param {number} wait 等待时间，毫秒级 
+ * @param {number} wait 等待时间，毫秒级
  */
 function throttle1(fn, wait) {
   let previous = 0 // 第一次调用的时候 previous 为 0, current - previous 必然大于 wait, 所以进去会先直接执行一次, 可以实现第一次的直接调用
@@ -77,11 +77,34 @@ function throttle(fn, wait, options) {
 
 // let index = 0
 // const fn = () => {
-//   console.log(`fn执行了 ${++index} 次`) 
+//   console.log(`fn执行了 ${++index} 次`)
 // }
 // setInterval(throttle1(fn, 3000), 10)
 // setInterval(throttle2(fn, 2000), 10)
 // setInterval(throttle(fn, 3000, {leading: false}), 10)
 // setInterval(fn, 10)
+
+// 实现第一次进入时执行
+function throttle1(fn, time) {
+  let previous = 0;
+  return function (...args) {
+    let current = +new Date()
+    if (current - previous > time) {
+      previous = current
+      fn.apply(this, args)
+    }
+  }
+}
+function throttle2(fn, time) {
+  let timer = null
+  return function (...args) {
+    if (!timer) {
+      timer = setTimeout(() => {
+        fn.apply(this, args)
+        timer = null
+      }, time)
+    }
+  }
+}
 
 

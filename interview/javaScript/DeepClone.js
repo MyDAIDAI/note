@@ -253,3 +253,22 @@ var a = {a1: b, a2: b}
 console.log('a', a.a1 === a.a2)
 var c = cloneForce1(a)
 console.log('c', c.a1 === c.a2)
+
+let obj = {}
+obj.a = obj
+function deepClone(obj, hash = new WeakMap()) {
+  if (obj == null) return obj
+  if (obj instanceof RegExp) return new RegExp(obj)
+  if (obj instanceof Date) return new Date(obj)
+  if (typeof obj !== 'object') return obj
+  if (hash.has(obj)) return hash.get(obj)
+  let instance = new obj.constructor()
+  hash.set(obj, instance)
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      instance[key] = deepClone(obj[key], hash)
+    }
+  }
+  return instance
+}
+console.log(deepClone(obj))

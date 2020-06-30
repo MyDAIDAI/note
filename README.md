@@ -13,3 +13,8 @@
 
 - [浏览器](https://github.com/MyDAIDAI/note/tree/master/browser)
   - [`IE`兼容总结](https://github.com/MyDAIDAI/note/tree/master/browser/IE.md)
+  
+  
+
+## 待做
+- [如何做出亮点](https://segmentfault.com/a/1190000022795484)

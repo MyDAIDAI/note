@@ -37,7 +37,7 @@ function throttle(fn, wait) {
   let previous = 0
   let timer = null
   return function (...args) {
-    let current = Date.now() 
+    let current = Date.now()
     if (current - previous < wait) {
       // console.log('current - previous < wait', current - previous)
       if (timer) {
@@ -75,3 +75,10 @@ function debounce(fn, wait, immediate) {
     return result
   }
 }
+function format(num) {
+  let str = num + ''
+  return str.split('').reverse().reduce((prev, current, index) => {
+    return (index % 3 ? current : (current + ',')) + prev
+  })
+}
+console.log(format(12345678));
