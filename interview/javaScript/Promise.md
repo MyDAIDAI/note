@@ -281,3 +281,42 @@ promise.then(function (data) {
 // resolve2 Error: reject error
 //     at <anonymous>:10:9
 ```
+
+## 执行顺序
+- `async/await`中的代码为`promise`实例中的同步执行，`await`之后的代码为`promise`中的`then`的异步执行
+```js
+async function async1() {
+    console.log('async1 start');
+    await async2();
+    console.log('async1 end');
+}
+async function async2() {
+    console.log('async2');
+}
+console.log('script start');
+setTimeout(function() {
+    console.log('setTimeout');
+}, 0)
+async1();
+new Promise(function(resolve) {
+    console.log('promise1');
+    resolve();
+}).then(function() {
+    console.log('promise2');
+});
+console.log('script end');
+```
+同步任务：script start, async1 start, async2, promise1, script end
+微任务：async1 end, promise2
+宏任务: setTimeout
+最后执行结果：
+```js
+// script start
+// async1 start
+// async2
+// promise1
+// script end
+// async1 end
+// promise2
+// setTimeout
+```
