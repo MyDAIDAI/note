@@ -23,7 +23,7 @@ class BinarySearchST {
     let lo = 0
     let hi = this.keys.length - 1
     while (lo <= hi) {
-      let mid = (lo + hi) >> 1
+      let mid = lo + ((hi - lo) >> 1)
       if(this.keys[mid] < key) {
         lo = mid + 1
       } else if(this.keys[mid] > key) {
@@ -47,6 +47,7 @@ class BinarySearchST {
       this.values[index] = val
       return
     }
+    // 从后往前依次移动一个位置，然后将index的位置插入值
     for (let j = this.count; j > index; j--) {
       this.keys[j] = this.keys[j - 1]
       this.values[j] = this.values[j - 1]

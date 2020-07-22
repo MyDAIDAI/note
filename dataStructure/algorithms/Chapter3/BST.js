@@ -70,6 +70,25 @@ class BST {
    if(node.right == null) return node
    this.max(node.right)
  }
+ delete(node, key) {
+   if(key == null || node == null) return
+   // 先查找到该值
+   if(node.key < key) {
+     node.right = this.delete(node.right, key)
+   } else if(node.key > key) {
+     node.left = this.delete(node.left, key)
+   } else {
+     // 如果只有一个子节点或者没有节点
+     if(node.left == null) return node.right
+     if(node.right == null) return node.left
+     // 存在大于1个的子节点
+     // 拿到右子树中最小的节点，将当前位置替换
+     let t = node
+     let x = this.min(node.right)
+     x.right = this.deleteMin(node.right)
+     x.left = t.left
+   }
+ }
 }
 
 let root = new Node(6, 6)
