@@ -43,4 +43,14 @@ class BST1 {
     }
     return node
   }
+  getMin(node) {
+    if(node == null) return
+    if(node.left == null) return node
+    return this.getMin(node.left)
+  }
+  getMax(node) {
+    if(node == null) return
+    if(node.right == null) return node
+    return this.getMax(node.right)
+  }
 }

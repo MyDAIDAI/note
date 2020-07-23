@@ -31,3 +31,71 @@ code: [BinarySearchST.js](BinarySearchST.js)
 
 ## 二叉查找树
 **二叉查找树**: 每个结点都含有一个键，且每个结点的键都大于其左子树中的任意结点而小于右子树的任意结点。如果将一颗二叉查找树的所有键投影到一条直线上，保证一个结点的左子树中的键出现在它的左边，右子树中的键出现在它的右边，那么一定可以得到一个有序的键列
+
+### 基本实现
+
+#### 查找
+一般说来，在符号表中查找一个键可能得到两种结果。如果含有该键的结点存在于表中，则查找命中并返回该值。否则查找未命中。那么使用递归算法可以得到，将当前值与根节点值进行判断，如果相等则返回，小于则去根的左子树中判断，大于则去根的右子树中判断
+
+```js
+class Node {
+  constructor(key, val) {
+    this.key = key
+    this.val = val
+    this.left = null
+    this.right = null
+  }
+}
+
+class BST {
+  constructor(root) {
+    this.root = root
+  }
+  get(node, key) {
+    if(key == undefined) return 
+    if(node == null) return null
+    if(key < node.key) {
+      return this.get(node.left, key)
+    } else if(key > node.key) {
+      return this.get(node.right, key)
+    } else {
+      return node
+    }
+  }
+}
+```
+#### 插入
+递归的插入方法的实现逻辑与查找很相似，如果树是空的，就返回一个含有该键值对的新结点，如果被查找的键小于根结点的键，那么继续在左子树中插入该键，否则在右子树中插入该键
+```js
+function put(node, key, val) {
+    if(node == null) return new Node(key, val)
+    if(key < node.key) {
+      node.left = this.put(node.left, key, val)
+    } else if(key > node.key) {
+      node.right = this.put(node.right, key, val)
+    } else {
+      node.val = val
+    }
+    return node
+  }
+```
+#### 最大键和最小键
+如果根节点的左链接为空，那么一颗二叉查找树中最小的键就是根结点。如果左链接非空，那么树中的最小键就是左子树中的最小键。找出最大值的方法也是类似的
+```js
+function getMin(node) {
+  if(node == null) return
+  if(node.left == null) return node
+  return this.getMin(node.left)
+}
+function getMax(node) {
+  if(node == null) return
+  if(node.right == null) return node
+  return this.getMax(node.right)
+}
+```
+#### 向上取整和向下取整
+```js
+// todo
+```
+
+#### 删除最大值和最小值
