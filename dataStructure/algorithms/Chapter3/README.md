@@ -99,3 +99,45 @@ function getMax(node) {
 ```
 
 #### 删除最大值和最小值
+- 最小值: 使用递归，一直向左子树中查找，一直查找到某个节点没有左子节点，返回其右子节点
+- 最大值：使用递归，一直在右子树中查找，一直查找到某个节点没有右子节点，返回其左子节点
+```js
+  function deleteMin(node) {
+    if(node == null) return
+    if(node.left == null) return node.right
+    node.left = this.deleteMin(node.left)
+    return node
+  }
+  function deleteMax(node) {
+    if(node == null) return
+    if(node.right == null) return node.left
+    node.right = this.deleteMax(node.right)
+    return node
+  }
+```
+
+#### 删除某个节点
+- 该节点只有左子树，则直接将其右子树返回
+- 该节点只有右子树，则直接将其左子树返回
+- 该节点同时有两个子节点，则从右子树中拿到最小的节点，并将其该删除了最小值的右子树作为最小节点的右子树，将原节点的左子树作为其左子树
+```js
+  function deleteNode (node, key) {
+    if(node == null) return
+    if(node.key < key) {
+      node.right = this.delete(node.right, key)
+    } else if(node.key > key) {
+      node.left = this.delete(node.left, key)
+    } else {
+      // 没有左子树，则把右子树直接返回
+      if(node.left == null) return node.right
+      // 没有右子树，则把左子树直接返回
+      if(node.right == null) return node.left
+      // 左右子树都存在
+      let t = node
+      let x = this.getMin(node.right)
+      x.right = this.deleteMin(node.right)
+      x.left = t.left
+      return x
+    }
+  }
+```
