@@ -56,3 +56,56 @@ X86-64的机器代码和原始的C代码差别非常大。一些通常对C语言
 
 程序内存用**虚拟地址**来寻址。在任意给定的时刻，只有有限的一部分虚拟地址被认为是合法的。操作系统负责管理虚拟地址控件，将**虚拟地址翻译成实际处理器内存中的物理地址**
 
+下面是一段C语言代码`mstore.c`
+```c
+long mult2(long, long);
+
+void multstore(long x, long y, long *dest) {
+    long t = mult2(x, y);
+    *dest = t;
+}
+```
+执行`gcc -Og -S mstore.c`将其转变为汇编代码，这段代码已经除去了所有关于局部变量名或数据类型的信息
+```
+_multstore:                             ## @multstore
+	.cfi_startproc
+## %bb.0:
+	pushq	%rbp  ## 将寄存器%rbp的内容压入栈中
+	movq	%rsp, %rbp
+	pushq	%rbx
+	pushq	%rax
+	movq	%rdx, %rbx
+	callq	_mult2 ## 调用_mult2函数
+	movq	%rax, (%rbx)
+	addq	$8, %rsp
+	popq	%rbx
+	popq	%rbp
+	retq
+                                        ## -- End function
+```
+使用`gcc -Og -c mstore.c`，编译器会编译并汇编该代码，会产生目标文件`mstore.o`.里面有一段序列就是上面所列出的汇编指令对应的目标代码。由此可得，机器执行的程序只是一个字节序列，它是对一系列指令的编码。机器对产生这些指令的源代码一无所知
+
+------------------------
+**反汇编器**：查看机器代码文件的内容，会根据机器代码产生一种类似于汇编代码的格式`objdump -d mstore.o`, 结果如下:
+```
+$ objdump -d mstore.o 
+
+mstore.o:	file format Mach-O 64-bit x86-64
+
+
+Disassembly of section __TEXT,__text:
+
+0000000000000000 _multstore:
+       0: 55                           	pushq	%rbp
+       1: 48 89 e5                     	movq	%rsp, %rbp
+       4: 53                           	pushq	%rbx
+       5: 50                           	pushq	%rax
+       6: 48 89 d3                     	movq	%rdx, %rbx
+       9: e8 00 00 00 00               	callq	0 <_multstore+0xe>
+       e: 48 89 03                     	movq	%rax, (%rbx)
+      11: 48 83 c4 08                  	addq	$8, %rsp
+      15: 5b                           	popq	%rbx
+      16: 5d                           	popq	%rbp
+      17: c3                           	retq
+```
+左边是二进制指令，右边是对应的汇编语言
