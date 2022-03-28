@@ -5,7 +5,7 @@ import {resolve, relative, dirname} from 'path';
 
 // 设置项目根目录的绝对路径
 // /Users/didi/Source/note/webpack/demo/project_1
-const projectRoot = resolve(__dirname, 'project_1')
+const projectRoot = resolve(__dirname, 'project_2')
 // console.log('projectRoot', projectRoot)
 
 // 类型声明
@@ -42,11 +42,11 @@ function collectCodeAndDeps(filePath: string) {
         const depProjectPath = getProjectPath(depAbsolutePath)
         // 将依赖添加进去
         depRelation[key].deps.push(depProjectPath);
+        // 递归进入文件，获取依赖
+        collectCodeAndDeps(depAbsolutePath)
       }
-      // console.log('item', item)
     }
   })
-  // console.log('ast', ast)
 }
 
 // 将入口文件的绝对路径传入
