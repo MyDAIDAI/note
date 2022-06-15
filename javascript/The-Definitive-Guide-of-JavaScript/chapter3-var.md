@@ -57,9 +57,9 @@
   - 与任何值都不相等，包括自身 `NaN == NaN -> false`，`NaN != NaN -> true`
   - 使用`x != x`，当且仅当`x`为`NaN`的时候，表达式才为`true`
 
-
 ### 二进制浮点数和四舍五入错误
 
+path: ['数字', '浮点数']
 tag: [面试]
 
 在`javaScript`中使用实数，常常只是真实值的一个近似表示，`js`所采用的`IEEE-754`浮点表示法，是一种**二进制表示法**，可以精确的表示分数`1/2 1/8和 1/ 1024`，但我们常用的分数都是十进制分数`1/10 1/ 1000`，二进制浮点数表示法并不能精确表示类似`0.1`这样简单的数字
@@ -109,8 +109,6 @@ js没有单独的浮点型数据，**浮点数**与**整数**都是通过`Number
 
 使用`Date()`构造函数，用来创建表示日期和时间的对象
 
-
-
 ## 文本
 
 `js`字符串是由一组无符号的16位值组成的序列，代表字符串中的单个字符，那些不能表示为16位的`Unicode`字符，遵循`UTF-16`编码规则—用两个16位值组成的一个序列表示，这表示一个长度为2的字符串，有可能表示一个`Unicode`字符
@@ -132,9 +130,10 @@ js没有单独的浮点型数据，**浮点数**与**整数**都是通过`Number
 | \uXXXX   | 由4位十六进制数XXXX指定的Unicode字符 |
 
 ### 字符串的使用
+
 - `+`连接字符串
 - `length`确定字符串长度
-- 其他方法 
+- 其他方法
   - `charAt`
   - `substring`
   - `slice`
@@ -143,7 +142,7 @@ js没有单独的浮点型数据，**浮点数**与**整数**都是通过`Number
   - `split`
   - `replace`
   - `toUpperCase`
-- 注意：在`javaScript`字符串是固定不变的，类似`replace()`和`toUpperCase()`的方法都是返回新字符串，原字符串本身并没有发生改变
+- 注意：在`javaScript`字符串是**固定不变**的，类似`replace()`和`toUpperCase()`的方法都是返回新字符串，原字符串本身并没有发生改变
 
 ```javaScript
 var str = 'abcsdf'
@@ -187,6 +186,7 @@ str = str + 'sdfsdfsdf' // 使用 + 进行字符链接
 > str
 'abcsdfsdfsdfsdf' // 原字符串没有发生变化
 ```
+
 ### 模式匹配
 
 使用`RegExp()`构造函数，用来创建表示文本匹配模式的对象，`String`和`RegExp`对象均定义了利用正则表达式进行模式匹配和查找与替换的函数
@@ -212,10 +212,11 @@ text.split(/D+/) // ["", "1", "2", "3"]
 - `NaN`
 - `''`
 注意：`Boolean('')` -> `false`, `Boolean(' ')` -> `true`
+
 ## `null`和`undefined`
 
 - `type null ==> 'object'`
-- `type undefined ==> 'undefined'`
+- `typeof undefined ==> 'undefined'`
 - 若想将它们赋值给变量或者属性，或将它们作为参数传入函数，最佳选择是使用`null`
 
 ## 全局对象
@@ -250,9 +251,10 @@ console.log(t) // undefined
 
 `javaScript`在第二行创建一个临时字符串对象，并将其`len`属性赋值为4，随即就销毁这个对象。再次访问该属性，该属性不存在，所以为`undefined`
 
-存取字符串、数字或布尔值的属性时创建的临时对象被称做包装对象，它只是偶尔用来区分字符串值和字符串对象，数字和数值对象以及布尔值
+存取字符串、数字或布尔值的属性时创建的临时对象被称做**包装对象**，它只是偶尔用来区分字符串值和字符串对象，数字和数值对象以及布尔值、布尔对象
 
-需要注意的是，可通过`String()`，`Number()`, `Boolean()`构造函数类显式创建包装对象，但是会在必要的时候将包装对象转换为原始值, `==`运算符将原始值和其他包装对象视为相等，使用`===`和`typeof`可以检测出原始值与包装对象的不同
+需要注意的是，可通过`String()`，`Number()`, `Boolean()`构造函数类显式创建包装对象，但是会在必要的时候将包装对象转换为原始值, `==`运算符将**原始值和其他包装对象视为相等**，使用`===`和`typeof`可以检测出原始值与包装对象的不同
+
 ```javaScript
 > var s = "test"
 > var n = 1
@@ -278,7 +280,7 @@ console.log(t) // undefined
 'object'
 > typeof B
 'object'
-> s == S // == 会将包装对象转换为原始值
+> s == S // == 两个等号会将包装对象转换为原始值
 true
 > s === S
 false
@@ -292,11 +294,11 @@ false
 
   - 改变数字与布尔的值本身就说不通
 
-  - 字符串看起来像是由字符组成的数组，我们期望可以通过指定索引来 修改字符串中的字符。但`javaScript`禁止这样做，字符串中所有的方法看上去返回了一个修改后的字符串，实际上返回的是一个新的字符串值
+  - 字符串看起来像是由字符组成的数组，我们期望可以通过指定索引来修改字符串中的字符。但`javaScript`禁止这样做，字符串中所有的方法看上去返回了一个**修改后的字符串**，实际上返回的是一个新的字符串值
 
   ```javascript
   var s = 'hello world'
-  s.toUppperCase() // HELLO WORLD
+  s.toUppperCase() // HELLO WORLD，返回新的字符串
   console.log(s) // hello world
   ```
 
@@ -336,27 +338,27 @@ false
 
   - 通常将对象称为引用类型，以此来和`javaScript`的基本类型进行区分，根据术语的叫法，其对象值都是引用，对象的比较均是**引用的比较**，**当且仅当**它们引用**同一个对象**时，它们才相等
 
-  - ```javascript
-    var a = [] 	// 定义一个引用空数组的变量a
-    var b = a	// 变量b引用同一个数组
-    b[0] = 1	// 通过变量b来修改引用的数组
-    a[0] 		// 1: a变量也会修改
-    a === b 	// true: a和b引用同一个数组，因此相等
-    ```
+  ```js
+  var a = []  // 定义一个引用空数组的变量a
+  var b = a // 变量b引用同一个数组
+  b[0] = 1  // 通过变量b来修改引用的数组
+  a[0]  // 1: a变量也会修改
+  a === b   // true: a和b引用同一个数组，因此相等
+  ```
 
-    如上面的代码那样，将对象（或数组）赋值给一个变量，仅仅是赋值的引用值，对象本身并没有复制一次。若想得到对象或者数组的副本，就必须要显式复制对象的每个属性或者数组的每个元素。同样，我们想比较两个单独的对象或者数组，则必须 比较它们的属性或元素，下面的代码定义了一个比较两个数组的函数：
+  如上面的代码那样，将对象（或数组）赋值给一个变量，仅仅是赋值的**引用值**，对象本身并没有复制一次。若想得到对象或者数组的副本，就必须要显式复制对象的每个属性或者数组的每个元素。同样，我们想比较两个单独的对象或者数组，则必须比较它们的属性或元素，下面的代码定义了一个比较两个数组的函数：
 
-    ```javascript
-    function equalArrays (a, b) {
-    	if (a.length !== b.length) {return false} 	// 两个长度不同的数组不相等
-      for (var i = 0; i < a.length; i++) {		
-        if (a[i] !== b[i]) {					// 若有任意元素不相等，则数组不相等
-          return false
-        }
-    	}
-      return true
+  ```js
+  function equalArrays (a, b) {
+    if (a.length !== b.length) {return false}  // 两个长度不同的数组不相等
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) {  // 浅比较，只比较了第一层的数据，若有任意元素不相等，则数组不相等
+        return false
+      }
     }
-    ```
+    return true
+  }
+  ```
 
 ## 类型转换
 
@@ -404,7 +406,7 @@ false
   { b: 'a' }
   > a.toString =  function () {return 'ccccc'}
   [Function]
-  > String(a)
+  > String(a) // 调用a对象上的toString方法，如果没有自定义的toString，则会调用默认的toString方法
   'ccccc'
   > var b = ['a', 'b', 'c']
   > String(b)
@@ -422,6 +424,8 @@ false
   'adfadfadf'
   ```
 
+tag: ['面试']
+
 - `JSON`
   - 不能转换的值`undefined`, `function () {}`, `symbol`
     - 对不能转换的值得处理
@@ -433,7 +437,15 @@ false
     - `replace`， 类型为`Array`或者`Function`，可以对序列化的属性进行处理以及筛选
     - `space`, 类型为`Number`或者`String`, 指定缩进间隔或者缩进字符
 
+  - 缺点：
+    - 不能转换`undefined`, `function () {}`以及`Symbol`值，在对象中会被忽略，则数组中使用`null`占位
+    - 循环引用会报错
+
   ```javascript
+  > JSON.stringify({a: undefined})
+  '{}' // 被忽略
+  > JSON.stringify({a: undefined, b: function () {}, c: Symbol(), d: 'a'})
+  '{"d":"a"}' // undefined, function() {}，以及Symbol值在对象中会直接被忽略，返回其他值
   > JSON.stringify(42)
   '42'
   > JSON.stringify('42')
@@ -474,8 +486,8 @@ false
   > o.e = a
   { b: 42, c: { e: [Circular] }, d: [Function: d] }
   > JSON.stringify(a)
-  TypeError: Converting circular structure to JSON
-      at JSON.stringify (<anonymous>)
+  // TypeError: Converting circular structure to JSON
+  //    at JSON.stringify (<anonymous>)
   // 对循环调用的对象定义toJSON方法，因为JSON字符串化时会首先调用该方法
   // 可以使用该方法返回指定的值，再将返回的值进行序列化
   > a.c.toJSON = function () {return 'a.c'}
@@ -491,7 +503,8 @@ false
   b 42
   c a.c
   d function () {}
-  '{"b":42,"c":"a.c"} // replace 函数返回的第三个属性值为 function, 在串化时被忽略
+  '{"b":42,"c":"a.c"} 
+  // replace 函数返回的第三个属性值为 function, 在串化时被忽略
   // 添加可选参数
   > JSON.stringify(a, null, 3)
   '{\n   "b": 42,\n   "c": "a.c"\n}'
@@ -563,6 +576,7 @@ false
   ```
 
 #### `ToBoolean`
+
 - 假值
   - `undefined`
   - `null`
@@ -572,7 +586,7 @@ false
   - `NaN`
 - 真值
   - 除了假值之外的其他值都为真值
-  - `' '`, 注意与`''`的区别，`''`为空字符串，`' '`为空格字符串，空格字符串的布尔值为`true`, 字符串只要不为空字符串，都为真
+  - `' '`, 注意与`''`的区别，`''`为**空字符串**，`' '`为**空格字符串**，空格字符串的布尔值为`true`, 字符串只要不为空字符串，都为真
   - `"''"`
   - `[]`
   - `{}`
@@ -622,10 +636,10 @@ false
 
 - 方法
   - `String()`与`Number()`
-  - 上述方法没有使用`new`关键字，不会创建新对象
+  - 上述方法没有使用`new`关键字，不会**创建新对象**，使用**typeof**产生的是基本类型
 - `toString()`方法，基本类型值在调用`toString`方法时会先创建**封装对象**
 - `+c`
-  - 将字符串转换为数字
+  - 将**字符串**转换为**数字**
   - 使用场景
     - 日期显式转换为数字
       - `+c`
@@ -667,6 +681,7 @@ false
   - 字符串中的所有字符必须都为数字(小数点除外)
 
 注意：解析转换的不同，解析中可以有非数字，而转换不行
+
 ```javascript
 // 转换
 > Number('123fa')
@@ -714,6 +729,7 @@ NaN
   - `1 + {} -> 1[object Object]`
   - `{} + [] -> 0 WHY`
     - `{}`被作为一个代码块，上面的代码相当于
+  
     ```javaScript
     {
     //empty block here
@@ -723,15 +739,14 @@ NaN
     // 最后返回 0
     ({} + []) // 作为一个表达式，返回'[object Object]'
     ```
+
   - `[] + {} -> [object Object] WHY?`
     - `[]` => `''` 数组转换为空字符串
     - `{}` => 由于`[]`转换为字符串，那么`+`后面的也转为字符串，即`[object Object]`
     - 最后返回`[object Object]`
 
   - 参考链接：[Why does {} + [] return 0 in Javascript? [duplicate]](https://stackoverflow.com/questions/11939044/why-does-return-0-in-javascript)
-   
   
-
 - 数字 -> 字符串
   - `number + ''`
     - 与 `String()`的区别
@@ -828,7 +843,7 @@ function onlyOne () {
   ```
 
 - `null`和`undefined`之间的相等比较
-  - `null == undefined` 
+  - `null == undefined`
   - 在 `==` 中`null`和`undefined`相等（它们与自身也相等），除此之外其他任何值都不相等
   
   ```javascript
@@ -1005,7 +1020,7 @@ Object(3) // new Number(3)
 
     ```javascript
     x + "" // 数字转为字符串，等价于String(x)
-    +x 	   // 字符串转为数字，等价于Number(x)
+    +x     // 字符串转为数字，等价于Number(x)
     !!x    // 转换为布尔值，等价于Boolean(x)
     ```
 
@@ -1096,28 +1111,28 @@ Object(3) // new Number(3)
 
 ### 对象转换为原始值
 
-  - 对象 --> 布尔值
+- 对象 --> 布尔值
 
-    - 所有的对象（包括数组和函数）都转换为`true`
-    - 对包装对象也是如此，`new Boolean(false)`是一个对象而不是原始值，它将转换为`true`
+  - 所有的对象（包括数组和函数）都转换为`true`
+  - 对包装对象也是如此，`new Boolean(false)`是一个对象而不是原始值，它将转换为`true`
 
-  - 对象 --> 字符串 
+- 对象 --> 字符串
 
-    - 如果对象具有`toString()`方法，则调用这个方法，如果它返回一个原始值，`javaScript`将这个值转换为字符串，并返回这个字符串结果。
+  - 如果对象具有`toString()`方法，则调用这个方法，如果它返回一个原始值，`javaScript`将这个值转换为字符串，并返回这个字符串结果。
 
-    - 如果对象没有`toString()`方法，或者这个方法并不返回一个原始值，那么`javaScript`会调用`valueOf()`方法。如果存在这个方法，则`javaScript`调用它，如果返回值是原始值，`javaScript`将这个值转换为字符串，并返回这个字符串结果
+  - 如果对象没有`toString()`方法，或者这个方法并不返回一个原始值，那么`javaScript`会调用`valueOf()`方法。如果存在这个方法，则`javaScript`调用它，如果返回值是原始值，`javaScript`将这个值转换为字符串，并返回这个字符串结果
 
-    - 否则，`javaScript`无法从`toString()`或`valueOf()`获得原始值，因此它将抛出一个类型错误
+  - 否则，`javaScript`无法从`toString()`或`valueOf()`获得原始值，因此它将抛出一个类型错误
 
-    - 各种对象的`toString()`方法
+  - 各种对象的`toString()`方法
 
-      - 数组类的`toString()`方法将每个数组元素转换为一个字符串，并在元素之间添加逗号后合并成结果字符串，与`join(',')`方法返回结果相同
+    - 数组类的`toString()`方法将每个数组元素转换为一个字符串，并在元素之间添加逗号后合并成结果字符串，与`join(',')`方法返回结果相同
 
-      - 函数类的`toString()`方法返回这个函数的实现定义的表示方法
+    - 函数类的`toString()`方法返回这个函数的实现定义的表示方法
 
-      - 日期类的返回一个可读的日期和时间字符串
+    - 日期类的返回一个可读的日期和时间字符串
 
-      - `RegExp`类定义的`toString()`方法将`RegExp`对象转换为表示正则表达式直接量的字符串
+    - `RegExp`类定义的`toString()`方法将`RegExp`对象转换为表示正则表达式直接量的字符串
 
         ```javascript
         [1, 2, 3, 4].toString()
@@ -1134,47 +1149,47 @@ Object(3) // new Number(3)
         "Fri Jan 01 2010 00:00:00 GMT+0800 (中国标准时间)"
         ```
 
-  - 对象 --> 数字
+- 对象 --> 数字
 
-    - `valueOf()`，如果存在任意原始值，它就默认将对象转换为表示它的原始值。对象是复合值，而且大多数对象无法真正表示为一个原始值，因此默认的`valueof()`方法返回对象本身。
-    - 如果对象具有`valueOf()`方法，然后返回一个原始值，则`javaScript`将这个原始值转换为数字并返回这个数字
-    - 否则，如果对象具有`toString()`方法，若返回一个原始值，则`javaScript`将这个字符串原始值转换为数字类型并返回这个数字
-    - 否则，`javaScript`抛出一个类型错误异常
-    - `[]` --> `0`, `[1]` --> `1`
-      - 数组继承了默认的`valueOf()`方法，但返回的是一个对象本身，所以会调用其`toString()`方法，`[]`调用`toString()`返回的是一个空字符串，空字符串转换为数字为`0`，`[1]`调用`toString()`返回`'1'`，转为数字为`1`
-      - 注意，`[1, 2, 3]` --> `NaN`，因为对象调用`toString()`方法返回`1, 2, 3`，由于其中有逗号，所以转换为数字则为`NaN`
+  - `valueOf()`，如果存在任意原始值，它就默认将对象转换为表示它的原始值。对象是复合值，而且大多数对象无法真正表示为一个原始值，因此默认的`valueof()`方法返回对象本身。
+  - 如果对象具有`valueOf()`方法，然后返回一个原始值，则`javaScript`将这个原始值转换为数字并返回这个数字
+  - 否则，如果对象具有`toString()`方法，若返回一个原始值，则`javaScript`将这个字符串原始值转换为数字类型并返回这个数字
+  - 否则，`javaScript`抛出一个类型错误异常
+  - `[]` --> `0`, `[1]` --> `1`
+    - 数组继承了默认的`valueOf()`方法，但返回的是一个对象本身，所以会调用其`toString()`方法，`[]`调用`toString()`返回的是一个空字符串，空字符串转换为数字为`0`，`[1]`调用`toString()`返回`'1'`，转为数字为`1`
+    - 注意，`[1, 2, 3]` --> `NaN`，因为对象调用`toString()`方法返回`1, 2, 3`，由于其中有逗号，所以转换为数字则为`NaN`
 
-  ## 变量声明
+## 变量声明
 
-  - 使用`var`进行变量声明，声明变量，在存入值之前，它的初始值为`undefined`
-  - `javaScript`变量声明中并没有指定变量的数据类型，可以是任意数据类型
+- 使用`var`进行变量声明，声明变量，在存入值之前，它的初始值为`undefined`
+- `javaScript`变量声明中并没有指定变量的数据类型，可以是任意数据类型
 
-  ### 重复的声明和遗漏的声明
+### 重复的声明和遗漏的声明
 
-  - 重复的声明是合法且无害的
-  - 读取与使用一个未声明的变量，`javaScript`会报错
+- 重复的声明是合法且无害的
+- 读取与使用一个未声明的变量，`javaScript`会报错
 
-  ## 变量作用域
+## 变量作用域
 
   一个变量的作用域是程序源代码中定义这个变量的区域
 
-  - 全局变量拥有全局作用域，在`javaScript`中的任何地方都有定义
-  - 函数内声明的变量和函数参数只在函数体内有定义，是局部变量，作用域是局部性的
-    - 函数体内，局部变量的优先级高于同名的全局变量
-    - 函数体内声明变量不使用`var`，则会将变量添加到全局作用域中
+- 全局变量拥有全局作用域，在`javaScript`中的任何地方都有定义
+- 函数内声明的变量和函数参数只在函数体内有定义，是局部变量，作用域是局部性的
+  - 函数体内，**局部变量**的优先级高于同名的全局变量
+  - 函数体内声明变量不使用`var`，则会将变量添加到全局作用域中
 
-  ### 函数作用域和声明提前
+### 函数作用域和声明提前
 
-  - `javaScript`没有块级作用域，而是使用了函数作用域：变量在声明它们的函数体以及这个函数体嵌套的任意函数体内都是有定义的
+- `javaScript`没有**块级作用域**，而是使用了函数作用域：变量在声明它们的函数体以及这个函数体嵌套的任意函数体内都是有定义的
 
-  - 声明提前，`javaScript`函数里声明的所有变量（但不涉及赋值）都被"提前"至函数的顶部，声明提前这步操作是在`javaScript`引擎的"预编译"时进行的，是在代码开始运行之前
+- 声明提前，`javaScript`函数里声明的所有变量（但不涉及赋值）都被"提前"至函数的顶部，声明提前这步操作是在`javaScript`引擎的"预编译"时进行的，是在代码开始运行之前
 
     ```javascript
     var scope = "global"
     function f() {
-    	console.log(scope)
-    	var scope = "local"
-    	console.log(scope)
+     console.log(scope)
+     var scope = "local"
+     console.log(scope)
     }
     f() 
     // undefined
@@ -1192,39 +1207,39 @@ Object(3) // new Number(3)
     }
     ```
 
-  ### 作为属性的变量
+### 作为属性的变量
 
-  - 声明一个`javaScript`全局变量，实际上是定义了**全局对象**的一个属性
+- 声明一个`javaScript`全局变量，实际上是定义了**全局对象**的一个属性
 
-  - 使用`var`声明一个变量时，创建的这个属性时不可配置的，不能使用`delete`进行删除
+- 使用`var`声明一个变量时，创建的这个属性时不可配置的，不能使用`delete`进行删除
 
     ```javascript
     var truevar = 1
-    fakevar = 2
+    fakevar = 2 // 添加在window对象上
     delete fakevar
     true
     delete truevar
     false
     ```
 
-  ### 作用域链
+### 作用域链
 
-  - `javaScript`是基于词法作用域的语言，也就是**静态作用域**，也就是变量定义时的作用域
+- `javaScript`是基于词法作用域的语言，也就是**静态作用域**，也就是变量定义时的作用域
 
-  - 当定义一个函数的时候，它实际上保存一个作用域链。当调用这个函数时，它创建一个新的对象来存储**函数本身**的局部变量，并将这个对象添加至保存的那个作用域链上，同时创建一个新的更长的表示函数调用作用域的"链"
+- 当定义一个函数的时候，它实际上保存一个作用域链。当调用这个函数时，它创建一个新的对象来存储**函数本身**的局部变量，并将这个对象添加至保存的那个作用域链上，同时创建一个新的更长的表示函数调用作用域的"链"
 
     ```javascript
     var scope = "global scope"
     function checkscope() {
       var scope2 = "local scope"
-    	return scope2
+     return scope2
     }
     checkscope()
     ```
 
     上面代码的执行过程主要为以下几个步骤：
 
-    - `checkscope`函数定义的时候，在其内部有一个`[[scope]]`属性，该属性保存定义位置的所有父变量对象到其中，在上面的代码中，也就是全局对象`GlobalContext`的变量对象（`globalContext.VO`）
+  - `checkscope`函数定义的时候，在其内部有一个`[[scope]]`属性，该属性保存定义位置的**所有父作用域变量对象**到其中，在上面的代码中，也就是全局对象`GlobalContext`的变量对象（`globalContext.VO`）
 
       ```javascript
       checkscope.[[scope]] = [
@@ -1232,9 +1247,9 @@ Object(3) // new Number(3)
       ]
       ```
 
-    - 在函数开始调用，也就是函数执行前，会进行以下几个步骤：
+  - 在函数开始调用，也就是函数执行前，会进行以下几个步骤：
 
-      - 将当前函数的上下文对象推入上下文对象栈中
+    - 将当前**函数的上下文对象**推入上下文对象栈中
 
         ```javascript
         ECS = [
@@ -1243,7 +1258,7 @@ Object(3) // new Number(3)
         ]
         ```
 
-      - 将函数定义时的`[[scope]]`属性复制到函数上下文对象中的`scope`属性中
+    - 将函数定义时的`[[scope]]`属性复制到函数上下文对象中的`scope`属性中
 
         ```javascript
         checkscopeContext = {
@@ -1251,7 +1266,7 @@ Object(3) // new Number(3)
         }
         ```
 
-      - 向函数上下文对象中添加活动对象
+    - 向函数上下文对象中添加活动对象
 
         ```javascript
         checkscopeContext = {
@@ -1265,7 +1280,7 @@ Object(3) // new Number(3)
         }
         ```
 
-      - 将活动对象添加至`scope`属性中
+    - 将活动对象添加至`scope`属性中
 
         ```javascript
         checkscopeContext = {
@@ -1279,7 +1294,7 @@ Object(3) // new Number(3)
         }
         ```
 
-      - 执行函数内代码，相应修改活动对象中的变量值
+    - 执行函数内代码，相应修改活动对象中的变量值
 
         ```javascript
         checkscopeContext = {
@@ -1293,7 +1308,7 @@ Object(3) // new Number(3)
         }
         ```
 
-    - 函数执行结束，将当前函数的执行上下文从上下文栈中弹出
+  - 函数执行结束，将当前函数的执行上下文从上下文栈中弹出
 
       ```javascript
       ECS = [
@@ -1301,9 +1316,7 @@ Object(3) // new Number(3)
       ]
       ```
 
-
-
-参考： 
+参考：
 
 - 《`javaScript`权威指南》
 - [`JavaScript`深入之作用域链](https://github.com/mqyqingfeng/Blog/issues/6)
@@ -1315,18 +1328,18 @@ Object(3) // new Number(3)
   
   ![var-base](https://github.com/MyDAIDAI/The-Definitive-Guide-of-JavaScript/blob/master/var-base.png)
 
-  - 引用数据类型：引用类型也会将存储在变量中的值复制一份放到为新变量分配的空间中。但这个值实际上是一个**指针**，这个指针指向存储在堆中的一个对象。复制后，两个变量指向的是堆中的同一个对象。
+  - 引用数据类型：引用类型也会将存储在变量中的值复制一份放到为新变量分配的空间中。但这个值实际上是一个**指针**，这个指针指向存储在**堆**中的一个对象。复制后，两个变量指向的是堆中的同一个对象。
 
   ![var-object](https://github.com/MyDAIDAI/The-Definitive-Guide-of-JavaScript/blob/master/var-object.png)
 
 - 传递参数
   所有的参数都是**按值传递**的。把函数外部的值复制给函数内部的参数，就和把值从一个变量复制到另一个变量一样
   - 基本类型：复制给函数中的局部变量，不会互相影响
-  - 引用类型：复制的为**堆内存中的引用**i，会相互影响
+  - 引用类型：复制的为**堆内存中的引用**，会相互影响
   
   ```javascript
   function setName (obj) {
-	  obj.name = 'asdasdf'; // 函数传递的是堆内存中的引用，修改obj，也就是修改传入的person
+    obj.name = 'asdasdf'; // 函数传递的是堆内存中的引用，修改obj，也就是修改传入的person
     obj = new Object() // 重新将 obj 局部变量指向一个新堆内存地址，不会影响外部引用变量
     obj.name = 'new name'
   }
@@ -1344,11 +1357,13 @@ Object(3) // new Number(3)
   console.log(count, result)
   // 10 20
   ```
+
 - 检测类型
   - 基本数据类型：`typeof`
   - 引用数据类型：`instanceof`(根据原型链查找)
 
 扩展：`instanceof`实现原理，由于实例的原型对象指向构造函数的原型对象，依次向上层递归查找原型是否相同
+
 ```javascript
 function instance_of (L, R) {
   let O = R.prototype
@@ -1378,28 +1393,52 @@ instance_of(sub, Supper) // true, sub.__proto__.__proto__ === Supper.prototype
 ```
   
 ### 作用域
- - 没有块级作用域
+
+- 没有块级作用域
+
  ```javascript
  for (var i = 0; i < 10; i++) {}
   i // 10
   for (let j = 0; j < 10; j++) {}
   j // ReferenceError: j is not defined
+  for(let i = 0; i < 10; i++) { i = 111; console.log(i)} // 111，直接覆盖掉外层作用域中i的值，只打印一次 111
+  for(let i = 0; i < 10; i++) { let i = 111; console.log(i)} // 输出10次111，for条件中重新声明的i变量，与外部不冲突
  ```
+
  对于有块级作用域的语言来说，`for`语句初始化变量的表达式所定义的变量，只会存在于循环的环境之中。而在`js`中，在循环结束之后，会存在于外部环境之中
 
- ### 垃圾收集
+### 垃圾收集
+
  在`javascript`程序中，所需内存的分配以及无用内存的回收完全实现了自动管理。这种垃圾收集机制的原理就是找出那些不再继续使用的变量，然后释放其占用的内存。所以，垃圾收集器会按照固定的时间间隔（或代码执行中预定的收集时间）周期性地执行这一操作
 
  对于函数中的局部变量而言，由于局部变量只在函数执行的过程中存在。在这个过程中，会为局部变量在栈（堆）内存上分配相应的空间来存储其值，在函数执行结束后，局部变量就没有存在的必要了，就可以释放它们的内存。
- 
+
  上面的情况很容易判断变量是否有存在的必要，但是其他情况就比较复杂。垃圾收集器需要跟踪哪个变量有用哪个变量无用，对于无用的变量打上标记以便将来回收其内存，所以应该少使用全局变量，多使用局部变量
 
  下面是两种标识无用变量的策略
 
- - 标记清除（主流使用方法）
- - 引用计数（循环引用会导致问题）
+- 标记清除（主流使用方法）
+- 引用计数（循环引用会导致问题）
 
- ### 总结
+####  产生原因
+
+- 使用过多的全局变量
+- 定时器等没有被清除
+- 使用过多的闭包
+
+#### 面试题
+
+- 闭包
+  - 读取函数内部的变量
+  - 让函数内部的变量始终保存在内存中
+  - 不能滥用闭包，会造成性能问题，解决办法，在退出函数之前，将不使用的局部变量全部清除
+- `WeakSet`与`WeakMap`
+  - 对`WeakSet`以及`WeakMap`中的对象保持弱引用，`WeakSet`中的值，以及`WeakMap`中的`key`只能是对象, 浏览器可能会在下一次垃圾回收时清除
+  - 由于可能会被清除，则没有`keys`，`values`，等遍历方法
+  - 弱引用，可以优化性能，减少内存泄露的问题
+
+### 总结
+
 `javascript`变量可以用来保存两种类型的值：基本类型值和引用类型值。基本类型值有6种数据类型：`Undefined`、`Null`、`Boolean`、`String`、`Number`、`Symbol`。基本类型值和引用类型值具有以下特点：
 
 - 基本类型值在内存中占据**固定大小**的空间，因此被保存在**栈内存**中
