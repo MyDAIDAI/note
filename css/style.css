@@ -1,0 +1,54 @@
+.zone-block {
+    width: 100px;
+    height: 100px;
+    display: block;
+    background-color: red;
+}
+.zone-inline {
+    width: 100px;
+    height: 100px;
+    display: inline;
+    background-color: green;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    padding: 10px 20px;
+}
+.zone-inline-block {
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    background-color: blue;
+}
+.boder {
+    width: 50px;
+    height: 50px;
+    border: 2px solid;
+    border-color: #96ceb4 #ffeead #d9534f #ffad60;
+}
+.boder1 {
+    width: 10px;
+    height: 10px;
+    border: 50px solid;
+    border-color: #96ceb4 #ffeead #d9534f #ffad60;
+}
+.boder2 {
+    width: 0px;
+    height: 0px;
+    border: 50px solid;
+    border-color: #96ceb4 #ffeead #d9534f #ffad60;
+}
+.boder3 {
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-width: 0 50px 40px 60px;
+    border-color: transparent transparent #ffad60;
+}
+.boder4 {
+    width: 0;
+    height: 0;
+    border: 100px solid;
+    border-color: transparent transparent transparent green;
+}
