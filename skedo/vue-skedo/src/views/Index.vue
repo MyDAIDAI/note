@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
 import Emitter from "@/object/Emitter";
+import {Draggable} from "@/components/Draggable";
+
 
 const emitter = new Emitter();
 emitter.on('move').subscribe((data: any) => {
@@ -8,9 +9,17 @@ emitter.on('move').subscribe((data: any) => {
 })
 emitter.emit('move', 'test');
 </script>
-
 <template>
   <main>
-    <TheWelcome />
+    <Draggable>
+      <div class="draggable-item"></div>
+    </Draggable>
   </main>
 </template>
+<style scoped>
+.draggable-item {
+  width: 100px;
+  height: 100px;
+  background-color: green;
+}
+</style>
