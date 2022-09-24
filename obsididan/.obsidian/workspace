@@ -1,0 +1,149 @@
+{
+  "main": {
+    "id": "64c04d4123080d32",
+    "type": "split",
+    "children": [
+      {
+        "id": "97d338529f899483",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "work/教学平台/开发看板.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "78fe69e302922462",
+    "type": "split",
+    "children": [
+      {
+        "id": "75f531443ddf0199",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "19b6f83ff96f6d5a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "6a01474299f41dbe",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "30c7cc86367b253f",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "d36108ceee42cba9",
+    "type": "split",
+    "children": [
+      {
+        "id": "9f0413cb37acb374",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2c1ef1fc9b147fda",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "work/教学平台/开发看板.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "473acb7bfcd1fe22",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "work/教学平台/开发看板.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "75154c4d6736c121",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "6c9226927928e60d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "work/教学平台/开发看板.md"
+              }
+            }
+          },
+          {
+            "id": "2154f35bdec48ded",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "97d338529f899483",
+  "lastOpenFiles": [
+    "work/教学平台/小书童.md",
+    "2022-09-24.md",
+    "测试文件.md",
+    "Tasks.md",
+    "Untitled.md",
+    "work/教学平台/开发看板.md",
+    "2022-09-23.md"
+  ]
+}
