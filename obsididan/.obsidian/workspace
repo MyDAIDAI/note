@@ -4,7 +4,7 @@
     "type": "split",
     "children": [
       {
-        "id": "97d338529f899483",
+        "id": "4174e251eaa95cdd",
         "type": "leaf",
         "state": {
           "type": "markdown",
@@ -16,7 +16,7 @@
         }
       },
       {
-        "id": "074e1adcacff2287",
+        "id": "d16606d8ec831aac",
         "type": "leaf",
         "state": {
           "type": "mindmap",
@@ -145,10 +145,11 @@
     "width": 300,
     "collapsed": true
   },
-  "active": "97d338529f899483",
+  "active": "4174e251eaa95cdd",
   "lastOpenFiles": [
-    "Tasks.md",
+    "Pasted image 20220926172528.png",
     "work/教学平台/小书童.md",
+    "Tasks.md",
     "work/教学平台/开发看板.md",
     "2022-09-24.md",
     "测试文件.md",
