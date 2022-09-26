@@ -14,6 +14,14 @@
             "source": false
           }
         }
+      },
+      {
+        "id": "074e1adcacff2287",
+        "type": "leaf",
+        "state": {
+          "type": "mindmap",
+          "state": {}
+        }
       }
     ],
     "direction": "vertical"
@@ -61,7 +69,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "d36108ceee42cba9",
