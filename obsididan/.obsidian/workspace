@@ -7,9 +7,11 @@
         "id": "97d338529f899483",
         "type": "leaf",
         "state": {
-          "type": "kanban",
+          "type": "markdown",
           "state": {
-            "file": "work/教学平台/开发看板.md"
+            "file": "work/教学平台/小书童.md",
+            "mode": "source",
+            "source": false
           }
         }
       }
@@ -75,7 +77,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "work/教学平台/开发看板.md",
+                "file": "work/教学平台/小书童.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -92,7 +94,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "work/教学平台/开发看板.md",
+                "file": "work/教学平台/小书童.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -115,7 +117,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "work/教学平台/开发看板.md"
+                "file": "work/教学平台/小书童.md"
               }
             }
           },
@@ -136,12 +138,12 @@
   },
   "active": "97d338529f899483",
   "lastOpenFiles": [
+    "work/教学平台/开发看板.md",
     "work/教学平台/小书童.md",
     "2022-09-24.md",
     "测试文件.md",
     "Tasks.md",
     "Untitled.md",
-    "work/教学平台/开发看板.md",
     "2022-09-23.md"
   ]
 }
