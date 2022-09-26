@@ -8,10 +8,6 @@ due on today
 ```
 
 
-```tasks
-not done
-```
-
 
 ```dataview 
 task where !completed 
