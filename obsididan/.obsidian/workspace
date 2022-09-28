@@ -4,12 +4,12 @@
     "type": "split",
     "children": [
       {
-        "id": "8482ad79f176585f",
+        "id": "437c72a6773bd10f",
         "type": "leaf",
         "state": {
           "type": "markdown",
           "state": {
-            "file": "template/Day Planner.md",
+            "file": "2022/2022-09-28 星期三 第39周.md",
             "mode": "source",
             "source": false
           }
@@ -77,7 +77,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "template/Day Planner.md",
+                "file": "2022/2022-09-28 星期三 第39周.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -94,7 +94,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "template/Day Planner.md",
+                "file": "2022/2022-09-28 星期三 第39周.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -117,7 +117,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "template/Day Planner.md"
+                "file": "2022/2022-09-28 星期三 第39周.md"
               }
             }
           },
@@ -136,17 +136,17 @@
     "direction": "horizontal",
     "width": 300
   },
-  "active": "8482ad79f176585f",
+  "active": "437c72a6773bd10f",
   "lastOpenFiles": [
     "template/Weekly Planner.md",
-    "2022/2022-09-28 星期三 第39周.md",
     "template/Day Planner.md",
+    "2022/week/2022-09 第39 周.md",
+    "2022/week/2022-00 第39 周.md",
+    "2022/2022-09-28 星期三 第39周.md",
     "2022/2022-W39.md",
     "2022/2022-09-27 星期二 第39周.md",
     "2022/2022-09-28.md",
     "Tasks.md",
-    "Untitled.md",
-    "Pasted image 20220926172528.png",
-    "2022-09-28.md"
+    "Untitled.md"
   ]
 }

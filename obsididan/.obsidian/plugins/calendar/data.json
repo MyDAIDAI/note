@@ -3,8 +3,8 @@
   "weekStart": "locale",
   "wordsPerDot": 250,
   "showWeeklyNote": true,
-  "weeklyNoteFormat": "",
-  "weeklyNoteTemplate": "2022-09-28",
-  "weeklyNoteFolder": "2022",
+  "weeklyNoteFormat": "gggg-MM 第ww 周",
+  "weeklyNoteTemplate": "template/Weekly Planner",
+  "weeklyNoteFolder": "2022/week",
   "localeOverride": "system-default"
 }
