@@ -1,5 +1,5 @@
 {
   "folder": "2022",
   "template": "template/Day Planner",
-  "format": "YYYY-MM-DD dddd"
+  "format": "YYYY-MM-DD dddd 第ww周"
 }
