@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "work/教学平台/小书童.md",
+            "file": "2022-09-27.md",
             "mode": "source",
             "source": false
           }
@@ -77,7 +77,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "work/教学平台/小书童.md",
+                "file": "2022-09-27.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -94,7 +94,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "work/教学平台/小书童.md",
+                "file": "2022-09-27.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -117,7 +117,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "work/教学平台/小书童.md"
+                "file": "2022-09-27.md"
               }
             }
           },
@@ -129,23 +129,23 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "active": "4174e251eaa95cdd",
   "lastOpenFiles": [
-    "2022-09-28.md",
-    "Tasks.md",
-    "work/教学平台/小书童.md",
     "2022-09-24.md",
+    "2022-09-23.md",
+    "2022-09-28.md",
+    "work/教学平台/小书童.md",
+    "Tasks.md",
     "Pasted image 20220926172528.png",
     "work/教学平台/开发看板.md",
     "测试文件.md",
-    "Untitled.md",
-    "2022-09-23.md"
+    "Untitled.md"
   ]
 }
