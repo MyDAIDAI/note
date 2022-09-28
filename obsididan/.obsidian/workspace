@@ -4,12 +4,12 @@
     "type": "split",
     "children": [
       {
-        "id": "4174e251eaa95cdd",
+        "id": "6b7ae313f99eda1a",
         "type": "leaf",
         "state": {
           "type": "markdown",
           "state": {
-            "file": "2022-09-27.md",
+            "file": "template/Day Planner.md",
             "mode": "source",
             "source": false
           }
@@ -77,7 +77,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "2022-09-27.md",
+                "file": "template/Day Planner.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -94,7 +94,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "2022-09-27.md",
+                "file": "template/Day Planner.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -117,7 +117,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "2022-09-27.md"
+                "file": "template/Day Planner.md"
               }
             }
           },
@@ -136,16 +136,17 @@
     "direction": "horizontal",
     "width": 300
   },
-  "active": "4174e251eaa95cdd",
+  "active": "6b7ae313f99eda1a",
   "lastOpenFiles": [
+    "2022/2022-09-28.md",
+    "template/Day Planner.md",
+    "Tasks.md",
+    "Untitled.md",
+    "Pasted image 20220926172528.png",
+    "2022-09-28.md",
     "2022-09-24.md",
     "2022-09-23.md",
-    "2022-09-28.md",
-    "work/教学平台/小书童.md",
-    "Tasks.md",
-    "Pasted image 20220926172528.png",
-    "work/教学平台/开发看板.md",
-    "测试文件.md",
-    "Untitled.md"
+    "2022-09-27.md",
+    "work/教学平台/小书童.md"
   ]
 }
