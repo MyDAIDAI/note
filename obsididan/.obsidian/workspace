@@ -69,8 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "d36108ceee42cba9",
@@ -147,8 +146,9 @@
   },
   "active": "4174e251eaa95cdd",
   "lastOpenFiles": [
-    "Pasted image 20220926172528.png",
+    "2022-09-28.md",
     "work/教学平台/小书童.md",
+    "Pasted image 20220926172528.png",
     "Tasks.md",
     "work/教学平台/开发看板.md",
     "2022-09-24.md",
