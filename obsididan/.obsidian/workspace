@@ -4,24 +4,14 @@
     "type": "split",
     "children": [
       {
-        "id": "191dc5a5d84f543a",
+        "id": "662217fccd0faad1",
         "type": "leaf",
         "state": {
           "type": "markdown",
           "state": {
-            "file": "template/Day Planner.md",
+            "file": "record/2022/2022-09-30 星期五 第39周.md",
             "mode": "source",
             "source": false
-          }
-        }
-      },
-      {
-        "id": "8fe1c183266e895f",
-        "type": "leaf",
-        "state": {
-          "type": "excalidraw",
-          "state": {
-            "file": "Excalidraw/Drawing 2022-09-30 15.36.03.excalidraw.md"
           }
         }
       }
@@ -87,7 +77,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "template/Day Planner.md",
+                "file": "record/2022/2022-09-30 星期五 第39周.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +94,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "template/Day Planner.md",
+                "file": "record/2022/2022-09-30 星期五 第39周.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -127,7 +117,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "template/Day Planner.md"
+                "file": "record/2022/2022-09-30 星期五 第39周.md"
               }
             }
           },
@@ -144,18 +134,17 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
-  "active": "191dc5a5d84f543a",
+  "active": "662217fccd0faad1",
   "lastOpenFiles": [
+    "template/Day Planner.md",
+    "record/2022/2022-09-30 星期五 第39周.md",
     "测试文件.md",
     "Pasted image 20220926172528.png",
-    "template/Day Planner.md",
     "work/教学平台/小书童.md",
     "work/教学平台/socket.md",
     "Excalidraw/Drawing 2022-09-30 15.36.03.excalidraw.md",
-    "record/2022/2022-09-30 星期五 第39周.md",
     "record/2022/2022-09-29 星期四 第39周.md",
     "record/2022/2022-09-28 星期三 第39周.md",
     "record/2022/2022-09-27 星期二 第39周.md"

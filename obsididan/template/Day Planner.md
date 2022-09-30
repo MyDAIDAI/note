@@ -14,7 +14,6 @@ path includes work
 
 
 ```tasks
-not done
 due on {{date:YYYY-MM-DD}}
 path includes work
 ```
@@ -26,17 +25,12 @@ path includes work
 
 ### 生活计划
 ```tasks
-not done
 due on {{date:YYYY-MM-DD}}
 path includes life
 ```
 
 
-### 今日待做
-```tasks 
-not done
-due on today
-```
+
 
 ### 日常记录
 
