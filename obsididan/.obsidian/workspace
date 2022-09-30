@@ -4,15 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "70efd51351470a95",
+        "id": "8be8cf54f0a5357a",
         "type": "leaf",
         "state": {
-          "type": "markdown",
-          "state": {
-            "file": "template/Day Planner.md",
-            "mode": "source",
-            "source": false
-          }
+          "type": "empty",
+          "state": {}
         }
       }
     ],
@@ -77,7 +73,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "template/Day Planner.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -94,7 +89,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "template/Day Planner.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -116,9 +110,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "template/Day Planner.md"
-              }
+              "state": {}
             }
           },
           {
@@ -136,14 +128,14 @@
     "direction": "horizontal",
     "width": 300
   },
-  "active": "70efd51351470a95",
+  "active": "2154f35bdec48ded",
   "lastOpenFiles": [
-    "template/Weekly Planner.md",
     "2022/2022-09-30 星期五 第39周.md",
+    "template/Day Planner.md",
+    "template/Weekly Planner.md",
     "2022/2022-09-27 星期二 第39周.md",
     "2022/2022-09-29 星期四 第39周.md",
     "2022/2022-09-28 星期三 第39周.md",
-    "template/Day Planner.md",
     "life/装修.md",
     "work/教学平台/小书童.md",
     "work/教学平台/开发看板.md",
