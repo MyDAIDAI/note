@@ -9,9 +9,19 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "测试文件.md",
+            "file": "work/教学平台/socket.md",
             "mode": "source",
             "source": false
+          }
+        }
+      },
+      {
+        "id": "8fe1c183266e895f",
+        "type": "leaf",
+        "state": {
+          "type": "excalidraw",
+          "state": {
+            "file": "Excalidraw/Drawing 2022-09-30 15.36.03.excalidraw.md"
           }
         }
       }
@@ -77,7 +87,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "测试文件.md",
+                "file": "Excalidraw/Drawing 2022-09-30 15.36.03.excalidraw.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -94,7 +104,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "测试文件.md",
+                "file": "Excalidraw/Drawing 2022-09-30 15.36.03.excalidraw.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -117,7 +127,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "测试文件.md"
+                "file": "Excalidraw/Drawing 2022-09-30 15.36.03.excalidraw.md"
               }
             }
           },
@@ -136,17 +146,17 @@
     "direction": "horizontal",
     "width": 300
   },
-  "active": "19b6f83ff96f6d5a",
+  "active": "8fe1c183266e895f",
   "lastOpenFiles": [
+    "work/教学平台/socket.md",
+    "work/教学平台/小书童.md",
     "record/2022/2022-09-30 星期五 第39周.md",
+    "测试文件.md",
     "record/2022/2022-09-29 星期四 第39周.md",
     "record/2022/2022-09-28 星期三 第39周.md",
     "record/2022/2022-09-27 星期二 第39周.md",
     "template/Day Planner.md",
     "template/Weekly Planner.md",
-    "life/装修.md",
-    "work/教学平台/小书童.md",
-    "work/教学平台/开发看板.md",
-    "record/2022/week/2022-09 第39 周.md"
+    "life/装修.md"
   ]
 }
