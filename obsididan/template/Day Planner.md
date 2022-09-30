@@ -4,9 +4,9 @@
 ### 本月重点
 
 ### 工作未完成内容
-```dataviewjs
-dv.taskList(dv.pages('"work"').file.tasks
-    .where(t => !t.completed))
+```tasks
+not done
+path includes work
 ```
 
 
@@ -25,6 +25,11 @@ path includes work
 
 
 ### 生活计划
+```tasks
+not done
+due on {{date:YYYY-MM-DD}}
+path includes life
+```
 
 
 ### 今日待做
