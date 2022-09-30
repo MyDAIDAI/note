@@ -4,12 +4,12 @@
     "type": "split",
     "children": [
       {
-        "id": "437c72a6773bd10f",
+        "id": "70efd51351470a95",
         "type": "leaf",
         "state": {
           "type": "markdown",
           "state": {
-            "file": "2022/2022-09-29 星期四 第39周.md",
+            "file": "template/Day Planner.md",
             "mode": "source",
             "source": false
           }
@@ -77,7 +77,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "2022/2022-09-29 星期四 第39周.md",
+                "file": "template/Day Planner.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -94,7 +94,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "2022/2022-09-29 星期四 第39周.md",
+                "file": "template/Day Planner.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -117,7 +117,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "2022/2022-09-29 星期四 第39周.md"
+                "file": "template/Day Planner.md"
               }
             }
           },
@@ -130,23 +130,23 @@
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
     "width": 300
   },
-  "active": "437c72a6773bd10f",
+  "active": "70efd51351470a95",
   "lastOpenFiles": [
+    "template/Weekly Planner.md",
+    "2022/2022-09-30 星期五 第39周.md",
+    "2022/2022-09-27 星期二 第39周.md",
+    "2022/2022-09-29 星期四 第39周.md",
+    "2022/2022-09-28 星期三 第39周.md",
+    "template/Day Planner.md",
     "life/装修.md",
     "work/教学平台/小书童.md",
-    "2022/2022-09-29 星期四 第39周.md",
-    "template/Day Planner.md",
-    "template/Weekly Planner.md",
-    "2022/2022-09-28 星期三 第39周.md",
     "work/教学平台/开发看板.md",
-    "2022/week/2022-09 第39 周.md",
-    "2022/week/2022-00 第39 周.md",
-    "2022/2022-W39.md"
+    "2022/week/2022-09 第39 周.md"
   ]
 }
