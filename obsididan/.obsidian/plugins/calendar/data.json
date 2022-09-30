@@ -5,6 +5,6 @@
   "showWeeklyNote": true,
   "weeklyNoteFormat": "gggg-MM 第ww 周",
   "weeklyNoteTemplate": "template/Weekly Planner",
-  "weeklyNoteFolder": "2022/week",
+  "weeklyNoteFolder": "record",
   "localeOverride": "system-default"
 }

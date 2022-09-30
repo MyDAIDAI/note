@@ -4,11 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "8be8cf54f0a5357a",
+        "id": "191dc5a5d84f543a",
         "type": "leaf",
         "state": {
-          "type": "empty",
-          "state": {}
+          "type": "markdown",
+          "state": {
+            "file": "测试文件.md",
+            "mode": "source",
+            "source": false
+          }
         }
       }
     ],
@@ -73,6 +77,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "测试文件.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -89,6 +94,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "测试文件.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -110,7 +116,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "测试文件.md"
+              }
             }
           },
           {
@@ -128,17 +136,17 @@
     "direction": "horizontal",
     "width": 300
   },
-  "active": "2154f35bdec48ded",
+  "active": "19b6f83ff96f6d5a",
   "lastOpenFiles": [
-    "2022/2022-09-30 星期五 第39周.md",
+    "record/2022/2022-09-30 星期五 第39周.md",
+    "record/2022/2022-09-29 星期四 第39周.md",
+    "record/2022/2022-09-28 星期三 第39周.md",
+    "record/2022/2022-09-27 星期二 第39周.md",
     "template/Day Planner.md",
     "template/Weekly Planner.md",
-    "2022/2022-09-27 星期二 第39周.md",
-    "2022/2022-09-29 星期四 第39周.md",
-    "2022/2022-09-28 星期三 第39周.md",
     "life/装修.md",
     "work/教学平台/小书童.md",
     "work/教学平台/开发看板.md",
-    "2022/week/2022-09 第39 周.md"
+    "record/2022/week/2022-09 第39 周.md"
   ]
 }
