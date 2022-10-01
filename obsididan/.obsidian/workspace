@@ -10,6 +10,18 @@
           "type": "custom-frames-draw.io",
           "state": {}
         }
+      },
+      {
+        "id": "eb78b6dc4fb91e41",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "record/2022/2022-10-01 星期六 第39周.md",
+            "mode": "source",
+            "source": false
+          }
+        }
       }
     ],
     "direction": "vertical"
@@ -73,6 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "record/2022/2022-10-01 星期六 第39周.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -89,6 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "record/2022/2022-10-01 星期六 第39周.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -110,7 +124,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "record/2022/2022-10-01 星期六 第39周.md"
+              }
             }
           },
           {
@@ -128,11 +144,11 @@
     "width": 300,
     "collapsed": true
   },
-  "active": "cfab27a3e830b5da",
+  "active": "eb78b6dc4fb91e41",
   "lastOpenFiles": [
-    "life/家人生日.md",
     "life/装修.md",
     "record/2022/2022-10-01 星期六 第39周.md",
+    "life/家人生日.md",
     "record/2022/2022-09-30 星期五 第39周.md",
     "未命名 1.md",
     "未命名.md",
