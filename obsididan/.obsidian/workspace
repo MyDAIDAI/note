@@ -18,10 +18,29 @@
           "type": "markdown",
           "state": {
             "file": "record/2022/2022-10-01 星期六 第39周.md",
-            "mode": "source",
+            "mode": "preview",
             "source": false
           }
-        }
+        },
+        "group": "9cce18e4c5684cec"
+      },
+      {
+        "id": "abc0369c974d3a7d",
+        "type": "leaf",
+        "state": {
+          "type": "media-view",
+          "state": {
+            "info": {
+              "host": 1,
+              "id": "BV1eY4y1877X/",
+              "src": "https://www.bilibili.com/video/BV1eY4y1877X/?spm_id_from=333.337.search-card.all.click&vd_source=32e7f7cc9ee3dfa55e4c993d14058c05",
+              "iframe": "https://player.bilibili.com/player.html?bvid=BV1eY4y1877X/&high_quality=1&danmaku=0",
+              "hash": ""
+            },
+            "currentTime": 8.089086
+          }
+        },
+        "group": "9cce18e4c5684cec"
       }
     ],
     "direction": "vertical"
@@ -85,7 +104,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "record/2022/2022-10-01 星期六 第39周.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +120,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "record/2022/2022-10-01 星期六 第39周.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -124,9 +141,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "record/2022/2022-10-01 星期六 第39周.md"
-              }
+              "state": {}
             }
           },
           {
@@ -144,10 +159,10 @@
     "width": 300,
     "collapsed": true
   },
-  "active": "eb78b6dc4fb91e41",
+  "active": "abc0369c974d3a7d",
   "lastOpenFiles": [
-    "life/装修.md",
     "record/2022/2022-10-01 星期六 第39周.md",
+    "life/装修.md",
     "life/家人生日.md",
     "record/2022/2022-09-30 星期五 第39周.md",
     "未命名 1.md",
