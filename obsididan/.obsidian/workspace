@@ -12,12 +12,12 @@
         }
       },
       {
-        "id": "63c3371f12184fdd",
+        "id": "ebf91f429375b45b",
         "type": "leaf",
         "state": {
           "type": "markdown",
           "state": {
-            "file": "life/装修.md",
+            "file": "life/家人生日.md",
             "mode": "source",
             "source": false
           }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "life/装修.md",
+                "file": "life/家人生日.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "life/装修.md",
+                "file": "life/家人生日.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "life/装修.md"
+                "file": "life/家人生日.md"
               }
             }
           },
@@ -144,8 +144,9 @@
     "width": 300,
     "collapsed": true
   },
-  "active": "63c3371f12184fdd",
+  "active": "ebf91f429375b45b",
   "lastOpenFiles": [
+    "life/装修.md",
     "record/2022/2022-10-01 星期六 第39周.md",
     "record/2022/2022-09-30 星期五 第39周.md",
     "未命名 1.md",
@@ -154,7 +155,6 @@
     "work/教学平台/小书童.md",
     "template/Day Planner.md",
     "Pasted image 20220926172528.png",
-    "work/教学平台/socket.md",
-    "Excalidraw/Drawing 2022-09-30 15.36.03.excalidraw.md"
+    "work/教学平台/socket.md"
   ]
 }
