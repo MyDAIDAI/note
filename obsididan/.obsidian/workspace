@@ -12,35 +12,28 @@
         }
       },
       {
-        "id": "eb78b6dc4fb91e41",
+        "id": "3b585c71e1abc2bb",
         "type": "leaf",
         "state": {
           "type": "markdown",
           "state": {
-            "file": "record/2022/2022-10-01 星期六 第39周.md",
-            "mode": "preview",
+            "file": "life/装修.md",
+            "mode": "source",
             "source": false
           }
-        },
-        "group": "d3333e33061fc3aa"
+        }
       },
       {
-        "id": "a589844270d8e025",
+        "id": "31b999903e06cac6",
         "type": "leaf",
         "state": {
-          "type": "media-view",
+          "type": "markdown",
           "state": {
-            "info": {
-              "host": 1,
-              "id": "BV1eY4y1877X/",
-              "src": "https://www.bilibili.com/video/BV1eY4y1877X/?spm_id_from=333.337.search-card.all.click&vd_source=32e7f7cc9ee3dfa55e4c993d14058c05#t=10.475614",
-              "iframe": "https://player.bilibili.com/player.html?bvid=BV1eY4y1877X/&high_quality=1&danmaku=0",
-              "hash": "#t=10.475614"
-            },
-            "currentTime": 22.085756
+            "file": "record/2022/2022-10-01.md",
+            "mode": "source",
+            "source": false
           }
-        },
-        "group": "d3333e33061fc3aa"
+        }
       }
     ],
     "direction": "vertical"
@@ -104,6 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "record/2022/2022-10-01.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -120,6 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "record/2022/2022-10-01.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -141,7 +136,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "record/2022/2022-10-01.md"
+              }
             }
           },
           {
@@ -159,17 +156,17 @@
     "width": 300,
     "collapsed": true
   },
-  "active": "a589844270d8e025",
+  "active": "31b999903e06cac6",
   "lastOpenFiles": [
-    "record/2022/2022-10-01 星期六 第39周.md",
     "life/装修.md",
+    "record/2022/2022-10-01.md",
+    "record/2022/2022-10-01 星期六 第39周.md",
     "life/家人生日.md",
     "record/2022/2022-09-30 星期五 第39周.md",
     "未命名 1.md",
     "未命名.md",
     "测试文件.md",
     "work/教学平台/小书童.md",
-    "template/Day Planner.md",
-    "Pasted image 20220926172528.png"
+    "template/Day Planner.md"
   ]
 }
