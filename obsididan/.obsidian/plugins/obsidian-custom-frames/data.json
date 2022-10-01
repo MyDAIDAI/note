@@ -1,0 +1,16 @@
+{
+  "frames": [
+    {
+      "url": "https://app.diagrams.net/",
+      "displayName": "draw.io",
+      "icon": "brush",
+      "hideOnMobile": true,
+      "addRibbonIcon": false,
+      "openInCenter": true,
+      "zoomLevel": 1,
+      "forceIframe": false,
+      "customCss": ""
+    }
+  ],
+  "padding": 5
+}
