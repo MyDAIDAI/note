@@ -4,15 +4,19 @@
     "type": "split",
     "children": [
       {
-        "id": "662217fccd0faad1",
+        "id": "3f428e54a4181fa7",
         "type": "leaf",
         "state": {
-          "type": "markdown",
-          "state": {
-            "file": "record/2022/2022-09-30 星期五 第39周.md",
-            "mode": "source",
-            "source": false
-          }
+          "type": "custom-frames-draw.io",
+          "state": {}
+        }
+      },
+      {
+        "id": "e0127d479407b8b9",
+        "type": "leaf",
+        "state": {
+          "type": "empty",
+          "state": {}
         }
       }
     ],
@@ -77,7 +81,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "record/2022/2022-09-30 星期五 第39周.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -94,7 +97,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "record/2022/2022-09-30 星期五 第39周.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -116,9 +118,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "record/2022/2022-09-30 星期五 第39周.md"
-              }
+              "state": {}
             }
           },
           {
@@ -134,19 +134,20 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
-  "active": "662217fccd0faad1",
+  "active": "3f428e54a4181fa7",
   "lastOpenFiles": [
-    "work/教学平台/小书童.md",
+    "未命名 1.md",
+    "未命名.md",
     "record/2022/2022-09-30 星期五 第39周.md",
+    "work/教学平台/小书童.md",
     "template/Day Planner.md",
     "测试文件.md",
     "Pasted image 20220926172528.png",
     "work/教学平台/socket.md",
     "Excalidraw/Drawing 2022-09-30 15.36.03.excalidraw.md",
-    "record/2022/2022-09-29 星期四 第39周.md",
-    "record/2022/2022-09-28 星期三 第39周.md",
-    "record/2022/2022-09-27 星期二 第39周.md"
+    "record/2022/2022-09-29 星期四 第39周.md"
   ]
 }

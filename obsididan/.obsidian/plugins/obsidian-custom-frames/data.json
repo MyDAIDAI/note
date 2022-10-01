@@ -5,7 +5,7 @@
       "displayName": "draw.io",
       "icon": "brush",
       "hideOnMobile": true,
-      "addRibbonIcon": false,
+      "addRibbonIcon": true,
       "openInCenter": true,
       "zoomLevel": 1,
       "forceIframe": false,
