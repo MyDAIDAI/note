@@ -29,6 +29,11 @@ path includes life
 ```
 
 
+### 学习计划
+```tasks
+due on {{date:YYYY-MM-DD}}
+path includes study
+```
 
 
 ### 日常记录
