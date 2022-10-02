@@ -29,7 +29,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "record/2022/2022-10-01.md",
+            "file": "record/2022/2022-10-02 周日  第39周.md",
             "mode": "source",
             "source": false
           }
@@ -97,7 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "record/2022/2022-10-01.md",
+                "file": "record/2022/2022-10-02 周日  第39周.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "record/2022/2022-10-01.md",
+                "file": "record/2022/2022-10-02 周日  第39周.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +137,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "record/2022/2022-10-01.md"
+                "file": "record/2022/2022-10-02 周日  第39周.md"
               }
             }
           },
@@ -158,15 +158,15 @@
   },
   "active": "31b999903e06cac6",
   "lastOpenFiles": [
-    "life/装修.md",
+    "work/教学平台/小书童.md",
+    "work/教学平台/socket.md",
+    "record/2022/2022-10-02 周日  第39周.md",
     "record/2022/2022-10-01.md",
+    "life/装修.md",
     "record/2022/2022-10-01 星期六 第39周.md",
     "life/家人生日.md",
     "record/2022/2022-09-30 星期五 第39周.md",
     "未命名 1.md",
-    "未命名.md",
-    "测试文件.md",
-    "work/教学平台/小书童.md",
-    "template/Day Planner.md"
+    "未命名.md"
   ]
 }
