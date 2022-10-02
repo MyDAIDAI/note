@@ -89,7 +89,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "template/Day Planner.md",
+                "file": "life/装修.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -106,7 +106,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "template/Day Planner.md",
+                "file": "life/装修.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -129,7 +129,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "template/Day Planner.md"
+                "file": "life/装修.md"
               }
             }
           },
@@ -148,8 +148,9 @@
     "width": 300,
     "collapsed": true
   },
-  "active": "31b999903e06cac6",
+  "active": "3b585c71e1abc2bb",
   "lastOpenFiles": [
+    "template/Day Planner.md",
     "record/2022/2022-10-02 周日  第39周.md",
     "work/教学平台/小书童.md",
     "work/教学平台/socket.md",
@@ -158,7 +159,6 @@
     "record/2022/2022-10-01 星期六 第39周.md",
     "life/家人生日.md",
     "record/2022/2022-09-30 星期五 第39周.md",
-    "未命名 1.md",
-    "未命名.md"
+    "未命名 1.md"
   ]
 }
