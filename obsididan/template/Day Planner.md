@@ -18,7 +18,11 @@ due on {{date:YYYY-MM-DD}}
 path includes work
 ```
 
-
+```dataviewjs
+dv.taskList(
+    dv.pages('"work"').file.tasks
+    .where(t => t.text.includes("#todo") && !t.completed),1)
+```
 
 
 

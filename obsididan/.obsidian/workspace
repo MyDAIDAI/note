@@ -4,14 +4,6 @@
     "type": "split",
     "children": [
       {
-        "id": "cfab27a3e830b5da",
-        "type": "leaf",
-        "state": {
-          "type": "custom-frames-draw.io",
-          "state": {}
-        }
-      },
-      {
         "id": "3b585c71e1abc2bb",
         "type": "leaf",
         "state": {
@@ -29,7 +21,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "record/2022/2022-10-02 周日  第39周.md",
+            "file": "template/Day Planner.md",
             "mode": "source",
             "source": false
           }
@@ -97,7 +89,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "record/2022/2022-10-02 周日  第39周.md",
+                "file": "template/Day Planner.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +106,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "record/2022/2022-10-02 周日  第39周.md",
+                "file": "template/Day Planner.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +129,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "record/2022/2022-10-02 周日  第39周.md"
+                "file": "template/Day Planner.md"
               }
             }
           },
@@ -158,9 +150,9 @@
   },
   "active": "31b999903e06cac6",
   "lastOpenFiles": [
+    "record/2022/2022-10-02 周日  第39周.md",
     "work/教学平台/小书童.md",
     "work/教学平台/socket.md",
-    "record/2022/2022-10-02 周日  第39周.md",
     "record/2022/2022-10-01.md",
     "life/装修.md",
     "record/2022/2022-10-01 星期六 第39周.md",
