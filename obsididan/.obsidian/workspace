@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "work/教学平台/小书童.md",
+            "file": "work/其他.md",
             "mode": "source",
             "source": false
           }
@@ -77,7 +77,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "work/教学平台/小书童.md",
+                "file": "work/其他.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -94,7 +94,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "work/教学平台/小书童.md",
+                "file": "work/其他.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -117,7 +117,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "work/教学平台/小书童.md"
+                "file": "work/其他.md"
               }
             }
           },
@@ -138,8 +138,8 @@
   },
   "active": "2526c0fa94f6b708",
   "lastOpenFiles": [
-    "record/2022/2022-10-08 星期六  第40周.md",
     "work/教学平台/小书童.md",
+    "record/2022/2022-10-08 星期六  第40周.md",
     "work/教学平台/开发看板.md",
     "study/计算机/深入理解计算机系统/笔记📒.md",
     "study/计算机/深入理解计算机系统/计划.md",
