@@ -4,11 +4,13 @@
     "type": "split",
     "children": [
       {
-        "id": "432fa34f871e9acc",
+        "id": "2526c0fa94f6b708",
         "type": "leaf",
         "state": {
-          "type": "custom-frames-draw.io",
-          "state": {}
+          "type": "kanban",
+          "state": {
+            "file": "work/教学平台/开发看板.md"
+          }
         }
       }
     ],
@@ -73,6 +75,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "work/教学平台/开发看板.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -89,6 +92,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "work/教学平台/开发看板.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -110,7 +114,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "work/教学平台/开发看板.md"
+              }
             }
           },
           {
@@ -128,15 +134,15 @@
     "width": 300,
     "collapsed": true
   },
-  "active": "432fa34f871e9acc",
+  "active": "2526c0fa94f6b708",
   "lastOpenFiles": [
+    "work/教学平台/小书童.md",
     "study/计算机/深入理解计算机系统/笔记📒.md",
     "study/计算机/深入理解计算机系统/计划.md",
     "record/2022/2022-10-02 星期日  第39周.md",
     "template/Day Planner.md",
     "study/未命名.md",
     "record/2022/2022-10-02 周日  第39周.md",
-    "work/教学平台/小书童.md",
     "work/教学平台/socket.md",
     "life/装修.md",
     "record/2022/2022-10-01.md"
