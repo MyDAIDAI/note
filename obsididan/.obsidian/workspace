@@ -7,11 +7,9 @@
         "id": "95cf93d1935c557f",
         "type": "leaf",
         "state": {
-          "type": "markdown",
+          "type": "kanban",
           "state": {
-            "file": "筛选内容保存.md",
-            "mode": "source",
-            "source": false
+            "file": "work/教学平台/开发看板.md"
           }
         }
       }
@@ -61,8 +59,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "d36108ceee42cba9",
@@ -78,7 +75,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "筛选内容保存.md",
+                "file": "work/教学平台/开发看板.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -95,7 +92,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "筛选内容保存.md",
+                "file": "work/教学平台/开发看板.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -118,7 +115,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "筛选内容保存.md"
+                "file": "work/教学平台/开发看板.md"
               }
             }
           },
@@ -139,9 +136,9 @@
   "active": "95cf93d1935c557f",
   "lastOpenFiles": [
     "record/2022/2022-10-09 星期日  第40周.md",
+    "筛选内容保存.md",
     "work/教学平台/开发看板.md",
     "work/教学平台/小书童.md",
-    "筛选内容保存.md",
     "record/2022/2022-10-08 星期六  第40周.md",
     "work/其他.md",
     "study/计算机/深入理解计算机系统/笔记📒.md",
