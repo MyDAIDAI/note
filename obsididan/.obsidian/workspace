@@ -4,14 +4,12 @@
     "type": "split",
     "children": [
       {
-        "id": "c89dd9a36e4ec098",
+        "id": "95cf93d1935c557f",
         "type": "leaf",
         "state": {
-          "type": "markdown",
+          "type": "kanban",
           "state": {
-            "file": "work/教学平台/开发看板.md",
-            "mode": "preview",
-            "source": false
+            "file": "work/教学平台/开发看板.md"
           }
         }
       }
@@ -136,11 +134,11 @@
     "direction": "horizontal",
     "width": 300
   },
-  "active": "c89dd9a36e4ec098",
+  "active": "95cf93d1935c557f",
   "lastOpenFiles": [
     "record/2022/2022-10-09 星期日  第40周.md",
-    "work/教学平台/小书童.md",
     "work/教学平台/开发看板.md",
+    "work/教学平台/小书童.md",
     "筛选内容保存.md",
     "record/2022/2022-10-08 星期六  第40周.md",
     "work/其他.md",
