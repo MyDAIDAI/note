@@ -21,7 +21,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "试用期中期答辩.md",
+            "file": "record/2022/2022-10-09 星期日  第40周.md",
             "mode": "source",
             "source": false
           }
@@ -89,7 +89,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "试用期中期答辩.md",
+                "file": "record/2022/2022-10-09 星期日  第40周.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -106,7 +106,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "试用期中期答辩.md",
+                "file": "record/2022/2022-10-09 星期日  第40周.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -129,7 +129,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "试用期中期答辩.md"
+                "file": "record/2022/2022-10-09 星期日  第40周.md"
               }
             }
           },
@@ -149,6 +149,7 @@
   },
   "active": "c5aca8d0e008d939",
   "lastOpenFiles": [
+    "试用期中期答辩.md",
     "work/其他.md",
     "record/2022/2022-10-09 星期日  第40周.md",
     "work/教学平台/开发看板.md",
@@ -157,7 +158,6 @@
     "record/2022/2022-10-08 星期六  第40周.md",
     "study/计算机/深入理解计算机系统/笔记📒.md",
     "study/计算机/深入理解计算机系统/计划.md",
-    "record/2022/2022-10-02 星期日  第39周.md",
-    "template/Day Planner.md"
+    "record/2022/2022-10-02 星期日  第39周.md"
   ]
 }
