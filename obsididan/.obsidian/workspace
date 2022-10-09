@@ -4,26 +4,12 @@
     "type": "split",
     "children": [
       {
-        "id": "95cf93d1935c557f",
-        "type": "leaf",
-        "state": {
-          "type": "markdown",
-          "state": {
-            "file": "work/其他.md",
-            "mode": "source",
-            "source": false
-          }
-        }
-      },
-      {
         "id": "c5aca8d0e008d939",
         "type": "leaf",
         "state": {
-          "type": "markdown",
+          "type": "excalidraw",
           "state": {
-            "file": "record/2022/2022-10-09 星期日  第40周.md",
-            "mode": "source",
-            "source": false
+            "file": "Excalidraw/Drawing 2022-10-09 16.34.35.excalidraw.md"
           }
         }
       }
@@ -89,7 +75,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "record/2022/2022-10-09 星期日  第40周.md",
+                "file": "Excalidraw/Drawing 2022-10-09 16.34.35.excalidraw.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -106,7 +92,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "record/2022/2022-10-09 星期日  第40周.md",
+                "file": "Excalidraw/Drawing 2022-10-09 16.34.35.excalidraw.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -129,7 +115,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "record/2022/2022-10-09 星期日  第40周.md"
+                "file": "Excalidraw/Drawing 2022-10-09 16.34.35.excalidraw.md"
               }
             }
           },
@@ -149,15 +135,15 @@
   },
   "active": "c5aca8d0e008d939",
   "lastOpenFiles": [
-    "试用期中期答辩.md",
     "work/其他.md",
+    "Excalidraw/Drawing 2022-10-09 16.34.35.excalidraw.md",
     "record/2022/2022-10-09 星期日  第40周.md",
+    "试用期中期答辩.md",
     "work/教学平台/开发看板.md",
     "筛选内容保存.md",
     "work/教学平台/小书童.md",
     "record/2022/2022-10-08 星期六  第40周.md",
     "study/计算机/深入理解计算机系统/笔记📒.md",
-    "study/计算机/深入理解计算机系统/计划.md",
-    "record/2022/2022-10-02 星期日  第39周.md"
+    "study/计算机/深入理解计算机系统/计划.md"
   ]
 }
