@@ -128,14 +128,23 @@
               "type": "calendar",
               "state": {}
             }
+          },
+          {
+            "id": "9f5f2ca8b1a44f51",
+            "type": "leaf",
+            "state": {
+              "type": "custom-frames-wereading",
+              "state": {}
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 996.5
   },
-  "active": "c5aca8d0e008d939",
+  "active": "9f5f2ca8b1a44f51",
   "lastOpenFiles": [
     "study/计算机/深入理解计算机系统/计划.md",
     "试用期中期答辩.md",

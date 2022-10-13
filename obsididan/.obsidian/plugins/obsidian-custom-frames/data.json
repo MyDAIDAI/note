@@ -12,11 +12,11 @@
       "customCss": ""
     },
     {
-      "url": "",
+      "url": "https://weread.qq.com/",
       "displayName": "WeReading",
-      "icon": "",
+      "icon": "book-open",
       "hideOnMobile": true,
-      "addRibbonIcon": false,
+      "addRibbonIcon": true,
       "openInCenter": false,
       "zoomLevel": 1,
       "forceIframe": false,
