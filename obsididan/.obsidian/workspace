@@ -4,15 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "c5aca8d0e008d939",
+        "id": "1ffff356895cb497",
         "type": "leaf",
         "state": {
-          "type": "markdown",
-          "state": {
-            "file": "study/计算机/深入理解计算机系统/计划.md",
-            "mode": "preview",
-            "source": false
-          }
+          "type": "empty",
+          "state": {}
         }
       }
     ],
@@ -77,7 +73,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "study/计算机/深入理解计算机系统/计划.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -94,7 +89,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "study/计算机/深入理解计算机系统/计划.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -116,9 +110,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "study/计算机/深入理解计算机系统/计划.md"
-              }
+              "state": {}
             }
           },
           {
@@ -145,7 +137,7 @@
     "width": 996.5,
     "collapsed": true
   },
-  "active": "c5aca8d0e008d939",
+  "active": "1ffff356895cb497",
   "lastOpenFiles": [
     "study/计算机/深入理解计算机系统/计划.md",
     "study/计算机/深入理解计算机系统/笔记📒.md",
