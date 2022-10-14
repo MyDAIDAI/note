@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "record/2022/2022-10-11 星期二  第41周.md",
+            "file": "record/2022/2022-10-13 星期四  第41周.md",
             "mode": "source",
             "source": false
           }
@@ -77,7 +77,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "record/2022/2022-10-11 星期二  第41周.md",
+                "file": "record/2022/2022-10-13 星期四  第41周.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -94,7 +94,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "record/2022/2022-10-11 星期二  第41周.md",
+                "file": "record/2022/2022-10-13 星期四  第41周.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -117,7 +117,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "record/2022/2022-10-11 星期二  第41周.md"
+                "file": "record/2022/2022-10-13 星期四  第41周.md"
               }
             }
           },
@@ -146,6 +146,8 @@
   },
   "active": "1ffff356895cb497",
   "lastOpenFiles": [
+    "record/2022/2022-10-11 星期二  第41周.md",
+    "record/2022/2022-10-14 星期五  第41周.md",
     "record/2022/2022-10-13 星期四  第41周.md",
     "study/算法/符号表.md",
     "study/计算机/深入理解计算机系统/计划.md",
@@ -153,8 +155,6 @@
     "试用期中期答辩.md",
     "work/其他.md",
     "测试文件.md",
-    "企业微信截图_e92ec947-3243-4679-97d5-8bc869211b5e.png",
-    "筛选内容保存.md",
-    "record/2022/2022-10-11 星期二  第41周.md"
+    "企业微信截图_e92ec947-3243-4679-97d5-8bc869211b5e.png"
   ]
 }
