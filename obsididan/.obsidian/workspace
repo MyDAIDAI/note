@@ -4,11 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "1ffff356895cb497",
+        "id": "ec39186e1a9fe711",
         "type": "leaf",
         "state": {
-          "type": "custom-frames-draw.io",
-          "state": {}
+          "type": "markdown",
+          "state": {
+            "file": "试用期中期答辩.md",
+            "mode": "source",
+            "source": false
+          }
         }
       }
     ],
@@ -74,6 +78,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "试用期中期答辩.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -90,6 +95,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "试用期中期答辩.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -111,7 +117,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "试用期中期答辩.md"
+              }
             }
           },
           {
@@ -138,7 +146,7 @@
     "width": 804.5,
     "collapsed": true
   },
-  "active": "1ffff356895cb497",
+  "active": "ec39186e1a9fe711",
   "lastOpenFiles": [
     "Excalidraw/Drawing 2022-10-17 22.33.51.excalidraw.md",
     "试用期中期答辩.md",
