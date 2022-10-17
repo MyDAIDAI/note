@@ -7,11 +7,17 @@
         "id": "1ffff356895cb497",
         "type": "leaf",
         "state": {
-          "type": "markdown",
+          "type": "custom-frames-draw.io",
+          "state": {}
+        }
+      },
+      {
+        "id": "4a98f70e3e3d7bb8",
+        "type": "leaf",
+        "state": {
+          "type": "excalidraw",
           "state": {
-            "file": "试用期中期答辩.md",
-            "mode": "source",
-            "source": false
+            "file": "Excalidraw/Drawing 2022-10-17 22.33.51.excalidraw.md"
           }
         }
       }
@@ -78,7 +84,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "试用期中期答辩.md",
+                "file": "Excalidraw/Drawing 2022-10-17 22.33.51.excalidraw.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -95,7 +101,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "试用期中期答辩.md",
+                "file": "Excalidraw/Drawing 2022-10-17 22.33.51.excalidraw.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -118,7 +124,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "试用期中期答辩.md"
+                "file": "Excalidraw/Drawing 2022-10-17 22.33.51.excalidraw.md"
               }
             }
           },
@@ -146,8 +152,9 @@
     "width": 804.5,
     "collapsed": true
   },
-  "active": "1ffff356895cb497",
+  "active": "4a98f70e3e3d7bb8",
   "lastOpenFiles": [
+    "试用期中期答辩.md",
     "筛选内容保存.md",
     "work/教学平台/小书童.md",
     "work/教学平台/开发看板.md",
@@ -156,7 +163,6 @@
     "record/2022/2022-10-14 星期五  第41周.md",
     "work/其他.md",
     "study/算法/符号表.md",
-    "study/计算机/深入理解计算机系统/计划.md",
-    "study/计算机/深入理解计算机系统/笔记📒.md"
+    "study/计算机/深入理解计算机系统/计划.md"
   ]
 }
