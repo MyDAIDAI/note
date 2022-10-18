@@ -1,0 +1,185 @@
+{
+  "main": {
+    "id": "64c04d4123080d32",
+    "type": "split",
+    "children": [
+      {
+        "id": "89afad02458d0726",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ec39186e1a9fe711",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "record/2022/2022-10-18 星期二  第42周.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "eeaf01d52951e128",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "work/教学平台/小书童.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "78fe69e302922462",
+    "type": "split",
+    "children": [
+      {
+        "id": "75f531443ddf0199",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "19b6f83ff96f6d5a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "6a01474299f41dbe",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": true,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "30c7cc86367b253f",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "right": {
+    "id": "d36108ceee42cba9",
+    "type": "split",
+    "children": [
+      {
+        "id": "9f0413cb37acb374",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2c1ef1fc9b147fda",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "record/2022/2022-10-18 星期二  第42周.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "473acb7bfcd1fe22",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "record/2022/2022-10-18 星期二  第42周.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "75154c4d6736c121",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "6c9226927928e60d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "record/2022/2022-10-18 星期二  第42周.md"
+              }
+            }
+          },
+          {
+            "id": "2154f35bdec48ded",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {}
+            }
+          },
+          {
+            "id": "9f5f2ca8b1a44f51",
+            "type": "leaf",
+            "state": {
+              "type": "custom-frames-wereading",
+              "state": {}
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 804.5,
+    "collapsed": true
+  },
+  "ribbon": {
+    "mostRecentAction": ""
+  },
+  "active": "ec39186e1a9fe711",
+  "lastOpenFiles": [
+    "work/教学平台/小书童.md",
+    "record/2022/2022-10-18 星期二  第42周.md",
+    "未命名.md",
+    "试用期中期答辩.md",
+    "Excalidraw/Drawing 2022-10-17 22.33.51.excalidraw.md",
+    "筛选内容保存.md",
+    "work/教学平台/开发看板.md",
+    "record/2022/2022-10-11 星期二  第41周.md",
+    "record/2022/2022-10-13 星期四  第41周.md",
+    "record/2022/2022-10-14 星期五  第41周.md"
+  ]
+}
