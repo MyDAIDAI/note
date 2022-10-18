@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "试用期中期答辩.md",
+            "file": "work/教学平台/小书童.md",
             "mode": "source",
             "source": false
           }
@@ -78,7 +78,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "试用期中期答辩.md",
+                "file": "work/教学平台/小书童.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -95,7 +95,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "试用期中期答辩.md",
+                "file": "work/教学平台/小书童.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -118,7 +118,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "试用期中期答辩.md"
+                "file": "work/教学平台/小书童.md"
               }
             }
           },
@@ -148,15 +148,15 @@
   },
   "active": "ec39186e1a9fe711",
   "lastOpenFiles": [
-    "Excalidraw/Drawing 2022-10-17 22.33.51.excalidraw.md",
+    "record/2022/2022-10-18 星期二  第42周.md",
     "试用期中期答辩.md",
+    "Excalidraw/Drawing 2022-10-17 22.33.51.excalidraw.md",
     "筛选内容保存.md",
     "work/教学平台/小书童.md",
     "work/教学平台/开发看板.md",
     "record/2022/2022-10-11 星期二  第41周.md",
     "record/2022/2022-10-13 星期四  第41周.md",
     "record/2022/2022-10-14 星期五  第41周.md",
-    "work/其他.md",
-    "study/算法/符号表.md"
+    "work/其他.md"
   ]
 }
