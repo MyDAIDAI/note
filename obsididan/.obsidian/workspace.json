@@ -18,8 +18,21 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "be32da945722bfe7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "record/2022/2022-10-19 星期三  第42周.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -156,11 +169,11 @@
   "ribbon": {
     "mostRecentAction": ""
   },
-  "active": "eeaf01d52951e128",
+  "active": "be32da945722bfe7",
   "lastOpenFiles": [
-    "work/教学平台/筛选内容保存.md",
-    "record/2022/2022-10-19 星期三  第42周.md",
     "work/教学平台/小书童.md",
+    "record/2022/2022-10-19 星期三  第42周.md",
+    "work/教学平台/筛选内容保存.md",
     "record/2022/2022-10-18 星期二  第42周.md",
     "未命名.md",
     "试用期中期答辩.md",
