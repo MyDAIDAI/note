@@ -4,16 +4,18 @@
     "type": "split",
     "children": [
       {
-        "id": "b98d32681ad94e0c",
+        "id": "6973c66bd67d90b5",
         "type": "tabs",
         "children": [
           {
-            "id": "e41db5bfba25b112",
+            "id": "23fbbc216a4139c3",
             "type": "leaf",
             "state": {
-              "type": "kanban",
+              "type": "markdown",
               "state": {
-                "file": "work/教学平台/开发看板.md"
+                "file": "work/教学平台/小书童.md",
+                "mode": "source",
+                "source": false
               }
             }
           }
@@ -83,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "work/教学平台/开发看板.md",
+                "file": "work/教学平台/小书童.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -100,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "work/教学平台/开发看板.md",
+                "file": "work/教学平台/小书童.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -123,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "work/教学平台/开发看板.md"
+                "file": "work/教学平台/小书童.md"
               }
             }
           },
@@ -153,10 +155,10 @@
   "ribbon": {
     "mostRecentAction": ""
   },
-  "active": "e41db5bfba25b112",
+  "active": "23fbbc216a4139c3",
   "lastOpenFiles": [
-    "work/教学平台/筛选内容保存.md",
     "work/教学平台/开发看板.md",
+    "work/教学平台/筛选内容保存.md",
     "work/教学平台/小书童.md",
     "record/2022/2022-10-21 星期五  第42周.md",
     "record/2022/2022-10-20 星期四  第42周.md",
