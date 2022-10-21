@@ -4,28 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "89afad02458d0726",
+        "id": "b98d32681ad94e0c",
         "type": "tabs",
         "children": [
           {
-            "id": "be32da945722bfe7",
+            "id": "e41db5bfba25b112",
             "type": "leaf",
             "state": {
               "type": "kanban",
               "state": {
                 "file": "work/教学平台/开发看板.md"
-              }
-            }
-          },
-          {
-            "id": "d7309657499f041b",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "work/教学平台/筛选内容保存.md",
-                "mode": "source",
-                "source": false
               }
             }
           }
@@ -160,17 +148,16 @@
       }
     ],
     "direction": "horizontal",
-    "width": 804.5,
-    "collapsed": true
+    "width": 804.5
   },
   "ribbon": {
     "mostRecentAction": ""
   },
-  "active": "be32da945722bfe7",
+  "active": "e41db5bfba25b112",
   "lastOpenFiles": [
-    "work/教学平台/小书童.md",
     "work/教学平台/筛选内容保存.md",
     "work/教学平台/开发看板.md",
+    "work/教学平台/小书童.md",
     "record/2022/2022-10-21 星期五  第42周.md",
     "record/2022/2022-10-20 星期四  第42周.md",
     "未命名 1.md",
