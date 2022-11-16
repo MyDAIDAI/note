@@ -114,3 +114,5 @@
   - 发生背景：本地仓库与远程仓库合并时
   - 原因：本地仓库与远程仓库是两个互相独立的仓库，如果使用`git clone`克隆岛本地则不会有这个错误
   - 解决办法：`git pull origin master --allow-unrelated-histories`
+
+# `git rebase` 变基
