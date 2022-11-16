@@ -1,0 +1,56 @@
+{
+  "version": "0.5.0",
+  "data": {
+    "boardConfigs": [
+      {
+        "tag": "tagBoardConfig",
+        "data": {
+          "columns": [
+            {
+              "tag": "工作/未开始",
+              "displayTitle": "未开始"
+            },
+            {
+              "tag": "工作/进行中",
+              "displayTitle": "进行中"
+            },
+            {
+              "tag": "工作/已完成",
+              "displayTitle": "已完成"
+            },
+            {
+              "tag": "工作/已提测",
+              "displayTitle": "已提测"
+            },
+            {
+              "tag": "工作/已上线",
+              "displayTitle": "已上线"
+            }
+          ],
+          "showColumnTags": true,
+          "completedCount": 10,
+          "filters": [],
+          "filterPolarity": "Allow",
+          "showFilteredTags": true,
+          "includeOthers": false,
+          "includeUntagged": false,
+          "title": "工作"
+        }
+      },
+      {
+        "tag": "dateBoardConfig",
+        "data": {
+          "completedCount": 10,
+          "filters": [],
+          "filterPolarity": "Allow",
+          "showFilteredTags": true,
+          "includeUndated": true,
+          "title": "测试"
+        }
+      }
+    ],
+    "globalSettings": {
+      "taskUpdateFormat": "ObsidianCardBoard"
+    }
+  }
+}
