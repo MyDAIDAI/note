@@ -103,6 +103,59 @@ u = 2147483648 = -2147483648
 
 当一个 `w` 位的数截断为一个 `k` 位数字时，会丢弃高 `w - k` 位，截断一个数字可能会改变它的值--溢出的一种形式。
 
+#### 截断无符号数
+
+![Alt text](image-3.png)
+
+#### 截断补码数值
+
+![截断补码数值](image-4.png)
+
+### 2.2.8 关于有符号数与无符号数的建议
+
+有符号数到无符号数的隐式强制类型转换导致了某些非直观行为。而这些非直观的特性经常导致程序错误。并且这种包含隐式强制类型转换的细微差别的错误很难被发现。
+
+```C
+    float sum_elements(float a[], unsigned length)
+    {
+        int i;
+        float result = 0;
+
+        for (i = 0; i <= length - 1; i++)
+        {
+            result += a[i];
+        }
+
+        return result;
+    }
+
+    int main()
+    {
+        unsigned length = 5;
+        float a[] = {1.0, 2.0, 3.0, 4.0, 5.0};
+        float sum;
+        sum = sum_elements(a, length);
+        printf("sum = %f\n", sum); // 15.000000
+
+        sum = sum_elements(a, 0);
+        printf("length sum = %f\n", sum); //  内存错误❎
+    }
+```
+
+上面 👆 的代码中，当`length` 大于 0 时，也就是`length - 1`为正数时，运行是没有错误的，而当`length` 等于 0，那么`length - 1`即为 -1， -1 用补码表示为 `0xFFFFFFFF`，而`length`初始化时被声明为了`unsigned`，就会将`0xFFFFFFFF` 转换为无符号数`4294967295`，造成了数组越界，出现错误
+
+![Alt text](image-5.png)
+
+![Alt text](image-6.png)
+
+那么对于 length 是正数，为什么没有问题？->我的理解是计算还是被转换为无符号计算，
+
+只是用无符号计算的方式解释结果与有符号计算的方式解释结果正好相同，所以没有问题暴露。
+
+为了避免该问题，该如何修改代码呢？
+
+很简单，加个 if 语句，排除 length 等于 0 的情况即可。
+
 ### 表示字符串
 
 在 c 语言中字符串被编码为一个以`null`（其值为 0）字符结尾的**字符数组**，每个字符都由某个标准编码来表示，最常见的是`ASCII`字符码
